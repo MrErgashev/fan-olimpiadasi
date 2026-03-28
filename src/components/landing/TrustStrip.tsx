@@ -12,7 +12,7 @@ const STATS = [
 
 export function TrustStrip() {
   return (
-    <section className="bg-white border-b border-slate-100 py-8 sm:py-10">
+    <section className="relative z-10 -mt-14 rounded-t-3xl bg-white border-b border-slate-100 py-8 sm:py-10 shadow-[0_-8px_30px_rgba(0,0,0,0.08)]">
       <div className="max-w-container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 10 }}

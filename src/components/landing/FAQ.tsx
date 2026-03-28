@@ -117,6 +117,17 @@ export function FAQ() {
                 <p className="text-sm text-navy-950 font-medium">
                   {CONTACT_INFO.address}
                 </p>
+                <div className="mt-3 rounded-xl overflow-hidden border border-slate-100">
+                  <iframe
+                    src="https://yandex.uz/map-widget/v1/-/CHWg7YIE"
+                    width="100%"
+                    height="200"
+                    frameBorder="0"
+                    allowFullScreen
+                    className="block"
+                    title="Oriental Universiteti manzili"
+                  />
+                </div>
               </div>
 
               <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
