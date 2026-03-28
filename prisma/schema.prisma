@@ -112,8 +112,10 @@ model Student {
   schoolName   String   @map("school_name")
   grade        Int      @default(11)
   accessCodeId String?  @map("access_code_id")
-  isBlocked    Boolean  @default(false) @map("is_blocked")
-  createdAt    DateTime @default(now()) @map("created_at")
+  isBlocked     Boolean   @default(false) @map("is_blocked")
+  blockedAt     DateTime? @map("blocked_at")
+  blockedReason String?   @map("blocked_reason")
+  createdAt     DateTime  @default(now()) @map("created_at")
 
   region       Region?          @relation(fields: [regionId], references: [id])
   district     District?        @relation(fields: [districtId], references: [id])
