@@ -81,7 +81,7 @@ function TiltCard({ children, glowColor }: { children: React.ReactNode; glowColo
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="bg-white rounded-2xl p-7 sm:p-8 shadow-card border border-slate-100 transition-[box-shadow] duration-300 will-change-transform relative overflow-hidden group"
+      className="h-full bg-white rounded-2xl p-7 sm:p-8 shadow-card border border-slate-100 transition-[box-shadow] duration-300 will-change-transform relative overflow-hidden group"
       style={{ transformStyle: "preserve-3d" }}
     >
       {children}
@@ -119,7 +119,7 @@ export function WhyParticipate() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {REASONS.map((reason) => (
-            <motion.div key={reason.title} variants={item}>
+            <motion.div key={reason.title} variants={item} className="h-full">
               <TiltCard glowColor={reason.glowColor}>
                 {/* Background number */}
                 <span className="absolute top-4 right-5 text-6xl font-black text-slate-100/60 font-mono select-none pointer-events-none leading-none">
