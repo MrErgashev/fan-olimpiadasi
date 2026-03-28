@@ -18,7 +18,7 @@ export const registerSchema = z
         "Telefon raqam +998XXXXXXXXX formatda bo'lishi kerak"
       ),
     regionId: z.string().min(1, "Viloyatni tanlang"),
-    districtId: z.string().min(1, "Tuman/shaharni tanlang"),
+    districtId: z.string().optional(),
     schoolName: z.string().min(1, "Maktab nomini kiriting"),
     subjectIds: z
       .array(z.string())
