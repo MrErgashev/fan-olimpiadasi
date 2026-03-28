@@ -42,7 +42,7 @@ function AnimatedDigit({ value }: { value: string }) {
     <span
       className={`inline-block transition-all duration-300 ${
         isFlipping
-          ? "opacity-0 -translate-y-2 scale-95"
+          ? "opacity-0 -translate-y-1 scale-95"
           : "opacity-100 translate-y-0 scale-100"
       }`}
     >
@@ -56,19 +56,19 @@ function TimeBlock({ value, label }: { value: number; label: string }) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="glass-strong gold-border rounded-2xl px-5 py-4 sm:px-8 sm:py-6 min-w-[90px] sm:min-w-[120px] md:min-w-[140px] hover:glow-gold transition-shadow duration-500">
+      <div className="bg-white/[0.06] border border-white/10 rounded-2xl px-5 py-4 sm:px-7 sm:py-5 min-w-[80px] sm:min-w-[100px]">
         <div className="flex justify-center gap-0.5">
           {digits.split("").map((digit, i) => (
             <span
               key={i}
-              className="text-3xl sm:text-5xl md:text-6xl font-mono font-black text-gold-400 text-glow-gold tabular-nums"
+              className="text-3xl sm:text-4xl md:text-5xl font-mono font-black text-white tabular-nums"
             >
               <AnimatedDigit value={digit} />
             </span>
           ))}
         </div>
       </div>
-      <span className="mt-3 text-xs sm:text-sm text-white/30 uppercase tracking-[0.2em] font-medium">
+      <span className="mt-2.5 text-[10px] sm:text-xs text-white/30 uppercase tracking-[0.2em] font-medium">
         {label}
       </span>
     </div>
@@ -77,8 +77,8 @@ function TimeBlock({ value, label }: { value: number; label: string }) {
 
 function Separator() {
   return (
-    <div className="flex items-center pb-8">
-      <span className="text-3xl sm:text-4xl text-gold-500/30 animate-pulse font-mono font-bold">
+    <div className="flex items-center pb-7">
+      <span className="text-2xl sm:text-3xl text-white/20 font-mono font-bold animate-pulse-subtle">
         :
       </span>
     </div>

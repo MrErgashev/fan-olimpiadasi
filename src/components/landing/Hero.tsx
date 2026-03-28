@@ -2,173 +2,133 @@
 
 import { Button } from "@/components/ui/Button";
 import { CountdownTimer } from "./CountdownTimer";
-import { ParticleBackground } from "./ParticleBackground";
-import { Logo } from "@/components/shared/Logo";
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { BookOpen, Users, Trophy } from "lucide-react";
 import Link from "next/link";
+
+const TRUST_BULLETS = [
+  { icon: BookOpen, text: "7 ta fan bo'yicha" },
+  { icon: Users, text: "1000+ ishtirokchi" },
+  { icon: Trophy, text: "Qimmatbaho sovg'alar" },
+];
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Multi-layer gradient mesh background */}
-      <div className="absolute inset-0 bg-green-900" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-navy-950">
+      {/* Gradient mesh background */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full bg-green-700/20 blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full bg-green-500/10 blur-[100px]" />
-        <div className="absolute top-1/3 right-1/3 w-[400px] h-[400px] rounded-full bg-gold-500/5 blur-[100px]" />
+        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full bg-navy-700/30 blur-[150px]" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full bg-navy-600/20 blur-[120px]" />
+        <div className="absolute top-1/3 right-1/3 w-[400px] h-[400px] rounded-full bg-gold-500/[0.06] blur-[120px]" />
       </div>
 
-      {/* Animated gradient blobs */}
-      <motion.div
-        animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        className="absolute top-1/4 left-1/3 w-[500px] h-[500px] rounded-full bg-green-600/10 blur-[150px]"
-      />
-      <motion.div
-        animate={{ x: [0, -20, 0], y: [0, 30, 0] }}
-        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-        className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-gold-500/[0.04] blur-[120px]"
-      />
-
-      <ParticleBackground />
-
-      {/* Subtle geometric pattern — left side */}
-      <div className="absolute left-0 top-0 bottom-0 w-64 opacity-[0.03]">
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]">
         <div
           className="w-full h-full"
           style={{
             backgroundImage:
-              "radial-gradient(circle, rgba(212,168,67,0.4) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-      </div>
-      {/* Right side */}
-      <div className="absolute right-0 top-0 bottom-0 w-64 opacity-[0.03]">
-        <div
-          className="w-full h-full"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(212,168,67,0.4) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
+              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
           }}
         />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-container mx-auto px-4 sm:px-6 text-center pt-24 pb-20">
+      <div className="relative z-10 max-w-container mx-auto px-4 sm:px-6 text-center pt-28 pb-24">
         {/* Pre-title */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-sm sm:text-base tracking-[0.3em] uppercase text-gold-400/60 mb-8"
+          transition={{ duration: 0.5 }}
+          className="text-sm sm:text-base tracking-[0.25em] uppercase text-gold-400/70 mb-6 font-medium"
         >
           Oriental Universiteti taqdim etadi
         </motion.p>
 
-        {/* Logo */}
-        <motion.div
+        {/* Main title */}
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center mb-10"
+          className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-black tracking-tight leading-[0.9]"
         >
-          <Logo size="xl" />
-        </motion.div>
-
-        {/* Main title */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight"
-        >
-          <span className="text-gold-gradient">FAN</span>{" "}
-          <span className="text-gold-gradient">OLIMPIADASI</span>
+          <span className="text-white">FAN</span>{" "}
+          <span className="text-gradient-gold">OLIMPIADASI</span>
         </motion.h1>
 
-        {/* Ornamental line */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="ornamental-line mt-8 mb-6"
-        />
-
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-lg sm:text-xl md:text-2xl text-white/50 max-w-xl mx-auto leading-relaxed"
-        >
-          11-sinf o&apos;quvchilari orasida respublika miqyosidagi onlayn
-          olimpiada
-        </motion.p>
-
-        {/* Date badge */}
+        {/* Year badge */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-8 flex justify-center"
+          transition={{ duration: 0.4, delay: 0.25 }}
+          className="mt-6 mb-8"
         >
-          <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full glass-gold glow-gold">
-            <span className="text-gold-400 font-mono font-bold text-sm sm:text-base tracking-wider">
-              30-31 MART 2026
-            </span>
-          </div>
+          <span className="inline-block px-5 py-2 rounded-full bg-white/[0.06] border border-white/10 text-gold-400 font-mono font-bold text-sm tracking-widest">
+            30-31 MART 2026
+          </span>
         </motion.div>
 
-        {/* Countdown */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-12 sm:mt-16"
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="text-lg sm:text-xl md:text-2xl text-white/50 max-w-2xl mx-auto leading-relaxed mb-8"
         >
-          <CountdownTimer />
+          11-sinf o&apos;quvchilari orasida respublika miqyosidagi bilim bellashuvi.
+          O&apos;zingizni sinab ko&apos;ring va kelajagingizni yarating.
+        </motion.p>
+
+        {/* Trust bullets */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 mb-10"
+        >
+          {TRUST_BULLETS.map((bullet) => (
+            <div key={bullet.text} className="flex items-center gap-2 text-white/40">
+              <bullet.icon className="w-4 h-4 text-gold-500/60" />
+              <span className="text-sm font-medium">{bullet.text}</span>
+            </div>
+          ))}
         </motion.div>
 
         {/* CTA Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-12 sm:mt-16 flex flex-col sm:flex-row items-center justify-center gap-4"
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14 sm:mb-16"
         >
           <Link href="/register">
             <Button variant="premium" size="xl">
-              RO&apos;YXATDAN O&apos;TISH
+              HOZIROQ RO&apos;YXATDAN O&apos;TING
             </Button>
           </Link>
           <a href="#fanlar">
             <Button variant="outline" size="lg">
-              Batafsil &rarr;
+              Batafsil ma&apos;lumot
             </Button>
           </a>
         </motion.div>
-      </div>
 
-      {/* Scroll indicator — gradient fade + chevron */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <div className="h-32 bg-gradient-to-t from-green-900 to-transparent" />
+        {/* Countdown */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ChevronDown className="w-6 h-6 text-gold-400/40" />
-          </motion.div>
+          <p className="text-xs uppercase tracking-[0.2em] text-white/30 mb-5 font-medium">
+            Olimpiada boshlanishiga
+          </p>
+          <CountdownTimer />
         </motion.div>
       </div>
+
+      {/* Bottom gradient fade to light */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-50 to-transparent" />
     </section>
   );
 }

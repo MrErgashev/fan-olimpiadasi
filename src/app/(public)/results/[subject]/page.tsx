@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Navbar } from "@/components/shared/Navbar";
@@ -58,13 +57,13 @@ export default function SubjectResultsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-24 pb-16 bg-green-900">
+      <main className="min-h-screen pt-24 pb-16 bg-slate-50">
         <div className="max-w-container mx-auto px-4 sm:px-6">
           <div className="mb-8">
-            <Link href="/results" className="inline-flex items-center gap-1 text-sm text-white/50 hover:text-gold-400 mb-4">
+            <Link href="/results" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-navy-950 mb-4 transition-colors">
               <ArrowLeft className="w-4 h-4" /> Barcha natijalar
             </Link>
-            <h1 className="font-display text-3xl sm:text-4xl font-bold text-gold-gradient">
+            <h1 className="text-3xl sm:text-4xl font-bold text-navy-950">
               {subjectInfo.emoji} {subjectInfo.name || subject} natijalari
             </h1>
           </div>
@@ -75,6 +74,7 @@ export default function SubjectResultsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && fetchResults()}
+              variant="light"
             />
             <Button variant="secondary" onClick={fetchResults}>
               <Search className="w-4 h-4" />
@@ -83,46 +83,46 @@ export default function SubjectResultsPage() {
 
           {loading ? (
             <div className="flex justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-gold-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
             </div>
           ) : results.length === 0 ? (
-            <Card variant="glass" className="text-center py-16">
-              <Trophy className="w-12 h-12 text-white/20 mx-auto mb-4" />
-              <p className="text-white/50">Bu fan bo&apos;yicha natijalar yo&apos;q</p>
-            </Card>
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-card text-center py-16">
+              <Trophy className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+              <p className="text-slate-500">Bu fan bo&apos;yicha natijalar yo&apos;q</p>
+            </div>
           ) : (
-            <Card variant="glass" className="overflow-x-auto">
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-card overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="text-left py-3 px-3 text-white/50">O&apos;rin</th>
-                    <th className="text-left py-3 px-3 text-white/50">Ism</th>
-                    <th className="text-left py-3 px-3 text-white/50 hidden sm:table-cell">Viloyat</th>
-                    <th className="text-left py-3 px-3 text-white/50 hidden md:table-cell">Maktab</th>
-                    <th className="text-center py-3 px-3 text-white/50">Ball</th>
+                  <tr className="border-b border-slate-100 bg-slate-50/50">
+                    <th className="text-left py-3 px-4 text-slate-500 font-medium text-xs uppercase tracking-wider">O&apos;rin</th>
+                    <th className="text-left py-3 px-4 text-slate-500 font-medium text-xs uppercase tracking-wider">Ism</th>
+                    <th className="text-left py-3 px-4 text-slate-500 font-medium text-xs uppercase tracking-wider hidden sm:table-cell">Viloyat</th>
+                    <th className="text-left py-3 px-4 text-slate-500 font-medium text-xs uppercase tracking-wider hidden md:table-cell">Maktab</th>
+                    <th className="text-center py-3 px-4 text-slate-500 font-medium text-xs uppercase tracking-wider">Ball</th>
                   </tr>
                 </thead>
                 <tbody>
                   {results.map((r) => (
-                    <tr key={r.rank} className="border-b border-white/5 hover:bg-white/5">
-                      <td className="py-3 px-3">
+                    <tr key={r.rank} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                      <td className="py-3 px-4">
                         {r.rank <= 3 ? (
-                          <Medal className={`w-5 h-5 ${r.rank === 1 ? "text-gold-400" : r.rank === 2 ? "text-gray-300" : "text-amber-600"}`} />
+                          <Medal className={`w-5 h-5 ${r.rank === 1 ? "text-gold-500" : r.rank === 2 ? "text-slate-400" : "text-amber-600"}`} />
                         ) : (
-                          <span className="font-mono text-white/40">{r.rank}</span>
+                          <span className="font-mono text-slate-400">{r.rank}</span>
                         )}
                       </td>
-                      <td className="py-3 px-3 font-medium">{r.firstName} {r.lastName}</td>
-                      <td className="py-3 px-3 text-white/60 hidden sm:table-cell">{r.region}</td>
-                      <td className="py-3 px-3 text-white/60 hidden md:table-cell">{r.school}</td>
-                      <td className="py-3 px-3 text-center">
-                        <span className="font-mono font-bold text-gold-400">{r.totalScore.toFixed(1)}</span>
+                      <td className="py-3 px-4 font-medium text-navy-950">{r.firstName} {r.lastName}</td>
+                      <td className="py-3 px-4 text-slate-500 hidden sm:table-cell">{r.region}</td>
+                      <td className="py-3 px-4 text-slate-500 hidden md:table-cell">{r.school}</td>
+                      <td className="py-3 px-4 text-center">
+                        <span className="font-mono font-bold text-gold-600">{r.totalScore.toFixed(1)}</span>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </Card>
+            </div>
           )}
         </div>
       </main>

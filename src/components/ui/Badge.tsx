@@ -16,26 +16,24 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full font-semibold border",
+        "inline-flex items-center rounded-full font-medium border",
         {
-          // Sizes
           "px-2.5 py-0.5 text-xs": size === "sm",
           "px-3 py-1 text-sm": size === "md",
           "px-4 py-1.5 text-base": size === "lg",
         },
         {
-          // Variants
-          "bg-green-700/50 text-green-300 border-green-500/30":
+          "bg-slate-100 text-slate-600 border-slate-200":
             variant === "default",
-          "bg-emerald-500/20 text-emerald-400 border-emerald-500/30":
+          "bg-emerald-50 text-emerald-700 border-emerald-200":
             variant === "success",
-          "bg-yellow-500/20 text-yellow-400 border-yellow-500/30":
+          "bg-amber-50 text-amber-700 border-amber-200":
             variant === "warning",
-          "bg-red-500/20 text-red-400 border-red-500/30":
+          "bg-red-50 text-red-700 border-red-200":
             variant === "error",
-          "bg-gold-500/20 text-gold-400 border-gold-500/30":
+          "bg-gold-100 text-gold-600 border-gold-200":
             variant === "gold",
-          "bg-blue-500/20 text-blue-400 border-blue-500/30":
+          "bg-blue-50 text-blue-700 border-blue-200":
             variant === "info",
         },
         className

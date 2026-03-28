@@ -52,7 +52,7 @@ export default function RootLayout({
       lang="uz"
       className={`${playfair.variable} ${outfit.variable} ${jetbrains.variable}`}
     >
-      <body className="font-body antialiased min-h-screen bg-green-900 text-white">
+      <body className="font-body antialiased min-h-screen bg-slate-50 text-slate-900">
         <Providers>{children}</Providers>
       </body>
     </html>

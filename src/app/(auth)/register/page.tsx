@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { Card } from "@/components/ui/Card";
 import { Logo } from "@/components/shared/Logo";
 import { SUBJECTS, REGIONS } from "@/lib/constants";
 import { ArrowLeft, Check, Eye, EyeOff, KeyRound, UserPlus } from "lucide-react";
@@ -15,15 +14,14 @@ import toast from "react-hot-toast";
 
 type Step = "code" | "form";
 
-// Subject accent colors for selection cards
 const SUBJECT_ACCENT: Record<string, string> = {
-  matematika: "border-blue-500/50 bg-blue-500/10 text-blue-400",
-  informatika: "border-cyan-500/50 bg-cyan-500/10 text-cyan-400",
-  tarix: "border-amber-500/50 bg-amber-500/10 text-amber-400",
-  "ingliz-tili": "border-red-500/50 bg-red-500/10 text-red-400",
-  biologiya: "border-emerald-500/50 bg-emerald-500/10 text-emerald-400",
-  "ona-tili": "border-violet-500/50 bg-violet-500/10 text-violet-400",
-  "jismoniy-tarbiya": "border-orange-500/50 bg-orange-500/10 text-orange-400",
+  matematika: "border-blue-300 bg-blue-50 text-blue-700",
+  informatika: "border-cyan-300 bg-cyan-50 text-cyan-700",
+  tarix: "border-amber-300 bg-amber-50 text-amber-700",
+  "ingliz-tili": "border-red-300 bg-red-50 text-red-700",
+  biologiya: "border-emerald-300 bg-emerald-50 text-emerald-700",
+  "ona-tili": "border-violet-300 bg-violet-50 text-violet-700",
+  "jismoniy-tarbiya": "border-orange-300 bg-orange-50 text-orange-700",
 };
 
 export default function RegisterPage() {
@@ -135,137 +133,142 @@ export default function RegisterPage() {
   const currentStepNum = step === "code" ? 1 : 2;
 
   return (
-    <div className="min-h-screen bg-green-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 spotlight" />
-      <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full bg-green-700/15 blur-[120px]" />
-      <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-gold-500/5 blur-[100px]" />
+    <div className="min-h-screen flex">
+      {/* Left brand panel */}
+      <div className="hidden lg:flex lg:w-[40%] bg-navy-950 items-center justify-center p-12 relative overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-navy-700/30 blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-gold-500/[0.05] blur-[100px]" />
+        <div className="relative text-center">
+          <Logo size="xl" variant="dark" />
+          <h2 className="mt-8 text-3xl font-display font-bold text-white">
+            Fan Olimpiadasi
+          </h2>
+          <p className="mt-3 text-white/40 max-w-sm">
+            Ro&apos;yxatdan o&apos;ting va respublika miqyosidagi olimpiadada qatnashing
+          </p>
+        </div>
+      </div>
 
-      <div className="relative w-full max-w-lg py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-10"
-        >
-          <Link href="/" className="inline-block">
-            <Logo size="lg" />
-          </Link>
-          <h1 className="mt-8 font-display text-3xl sm:text-4xl font-bold text-gold-gradient">
+      {/* Right form panel */}
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-white overflow-y-auto">
+        <div className="w-full max-w-lg py-8">
+          {/* Mobile logo */}
+          <div className="lg:hidden mb-8 flex justify-center">
+            <Link href="/">
+              <Logo size="lg" variant="light" />
+            </Link>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl font-bold text-navy-950 mb-2">
             Ro&apos;yxatdan o&apos;tish
           </h1>
-          <div className="ornamental-line mt-4 mb-4" />
-        </motion.div>
+          <p className="text-slate-500 mb-8">
+            Olimpiadaga qatnashish uchun hisob yarating
+          </p>
 
-        {/* Step indicator */}
-        <div className="mb-8 max-w-xs mx-auto">
-          <div className="flex items-center gap-3">
-            {/* Step 1 */}
-            <div className="flex items-center gap-2 flex-1">
-              <div
-                className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                  currentStepNum >= 1
-                    ? "gradient-gold text-green-900 shadow-glow-gold"
-                    : "bg-white/10 text-white/40"
-                }`}
-              >
-                {currentStepNum > 1 ? (
-                  <Check className="w-4 h-4" />
-                ) : (
-                  "1"
-                )}
+          {/* Step indicator */}
+          <div className="mb-8 max-w-xs">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 flex-1">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                    currentStepNum >= 1
+                      ? "bg-gold-500 text-navy-950"
+                      : "bg-slate-100 text-slate-400"
+                  }`}
+                >
+                  {currentStepNum > 1 ? <Check className="w-4 h-4" /> : "1"}
+                </div>
+                <span className="text-xs text-slate-500 hidden sm:block">Tasdiqlash</span>
               </div>
-              <span className="text-xs text-white/40 hidden sm:block">Tasdiqlash</span>
-            </div>
 
-            {/* Line */}
-            <div className="flex-1 h-[2px] bg-white/10 relative rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: "0%" }}
-                animate={{ width: currentStepNum >= 2 ? "100%" : "0%" }}
-                transition={{ duration: 0.5 }}
-                className="absolute inset-y-0 left-0 gradient-gold"
-              />
-            </div>
+              <div className="flex-1 h-[2px] bg-slate-200 relative rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: "0%" }}
+                  animate={{ width: currentStepNum >= 2 ? "100%" : "0%" }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-y-0 left-0 bg-gold-500"
+                />
+              </div>
 
-            {/* Step 2 */}
-            <div className="flex items-center gap-2 flex-1 justify-end">
-              <span className="text-xs text-white/40 hidden sm:block">Ma&apos;lumotlar</span>
-              <div
-                className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                  currentStepNum >= 2
-                    ? "gradient-gold text-green-900 shadow-glow-gold"
-                    : "bg-white/10 text-white/40"
-                }`}
-              >
-                2
+              <div className="flex items-center gap-2 flex-1 justify-end">
+                <span className="text-xs text-slate-500 hidden sm:block">Ma&apos;lumotlar</span>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                    currentStepNum >= 2
+                      ? "bg-gold-500 text-navy-950"
+                      : "bg-slate-100 text-slate-400"
+                  }`}
+                >
+                  2
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Step content */}
-        <AnimatePresence mode="wait">
-          {step === "code" ? (
-            <motion.div
-              key="code"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card variant="glass-gold" className="p-8 sm:p-10 rounded-2xl space-y-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-2xl gradient-gold flex items-center justify-center mx-auto mb-4 shadow-glow-gold">
-                    <KeyRound className="w-8 h-8 text-green-900" />
+          {/* Step content */}
+          <AnimatePresence mode="wait">
+            {step === "code" ? (
+              <motion.div
+                key="code"
+                initial={{ opacity: 0, x: -15 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -15 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-6"
+              >
+                <div className="bg-slate-50 rounded-2xl border border-slate-200 p-8 text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-gold-500 flex items-center justify-center mx-auto mb-4">
+                    <KeyRound className="w-7 h-7 text-navy-950" />
                   </div>
-                  <p className="text-white/70 text-lg">
-                    Ro&apos;yxatdan o&apos;tish uchun maxsus kodni kiriting
+                  <h3 className="text-lg font-semibold text-navy-950 mb-2">
+                    Maxsus kodingizni kiriting
+                  </h3>
+                  <p className="text-sm text-slate-500 mb-6">
+                    Ro&apos;yxatdan o&apos;tish uchun maktabingiz yoki Telegram orqali olingan maxsus kodni kiriting
                   </p>
-                </div>
 
-                <Input
-                  label="Access kod"
-                  placeholder="ORIENTAL-2026-XXXX"
-                  value={accessCode}
-                  onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
-                  error={codeError}
-                  className="text-center font-mono text-lg tracking-[0.15em]"
-                />
+                  <Input
+                    placeholder="ORIENTAL-2026-XXXX"
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                    error={codeError}
+                    className="text-center font-mono text-lg tracking-wider"
+                    variant="light"
+                  />
+                </div>
 
                 <Button
                   onClick={handleVerifyCode}
                   loading={loading}
-                  variant="premium"
+                  variant="primary"
                   className="w-full"
                   size="lg"
                 >
                   Tekshirish
                 </Button>
 
-                <p className="text-center text-sm text-white/40">
+                <p className="text-center text-sm text-slate-500">
                   Allaqachon ro&apos;yxatdan o&apos;tganmisiz?{" "}
                   <Link
                     href="/login"
-                    className="text-gold-400 hover:text-gold-300 font-medium transition-colors"
+                    className="text-gold-600 hover:text-gold-500 font-semibold transition-colors"
                   >
                     Kirish
                   </Link>
                 </p>
-              </Card>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card variant="glass-gold" className="p-8 sm:p-10 rounded-2xl space-y-5">
+              </motion.div>
+            ) : (
+              <motion.div
+                key="form"
+                initial={{ opacity: 0, x: 15 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 15 }}
+                transition={{ duration: 0.25 }}
+              >
                 <button
                   onClick={() => setStep("code")}
-                  className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors"
+                  className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-navy-950 transition-colors mb-6"
                 >
                   <ArrowLeft className="w-4 h-4" /> Orqaga
                 </button>
@@ -275,20 +278,18 @@ export default function RegisterPage() {
                     <Input
                       label="Ism"
                       value={form.firstName}
-                      onChange={(e) =>
-                        setForm({ ...form, firstName: e.target.value })
-                      }
+                      onChange={(e) => setForm({ ...form, firstName: e.target.value })}
                       error={errors.firstName}
                       placeholder="Ism"
+                      variant="light"
                     />
                     <Input
                       label="Familiya"
                       value={form.lastName}
-                      onChange={(e) =>
-                        setForm({ ...form, lastName: e.target.value })
-                      }
+                      onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                       error={errors.lastName}
                       placeholder="Familiya"
+                      variant="light"
                     />
                   </div>
 
@@ -299,59 +300,50 @@ export default function RegisterPage() {
                     error={errors.phone}
                     placeholder="+998901234567"
                     type="tel"
+                    variant="light"
                   />
 
                   <Select
                     label="Viloyat"
                     value={form.regionId}
-                    onChange={(e) =>
-                      setForm({
-                        ...form,
-                        regionId: e.target.value,
-                        districtId: "",
-                      })
-                    }
+                    onChange={(e) => setForm({ ...form, regionId: e.target.value, districtId: "" })}
                     error={errors.regionId}
                     placeholder="Viloyatni tanlang"
                     options={REGIONS.map((r) => ({ value: r, label: r }))}
+                    variant="light"
                   />
 
                   <Input
                     label="Maktab raqami/nomi"
                     value={form.schoolName}
-                    onChange={(e) =>
-                      setForm({ ...form, schoolName: e.target.value })
-                    }
+                    onChange={(e) => setForm({ ...form, schoolName: e.target.value })}
                     error={errors.schoolName}
                     placeholder="Masalan: 15-maktab"
+                    variant="light"
                   />
 
                   {/* Fan tanlash */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-200">
+                    <label className="block text-sm font-medium text-slate-700">
                       Olimpiada fanlari
                     </label>
                     <div className="grid grid-cols-2 gap-2.5">
                       {SUBJECTS.map((subject) => {
-                        const isSelected = form.subjectIds.includes(
-                          subject.slug
-                        );
+                        const isSelected = form.subjectIds.includes(subject.slug);
                         const accent = SUBJECT_ACCENT[subject.slug] || "";
                         return (
                           <button
                             key={subject.slug}
                             type="button"
                             onClick={() => handleSubjectToggle(subject.slug)}
-                            className={`flex items-center gap-2.5 p-3.5 rounded-xl border text-sm text-left transition-all duration-300 ${
+                            className={`flex items-center gap-2.5 p-3 rounded-xl border text-sm text-left transition-all duration-200 ${
                               isSelected
-                                ? `${accent} scale-[1.02] shadow-lg`
-                                : "border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:bg-white/[0.07]"
+                                ? `${accent} shadow-sm`
+                                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
                             }`}
                           >
                             <span className="text-lg">{subject.emoji}</span>
-                            <span className="flex-1 font-medium">
-                              {subject.name}
-                            </span>
+                            <span className="flex-1 font-medium">{subject.name}</span>
                             {isSelected && (
                               <motion.div
                                 initial={{ scale: 0 }}
@@ -366,9 +358,7 @@ export default function RegisterPage() {
                       })}
                     </div>
                     {errors.subjectIds && (
-                      <p className="text-sm text-red-400">
-                        {errors.subjectIds}
-                      </p>
+                      <p className="text-sm text-red-500">{errors.subjectIds}</p>
                     )}
                   </div>
 
@@ -378,22 +368,17 @@ export default function RegisterPage() {
                       label="Parol"
                       type={showPassword ? "text" : "password"}
                       value={form.password}
-                      onChange={(e) =>
-                        setForm({ ...form, password: e.target.value })
-                      }
+                      onChange={(e) => setForm({ ...form, password: e.target.value })}
                       error={errors.password}
                       placeholder="Kamida 6 belgi"
+                      variant="light"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-[38px] text-white/40 hover:text-white/70 transition-colors"
+                      className="absolute right-3 top-[38px] text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                      {showPassword ? (
-                        <EyeOff className="w-4 h-4" />
-                      ) : (
-                        <Eye className="w-4 h-4" />
-                      )}
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
 
@@ -401,11 +386,10 @@ export default function RegisterPage() {
                     label="Parol tasdig'i"
                     type="password"
                     value={form.confirmPassword}
-                    onChange={(e) =>
-                      setForm({ ...form, confirmPassword: e.target.value })
-                    }
+                    onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                     error={errors.confirmPassword}
                     placeholder="Parolni qaytadan kiriting"
+                    variant="light"
                   />
 
                   {/* Rozilik */}
@@ -413,24 +397,21 @@ export default function RegisterPage() {
                     <input
                       type="checkbox"
                       checked={form.consent}
-                      onChange={(e) =>
-                        setForm({ ...form, consent: e.target.checked })
-                      }
-                      className="mt-1 w-4 h-4 rounded border-white/20 bg-green-800 text-gold-500 focus:ring-gold-500/40"
+                      onChange={(e) => setForm({ ...form, consent: e.target.checked })}
+                      className="mt-1 w-4 h-4 rounded border-slate-300 text-gold-500 focus:ring-gold-500/40"
                     />
-                    <span className="text-sm text-white/60 group-hover:text-white/70 transition-colors">
-                      Shaxsiy ma&apos;lumotlarimni qayta ishlashga rozilik
-                      beraman
+                    <span className="text-sm text-slate-600 group-hover:text-slate-700 transition-colors">
+                      Shaxsiy ma&apos;lumotlarimni qayta ishlashga rozilik beraman
                     </span>
                   </label>
                   {errors.consent && (
-                    <p className="text-sm text-red-400">{errors.consent}</p>
+                    <p className="text-sm text-red-500">{errors.consent}</p>
                   )}
 
                   <Button
                     type="submit"
                     loading={loading}
-                    variant="premium"
+                    variant="primary"
                     className="w-full"
                     size="lg"
                     icon={<UserPlus className="w-5 h-5" />}
@@ -438,10 +419,10 @@ export default function RegisterPage() {
                     Ro&apos;yxatdan o&apos;tish
                   </Button>
                 </form>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

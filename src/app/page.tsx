@@ -1,24 +1,30 @@
 import { Navbar } from "@/components/shared/Navbar";
 import { Hero } from "@/components/landing/Hero";
+import { TrustStrip } from "@/components/landing/TrustStrip";
+import { WhyParticipate } from "@/components/landing/WhyParticipate";
 import { SubjectsGrid } from "@/components/landing/SubjectsGrid";
-import { PrizePodium } from "@/components/landing/PrizePodium";
+import { PrizesSection } from "@/components/landing/PrizesSection";
+import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Schedule } from "@/components/landing/Schedule";
-import { ContactSection } from "@/components/landing/ContactSection";
+import { ResultsPreview } from "@/components/landing/ResultsPreview";
+import { FAQ } from "@/components/landing/FAQ";
+import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/shared/Footer";
 
 export default function Home() {
   return (
-    <main className="noise-overlay">
+    <main>
       <Navbar />
       <Hero />
-      <div className="gradient-divider" />
+      <TrustStrip />
+      <WhyParticipate />
       <SubjectsGrid />
-      <div className="gradient-divider" />
-      <PrizePodium />
-      <div className="gradient-divider" />
+      <PrizesSection />
+      <HowItWorks />
       <Schedule />
-      <div className="gradient-divider" />
-      <ContactSection />
+      <ResultsPreview />
+      <FAQ />
+      <CTASection />
       <Footer />
     </main>
   );

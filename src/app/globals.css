@@ -3,14 +3,15 @@
 @tailwind utilities;
 
 :root {
-  /* Primary Colors */
-  --green-900: #062a1e;
-  --green-800: #0a3d2a;
-  --green-700: #0f5c3a;
-  --green-600: #1a7a4e;
-  --green-500: #22996a;
+  /* Navy palette */
+  --navy-950: #0a1628;
+  --navy-900: #0f1c34;
+  --navy-800: #1a2744;
+  --navy-700: #243555;
+  --navy-600: #2e4266;
 
-  /* Gold Colors */
+  /* Gold palette */
+  --gold-600: #b8922e;
   --gold-500: #d4a843;
   --gold-400: #e8c36a;
   --gold-300: #f0d68a;
@@ -18,10 +19,21 @@
 
   /* Neutral */
   --white: #ffffff;
-  --gray-100: #f4f4f4;
-  --gray-200: #e0e0e0;
-  --gray-500: #888888;
-  --dark-900: #111111;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+
+  /* Legacy green for admin/dashboard compat */
+  --green-900: #062a1e;
+  --green-800: #0a3d2a;
+  --green-700: #0f5c3a;
+  --green-600: #1a7a4e;
+  --green-500: #22996a;
 
   /* Status */
   --success: #22c55e;
@@ -32,40 +44,42 @@
 
 /* Base styles */
 body {
-  color: var(--white);
-  background: var(--green-900);
   font-family: var(--font-outfit), "Outfit", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar — refined */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--green-900);
+  background: var(--slate-100);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--gold-500), var(--green-600));
+  background: var(--slate-300);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, var(--gold-400), var(--green-500));
+  background: var(--slate-400);
 }
 
 /* Selection */
 ::selection {
-  background: rgba(212, 168, 67, 0.3);
-  color: var(--white);
+  background: rgba(212, 168, 67, 0.25);
+  color: var(--navy-900);
 }
 
-/* Glassmorphism tiers */
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
 @layer components {
-  /* Legacy — keep for backward compat */
+  /* ===== LEGACY GLASS CLASSES (admin/student pages) ===== */
   .glass {
     background: rgba(10, 61, 42, 0.4);
     backdrop-filter: blur(16px);
@@ -73,14 +87,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  .glass-light {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  /* New 4-tier glassmorphism */
   .glass-subtle {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(8px);
@@ -109,7 +115,14 @@ body {
     border: 1px solid rgba(212, 168, 67, 0.15);
   }
 
-  /* Border utilities */
+  .glass-light {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Legacy border utilities */
   .gold-border {
     border: 1px solid rgba(212, 168, 67, 0.3);
   }
@@ -118,16 +131,7 @@ body {
     border: 1px solid rgba(212, 168, 67, 0.6);
   }
 
-  /* Background effects */
-  .spotlight {
-    background: radial-gradient(
-      ellipse at 50% 0%,
-      rgba(34, 153, 106, 0.15) 0%,
-      transparent 70%
-    );
-  }
-
-  /* Gradients */
+  /* Legacy gradients (admin/dashboard) */
   .gradient-gold {
     background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
   }
@@ -157,7 +161,6 @@ body {
     background-clip: text;
   }
 
-  /* Decorative */
   .gradient-divider {
     height: 1px;
     background: linear-gradient(
@@ -180,9 +183,39 @@ body {
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* Legacy spotlight */
+  .spotlight {
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      rgba(34, 153, 106, 0.15) 0%,
+      transparent 70%
+    );
+  }
+
+  /* ===== NEW PREMIUM CLASSES ===== */
+
+  /* Section backgrounds */
+  .section-dark {
+    background-color: var(--navy-950);
+    color: white;
+  }
+
+  .section-light {
+    background-color: var(--slate-50);
+    color: var(--navy-900);
+  }
+
+  /* Premium text gradient */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
-/* Glow effects */
+/* Legacy glow effects (admin) */
 .glow-gold {
   box-shadow: 0 0 20px rgba(212, 168, 67, 0.15),
     0 0 60px rgba(212, 168, 67, 0.05);
@@ -193,7 +226,6 @@ body {
     0 0 60px rgba(34, 153, 106, 0.05);
 }
 
-/* Text glow */
 .text-glow-gold {
   text-shadow: 0 0 20px rgba(212, 168, 67, 0.5),
     0 0 40px rgba(212, 168, 67, 0.2);
@@ -204,45 +236,23 @@ body {
     0 0 40px rgba(34, 153, 106, 0.2);
 }
 
-/* Animated gradient utility */
+/* Legacy animation (admin) */
 .animate-gradient {
   animation: gradient-shift 3s ease infinite;
   background-size: 200% 100%;
 }
 
 @keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Slide up entrance */
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
-}
-
-@keyframes slide-up {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Skeleton loading */
 .skeleton {
   position: relative;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 8px;
 }
 
@@ -253,22 +263,18 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.05),
+    rgba(0, 0, 0, 0.04),
     transparent
   );
   animation: shimmer 1.5s infinite;
 }
 
 @keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
-/* Noise texture overlay */
+/* Legacy noise overlay (keep for admin) */
 .noise-overlay {
   position: relative;
 }
@@ -284,12 +290,7 @@ body {
   background-size: 256px 256px;
 }
 
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Print protection for test pages */
+/* Print protection */
 @media print {
   .test-content {
     display: none !important;
