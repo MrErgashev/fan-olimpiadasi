@@ -50,6 +50,9 @@ export function Navbar() {
                 {link.label}
               </a>
             ))}
+            <Link href="/login">
+              <Button variant="outline" size="sm">Kirish</Button>
+            </Link>
             <Link href="/register">
               <Button size="sm">Ro&apos;yxatdan o&apos;tish</Button>
             </Link>
@@ -78,7 +81,12 @@ export function Navbar() {
                   {link.label}
                 </a>
               ))}
-              <div className="px-4 pt-2">
+              <div className="px-4 pt-2 flex flex-col gap-2">
+                <Link href="/login" onClick={() => setIsOpen(false)}>
+                  <Button variant="outline" className="w-full" size="sm">
+                    Kirish
+                  </Button>
+                </Link>
                 <Link href="/register" onClick={() => setIsOpen(false)}>
                   <Button className="w-full" size="sm">
                     Ro&apos;yxatdan o&apos;tish
