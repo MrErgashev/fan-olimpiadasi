@@ -36,13 +36,13 @@ export const PRIZES = [
 export const SCHEDULE = [
   {
     date: "30-mart",
-    day: "Shanba",
+    day: "Dushanba",
     time: "10:00",
     subjects: ["Matematika", "Informatika", "Tarix", "Ona tili va adabiyoti"],
   },
   {
     date: "31-mart",
-    day: "Yakshanba",
+    day: "Seshanba",
     time: "10:00",
     subjects: ["Ingliz tili", "Biologiya", "Jismoniy tarbiya"],
   },
