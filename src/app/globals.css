@@ -218,16 +218,19 @@ html {
   .text-gradient-gold-shimmer {
     background: linear-gradient(
       110deg,
-      var(--gold-500) 0%,
-      var(--gold-300) 30%,
-      var(--gold-100) 50%,
-      var(--gold-300) 70%,
-      var(--gold-500) 100%
+      #d4a843 0%,
+      #e8c36a 20%,
+      #f5e5b0 40%,
+      #faf3d8 50%,
+      #f5e5b0 60%,
+      #e8c36a 80%,
+      #d4a843 100%
     );
-    background-size: 250% 100%;
+    background-size: 200% 100%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: #d4a843;
     animation: gold-shimmer 4s ease-in-out infinite;
   }
 
@@ -383,8 +386,8 @@ html {
 
 /* Gold shimmer keyframe */
 @keyframes gold-shimmer {
-  0% { background-position: 100% 0; }
-  100% { background-position: -100% 0; }
+  0% { background-position: 200% center; }
+  100% { background-position: 0% center; }
 }
 
 /* Badge shine keyframe */
