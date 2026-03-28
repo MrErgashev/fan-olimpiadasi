@@ -145,7 +145,7 @@ export default function ImportStudentsPage() {
     XLSX.utils.book_append_sheet(wb, ws, "O'quvchilar");
     // Set column widths
     ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 8 }, { wch: 15 }];
-    XLSX.writeFile(wb, "oqivchilar_shablon.xlsx");
+    XLSX.writeFile(wb, "oquvchilar_shablon.xlsx");
   };
 
   // ===== STEP 2: Validate & Edit =====
