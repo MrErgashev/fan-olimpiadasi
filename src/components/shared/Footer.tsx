@@ -2,7 +2,7 @@
 
 import { Logo } from "./Logo";
 import { CONTACT_INFO, SUBJECTS } from "@/lib/constants";
-import { Send, MapPin, Phone, Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell, ArrowUp } from "lucide-react";
+import { Send, MapPin, Phone, Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell } from "lucide-react";
 import Link from "next/link";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -114,24 +114,10 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/5">
         <div className="max-w-container mx-auto px-4 sm:px-6 py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-white/30">
-              &copy; {CONTACT_INFO.year} {CONTACT_INFO.university}. Barcha
-              huquqlar himoyalangan.
-            </p>
-            {/* Back to top */}
-            <a
-              href="#"
-              className="flex items-center gap-2 text-sm text-white/30 hover:text-gold-400 transition-colors duration-200 group"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-            >
-              Yuqoriga
-              <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
-            </a>
-          </div>
+          <p className="text-sm text-white/30">
+            &copy; {CONTACT_INFO.year} {CONTACT_INFO.university}. Barcha
+            huquqlar himoyalangan.
+          </p>
         </div>
       </div>
     </footer>
