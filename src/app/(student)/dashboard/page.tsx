@@ -133,7 +133,7 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-10"
       >
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-gold-gradient">
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-blue-gradient">
           Assalomu alaykum!
         </h1>
         <p className="mt-3 text-lg text-white/50">
@@ -149,21 +149,21 @@ export default function DashboardPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-3 gap-3 sm:gap-4 mb-8"
         >
-          <div className="glass-subtle rounded-2xl p-4 sm:p-5 text-center">
+          <div className="glass-blue-subtle rounded-2xl p-4 sm:p-5 text-center">
             <BookOpen className="w-5 h-5 text-blue-400 mx-auto mb-2" />
             <p className="text-2xl sm:text-3xl font-mono font-bold text-white">
               {tests.length}
             </p>
             <p className="text-xs sm:text-sm text-white/40 mt-1">Jami testlar</p>
           </div>
-          <div className="glass-subtle rounded-2xl p-4 sm:p-5 text-center">
+          <div className="glass-blue-subtle rounded-2xl p-4 sm:p-5 text-center">
             <Target className="w-5 h-5 text-green-400 mx-auto mb-2" />
             <p className="text-2xl sm:text-3xl font-mono font-bold text-white">
               {completedTests}
             </p>
             <p className="text-xs sm:text-sm text-white/40 mt-1">Tugatilgan</p>
           </div>
-          <div className="glass-subtle rounded-2xl p-4 sm:p-5 text-center">
+          <div className="glass-blue-subtle rounded-2xl p-4 sm:p-5 text-center">
             <Trophy className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
             <p className="text-2xl sm:text-3xl font-mono font-bold text-cyan-400">
               {avgScore > 0 ? avgScore.toFixed(1) : "—"}
@@ -179,7 +179,7 @@ export default function DashboardPage() {
           <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
         </div>
       ) : tests.length === 0 ? (
-        <Card variant="glass" className="text-center py-20 rounded-2xl">
+        <Card variant="glass-blue" className="text-center py-20 rounded-2xl">
           <FileText className="w-16 h-16 text-white/10 mx-auto mb-6" />
           <p className="text-xl text-white/50 font-medium">
             Hozircha testlar mavjud emas
@@ -198,7 +198,7 @@ export default function DashboardPage() {
           {tests.map((test) => (
             <motion.div key={test.id} variants={item}>
               <Card
-                variant="glass"
+                variant="glass-blue"
                 hover
                 className={`relative rounded-2xl ${
                   test.status === "active"
@@ -239,7 +239,7 @@ export default function DashboardPage() {
 
                 {test.status === "active" && (
                   <Button
-                    variant="premium"
+                    variant="blue-premium"
                     className="w-full"
                     onClick={() => setConfirmModal(test)}
                   >
@@ -274,6 +274,7 @@ export default function DashboardPage() {
         onClose={() => setConfirmModal(null)}
         title="Diqqat!"
         size="md"
+        theme="blue"
       >
         {confirmModal && (
           <div className="space-y-5">
@@ -295,7 +296,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl glass-subtle space-y-2 text-sm">
+            <div className="p-4 rounded-xl glass-blue-subtle space-y-2 text-sm">
               <p className="text-white/60">
                 Test vaqti:{" "}
                 <span className="text-white font-mono font-bold">
@@ -319,7 +320,7 @@ export default function DashboardPage() {
                 Bekor qilish
               </Button>
               <Button
-                variant="premium"
+                variant="blue-premium"
                 className="flex-1"
                 loading={!!startingTest}
                 onClick={() => handleStartTest(confirmModal)}

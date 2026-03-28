@@ -247,7 +247,7 @@ export default function ImportQuestionsPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="font-display text-2xl font-bold text-gold-gradient">
+          <h1 className="font-display text-2xl font-bold text-blue-gradient">
             Savollarni import qilish
           </h1>
           <p className="text-sm text-white/40 mt-0.5">
@@ -329,7 +329,7 @@ export default function ImportQuestionsPage() {
           </div>
 
           {inputMode === "paste" ? (
-            <Card variant="glass" className="p-4 space-y-3">
+            <Card variant="glass-blue" className="p-4 space-y-3">
               <label className="block text-sm font-medium text-gray-200">
                 Savollar matnini joylashtiring
               </label>
@@ -347,7 +347,7 @@ export default function ImportQuestionsPage() {
               </p>
             </Card>
           ) : (
-            <Card variant="glass" className="p-4 space-y-3">
+            <Card variant="glass-blue" className="p-4 space-y-3">
               {/* Drag and drop zone */}
               <div
                 onDrop={handleDrop}
@@ -410,7 +410,7 @@ export default function ImportQuestionsPage() {
           )}
 
           {/* Format example */}
-          <Card variant="glass-subtle" className="p-4">
+          <Card variant="glass-blue-subtle" className="p-4">
             <p className="text-xs text-primary-400 font-medium mb-2">
               Format namunasi:
             </p>
@@ -435,7 +435,7 @@ export default function ImportQuestionsPage() {
       {step === 2 && (
         <div className="space-y-4">
           {/* Stats */}
-          <Card variant="glass" className="p-4">
+          <Card variant="glass-blue" className="p-4">
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-primary-400" />
@@ -457,7 +457,7 @@ export default function ImportQuestionsPage() {
           </Card>
 
           {/* Subject & Difficulty */}
-          <Card variant="gold" className="p-4">
+          <Card variant="glass-blue" className="p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Select
                 label="Fan"
@@ -524,7 +524,7 @@ export default function ImportQuestionsPage() {
             {filteredQuestions.map((q) => (
               <Card
                 key={q.index}
-                variant="glass"
+                variant="glass-blue"
                 className={`p-4 ${!q.isValid ? "border-red-500/30" : ""}`}
               >
                 {editingIndex === q.index && editForm ? (
@@ -710,7 +710,7 @@ export default function ImportQuestionsPage() {
 
       {/* Step 3: Saving */}
       {step === 3 && saving && (
-        <Card variant="glass" className="p-12 text-center">
+        <Card variant="glass-blue" className="p-12 text-center">
           <Loader2 className="w-10 h-10 animate-spin text-primary-400 mx-auto mb-4" />
           <p className="text-white font-medium text-lg">Saqlanmoqda...</p>
           <p className="text-white/40 text-sm mt-1">

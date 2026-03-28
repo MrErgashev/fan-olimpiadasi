@@ -53,11 +53,11 @@ export default function SecurityLogsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-2xl font-bold text-gold-gradient">Xavfsizlik loglari</h1>
+      <h1 className="font-display text-2xl font-bold text-blue-gradient">Xavfsizlik loglari</h1>
 
       {/* Flagged students */}
       {flagged.length > 0 && (
-        <Card variant="glass" className="border-red-500/30">
+        <Card variant="glass-blue" className="border-red-500/30">
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle className="w-5 h-5 text-red-400" />
             <h2 className="text-lg font-semibold text-red-400">Shubhali o&apos;quvchilar</h2>
@@ -83,7 +83,7 @@ export default function SecurityLogsPage() {
       )}
 
       {/* Recent logs */}
-      <Card variant="glass">
+      <Card variant="glass-blue">
         <div className="flex items-center gap-2 mb-4">
           <ShieldAlert className="w-5 h-5 text-primary-400" />
           <h2 className="text-lg font-semibold">Oxirgi hodisalar</h2>

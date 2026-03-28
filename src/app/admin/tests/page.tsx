@@ -43,7 +43,7 @@ export default function TestsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold text-gold-gradient">Testlar</h1>
+        <h1 className="font-display text-2xl font-bold text-blue-gradient">Testlar</h1>
         <Link href="/admin/tests/new">
           <Button><Plus className="w-4 h-4 mr-2" /> Yangi test</Button>
         </Link>
@@ -52,11 +52,11 @@ export default function TestsPage() {
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-400" /></div>
       ) : tests.length === 0 ? (
-        <Card variant="glass" className="text-center py-12"><p className="text-white/50">Testlar yo&apos;q</p></Card>
+        <Card variant="glass-blue" className="text-center py-12"><p className="text-white/50">Testlar yo&apos;q</p></Card>
       ) : (
         <div className="space-y-3">
           {tests.map((t) => (
-            <Card key={t.id} variant="glass">
+            <Card key={t.id} variant="glass-blue">
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">

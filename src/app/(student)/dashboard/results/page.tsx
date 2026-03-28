@@ -57,7 +57,7 @@ export default function ResultsPage() {
   return (
     <div className="max-w-container mx-auto px-4 sm:px-6">
       <div className="mb-8">
-        <h1 className="font-display text-2xl sm:text-3xl font-bold text-gold-gradient">
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-blue-gradient">
           Natijalarim
         </h1>
         <p className="mt-2 text-white/50">
@@ -66,14 +66,14 @@ export default function ResultsPage() {
       </div>
 
       {results.length === 0 ? (
-        <Card variant="glass" className="text-center py-16">
+        <Card variant="glass-blue" className="text-center py-16">
           <Trophy className="w-12 h-12 text-white/20 mx-auto mb-4" />
           <p className="text-white/50">Hali test topshirilmagan</p>
         </Card>
       ) : (
         <div className="space-y-4">
           {results.map((r, i) => (
-            <Card key={i} variant="glass">
+            <Card key={i} variant="glass-blue">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {/* Fan info */}
                 <div className="flex items-center gap-3 flex-1">

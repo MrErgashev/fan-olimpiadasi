@@ -31,7 +31,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {icon && (
             <div className={cn(
               "absolute left-4 top-1/2 -translate-y-1/2",
-              isLight ? "text-slate-400" : "text-primary-400"
+              isLight ? "text-slate-400" : "text-gold-400"
             )}>
               {icon}
             </div>
@@ -41,10 +41,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             id={id}
             className={cn(
               "w-full px-4 py-3 border rounded-xl transition-all duration-200",
-              "focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500/50",
+              "focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50",
               isLight
                 ? "bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300"
-                : "bg-white/5 border-white/10 text-white placeholder:text-gray-500 hover:border-white/20 focus:bg-white/8",
+                : "bg-green-800/60 border-white/10 text-white placeholder:text-gray-500 hover:border-white/20 focus:bg-green-800/80",
               error
                 ? "border-red-400 focus:ring-red-500/30 focus:border-red-500/50"
                 : "",

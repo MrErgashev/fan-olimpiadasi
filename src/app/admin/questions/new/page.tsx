@@ -74,10 +74,10 @@ export default function NewQuestionPage() {
         <Link href="/admin/questions">
           <Button variant="ghost" size="sm"><ArrowLeft className="w-4 h-4" /></Button>
         </Link>
-        <h1 className="font-display text-2xl font-bold text-gold-gradient">Yangi savol</h1>
+        <h1 className="font-display text-2xl font-bold text-blue-gradient">Yangi savol</h1>
       </div>
 
-      <Card variant="gold">
+      <Card variant="glass-blue">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select

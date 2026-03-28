@@ -59,7 +59,7 @@ export function Sidebar() {
       {/* Logo area */}
       <div className="p-5 pb-4">
         <Logo size="sm" />
-        <div className="gradient-divider mt-4" />
+        <div className="gradient-divider-blue mt-4" />
       </div>
 
       {/* Admin badge */}

@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "premium";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "premium" | "blue" | "blue-premium";
   size?: "sm" | "md" | "lg" | "xl";
   loading?: boolean;
   icon?: ReactNode;
@@ -31,15 +31,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         className={cn(
           "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 ease-out rounded-xl",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/50 focus-visible:ring-offset-2",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/50 focus-visible:ring-offset-2",
           "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none",
           "active:scale-[0.98]",
           {
-            // Primary — blue gradient CTA
-            "bg-gradient-to-r from-primary-600 to-accent-cyan text-white hover:brightness-110 hover:shadow-lg hover:shadow-primary-500/25 hover:-translate-y-0.5":
+            // Primary — bold gold CTA
+            "bg-gold-500 text-navy-950 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/25 hover:-translate-y-0.5":
               variant === "primary",
-            // Premium — blue with animated glow
-            "bg-gradient-to-r from-primary-600 to-accent-cyan text-white font-bold shine-sweep hover:brightness-110 hover:shadow-[0_0_30px_rgba(59,130,246,0.3),0_8px_30px_rgba(59,130,246,0.2)] hover:-translate-y-0.5":
+            // Premium — gold with animated glow
+            "bg-gold-500 text-navy-950 font-bold shine-sweep hover:bg-gold-400 hover:shadow-[0_0_30px_rgba(212,168,67,0.3),0_8px_30px_rgba(212,168,67,0.2)] hover:-translate-y-0.5":
               variant === "premium",
             // Secondary — navy solid
             "bg-navy-800 text-white hover:bg-navy-700 border border-navy-600/50":
@@ -53,6 +53,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             // Danger
             "bg-red-500/10 text-red-600 border border-red-500/30 hover:bg-red-500/20 hover:border-red-500/50":
               variant === "danger",
+            // Blue — gradient CTA (admin/student)
+            "bg-gradient-to-r from-primary-600 to-accent-cyan text-white hover:brightness-110 hover:shadow-lg hover:shadow-primary-500/25 hover:-translate-y-0.5":
+              variant === "blue",
+            // Blue Premium — with animated glow (admin/student)
+            "bg-gradient-to-r from-primary-600 to-accent-cyan text-white font-bold shine-sweep hover:brightness-110 hover:shadow-[0_0_30px_rgba(59,130,246,0.3),0_8px_30px_rgba(59,130,246,0.2)] hover:-translate-y-0.5":
+              variant === "blue-premium",
           },
           {
             "px-4 py-2 text-sm": size === "sm",

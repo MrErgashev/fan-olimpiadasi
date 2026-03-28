@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 40%, rgba(37, 99, 235, 0.15) 0%, transparent 60%)",
+              "radial-gradient(ellipse at 50% 40%, rgba(10, 61, 42, 0.3) 0%, transparent 60%)",
           }}
         />
 
@@ -80,15 +80,15 @@ export default function AdminLoginPage() {
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px]"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 65%)",
+              "radial-gradient(ellipse at 50% 0%, rgba(212, 168, 67, 0.07) 0%, transparent 65%)",
           }}
         />
 
         {/* Floating orbs */}
-        <div className="absolute -top-32 -left-32 w-[400px] h-[400px] bg-primary-500/[0.1] rounded-full blur-3xl animate-float" />
-        <div className="absolute -bottom-40 -right-40 w-[350px] h-[350px] bg-accent-cyan/[0.08] rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute top-1/3 right-1/5 w-48 h-48 bg-primary-400/[0.06] rounded-full blur-2xl animate-pulse-subtle" />
-        <div className="absolute bottom-1/4 left-1/6 w-32 h-32 bg-accent-cyan/[0.05] rounded-full blur-2xl animate-float" />
+        <div className="absolute -top-32 -left-32 w-[400px] h-[400px] bg-gold-500/[0.07] rounded-full blur-3xl animate-float" />
+        <div className="absolute -bottom-40 -right-40 w-[350px] h-[350px] bg-green-500/[0.08] rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute top-1/3 right-1/5 w-48 h-48 bg-gold-400/[0.04] rounded-full blur-2xl animate-pulse-subtle" />
+        <div className="absolute bottom-1/4 left-1/6 w-32 h-32 bg-green-400/[0.05] rounded-full blur-2xl animate-float" />
 
         {/* Noise texture */}
         <div className="noise-overlay absolute inset-0 opacity-30" />
@@ -108,7 +108,7 @@ export default function AdminLoginPage() {
           </Link>
           <div className="ornamental-line mt-5 mx-auto" />
           <div className="mt-5 flex items-center justify-center gap-2.5">
-            <Shield className="w-5 h-5 text-primary-400" />
+            <Shield className="w-5 h-5 text-gold-400" />
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-gradient-gold-shimmer">
               Boshqaruv Paneli
             </h1>
@@ -120,10 +120,10 @@ export default function AdminLoginPage() {
 
         {/* Login Card */}
         <motion.div variants={itemVariants}>
-          <div className="glass-strong border border-primary-500/20 rounded-2xl shadow-glow-blue-lg p-8 sm:p-10">
+          <div className="glass-gold gold-border-bright rounded-2xl shadow-glow-gold-lg p-8 sm:p-10">
             {/* Card header */}
             <div className="text-center mb-6">
-              <h2 className="font-display text-xl text-primary-300 font-semibold">
+              <h2 className="font-display text-xl text-gold-300 font-semibold">
                 Xush kelibsiz
               </h2>
               <p className="text-white/40 text-sm mt-1">
@@ -160,7 +160,7 @@ export default function AdminLoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 bottom-3 text-white/30 hover:text-primary-400 transition-colors duration-200"
+                  className="absolute right-3 bottom-3 text-white/30 hover:text-gold-400 transition-colors duration-200"
                   tabIndex={-1}
                   aria-label={
                     showPassword ? "Parolni yashirish" : "Parolni ko'rsatish"
