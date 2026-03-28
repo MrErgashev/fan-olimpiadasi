@@ -1,7 +1,8 @@
 "use client";
 
 import { SCHEDULE, SUBJECTS } from "@/lib/constants";
-import { ClockIcon, CalendarIcon } from "@/components/ui/Icon3D";
+import { Clock } from "lucide-react";
+import { CalendarIcon } from "@/components/ui/Icon3D";
 import { motion } from "framer-motion";
 
 const SUBJECT_COLORS: Record<string, string> = {
@@ -67,7 +68,7 @@ export function Schedule() {
                   <div>
                     <p className="text-white font-semibold">{day.day}</p>
                     <div className="flex items-center gap-1.5 text-white/50 text-sm">
-                      <ClockIcon className="w-3.5 h-3.5" />
+                      <Clock className="w-3.5 h-3.5" />
                       <span className="font-mono">{day.time}</span>
                     </div>
                   </div>

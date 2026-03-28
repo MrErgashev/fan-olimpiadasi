@@ -2,7 +2,7 @@ import { FLUENT_3D } from "./constants";
 
 export const ICON_3D_URLS = {
   dashboard: `${FLUENT_3D}/Bar%20chart/3D/bar_chart_3d.png`,
-  question: `${FLUENT_3D}/Question%20mark/3D/question_mark_3d.png`,
+  question: `${FLUENT_3D}/Red%20question%20mark/3D/red_question_mark_3d.png`,
   clipboard: `${FLUENT_3D}/Clipboard/3D/clipboard_3d.png`,
   users: `${FLUENT_3D}/Busts%20in%20silhouette/3D/busts_in_silhouette_3d.png`,
   trophy: `${FLUENT_3D}/Trophy/3D/trophy_3d.png`,
@@ -16,11 +16,11 @@ export const ICON_3D_URLS = {
   document: `${FLUENT_3D}/Page%20facing%20up/3D/page_facing_up_3d.png`,
   warning: `${FLUENT_3D}/Warning/3D/warning_3d.png`,
   book: `${FLUENT_3D}/Open%20book/3D/open_book_3d.png`,
-  target: `${FLUENT_3D}/Direct%20hit/3D/direct_hit_3d.png`,
+  target: `${FLUENT_3D}/Bullseye/3D/bullseye_3d.png`,
   medal: `${FLUENT_3D}/Sports%20medal/3D/sports_medal_3d.png`,
   person: `${FLUENT_3D}/Bust%20in%20silhouette/3D/bust_in_silhouette_3d.png`,
   award: `${FLUENT_3D}/1st%20place%20medal/3D/1st_place_medal_3d.png`,
-  send: `${FLUENT_3D}/Paper%20airplane/3D/paper_airplane_3d.png`,
+  send: `${FLUENT_3D}/Envelope/3D/envelope_3d.png`,
   pin: `${FLUENT_3D}/Round%20pushpin/3D/round_pushpin_3d.png`,
   phone: `${FLUENT_3D}/Telephone/3D/telephone_3d.png`,
   crown: `${FLUENT_3D}/Crown/3D/crown_3d.png`,

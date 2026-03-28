@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/Button";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { BookIcon, UsersIcon, SparklesIcon } from "@/components/ui/Icon3D";
+import { BookOpen, Users, Sparkles } from "lucide-react";
 
 export function CTASection() {
   return (
@@ -52,7 +52,7 @@ export function CTASection() {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/20 text-gold-400 text-xs font-semibold tracking-wider uppercase mb-8"
           >
-            <SparklesIcon className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5" />
             Joylar cheklangan
           </motion.div>
 
@@ -79,12 +79,12 @@ export function CTASection() {
             className="flex items-center justify-center gap-6 mt-10"
           >
             <div className="flex items-center gap-2 text-white/30 text-sm">
-              <UsersIcon className="w-4 h-4" />
+              <Users className="w-4 h-4" />
               <span>1000+ ishtirokchi</span>
             </div>
             <div className="w-px h-4 bg-white/10" />
             <div className="flex items-center gap-2 text-white/30 text-sm">
-              <BookIcon className="w-4 h-4" />
+              <BookOpen className="w-4 h-4" />
               <span>7 ta fan</span>
             </div>
           </motion.div>
