@@ -124,7 +124,7 @@ export function SubjectsGrid() {
                       {subject.mode === "online+offline" ? "Onlayn+Offline" : "Offline"}
                     </Badge>
                     <span className="text-xs text-slate-400 font-medium font-mono">
-                      30 savol · 90 daq
+                      {subject.slug === "jismoniy-tarbiya" ? "90 daq" : "30 savol · 90 daq"}
                     </span>
                   </div>
                 </div>
