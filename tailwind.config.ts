@@ -103,6 +103,14 @@ const config: Config = {
           "50%": { transform: "rotateX(-90deg)" },
           "100%": { transform: "rotateX(0deg)" },
         },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 0 rgba(212,168,67,0)" },
+          "50%": { boxShadow: "0 0 20px rgba(212,168,67,0.15), 0 0 40px rgba(212,168,67,0.05)" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-12px)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
@@ -110,6 +118,8 @@ const config: Config = {
         "scale-in": "scale-in 0.3s ease-out",
         shimmer: "shimmer 2s infinite",
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
+        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "float": "float 6s ease-in-out infinite",
       },
     },
   },
