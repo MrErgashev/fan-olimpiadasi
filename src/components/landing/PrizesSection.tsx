@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, Laptop, Smartphone, Award } from "lucide-react";
+import { Award } from "lucide-react";
+import { NOTO_EMOJI_CDN } from "@/lib/constants";
 
 const PRIZES = [
   {
@@ -9,7 +10,7 @@ const PRIZES = [
     label: "1-o'rin",
     prize: "1 yillik ta'lim granti",
     description: "Oriental Universitetida 1 yillik bepul ta'lim",
-    Icon: Trophy,
+    image: `${NOTO_EMOJI_CDN}/1f3c6/512.png`,
     accent: "border-gold-500 bg-gradient-to-b from-gold-100/50 to-white",
     iconBg: "bg-gold-500",
     iconColor: "text-white",
@@ -21,7 +22,7 @@ const PRIZES = [
     label: "2-o'rin",
     prize: "Zamonaviy noutbuk",
     description: "Eng so'nggi modeldagi noutbuk",
-    Icon: Laptop,
+    image: `${NOTO_EMOJI_CDN}/1f4bb/512.png`,
     accent: "border-slate-300 bg-gradient-to-b from-slate-50 to-white",
     iconBg: "bg-slate-400",
     iconColor: "text-white",
@@ -33,7 +34,7 @@ const PRIZES = [
     label: "3-o'rin",
     prize: "Smartfon",
     description: "Zamonaviy smartfon",
-    Icon: Smartphone,
+    image: `${NOTO_EMOJI_CDN}/1f4f1/512.png`,
     accent: "border-amber-600/30 bg-gradient-to-b from-amber-50/50 to-white",
     iconBg: "bg-amber-600",
     iconColor: "text-white",
@@ -71,9 +72,14 @@ export function PrizesSection() {
                 {prize.place}
               </div>
 
-              {/* Icon */}
-              <div className={`w-16 h-16 rounded-2xl ${prize.iconBg} flex items-center justify-center mx-auto mb-5`}>
-                <prize.Icon className={`w-8 h-8 ${prize.iconColor}`} />
+              {/* Prize image */}
+              <div className={`w-16 h-16 rounded-2xl ${prize.iconBg} flex items-center justify-center mx-auto mb-5 p-2.5`}>
+                <img
+                  src={prize.image}
+                  alt={prize.prize}
+                  className="w-full h-full object-contain"
+                  loading="lazy"
+                />
               </div>
 
               {/* Prize info */}

@@ -85,7 +85,12 @@ export function SubjectsGrid() {
                     <div className={`p-3 rounded-xl ${accent.bg}`}>
                       {Icon && <Icon className={`w-6 h-6 ${accent.icon}`} />}
                     </div>
-                    <span className="text-2xl">{subject.emoji}</span>
+                    <img
+                      src={subject.image}
+                      alt={subject.name}
+                      className="w-10 h-10 object-contain"
+                      loading="lazy"
+                    />
                   </div>
 
                   <h3 className="text-lg font-semibold text-navy-950 mb-3">

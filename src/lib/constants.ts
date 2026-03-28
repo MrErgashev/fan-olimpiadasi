@@ -1,11 +1,13 @@
+export const NOTO_EMOJI_CDN = "https://fonts.gstatic.com/s/e/notoemoji/latest";
+
 export const SUBJECTS = [
-  { name: "Matematika", slug: "matematika", icon: "Calculator", emoji: "🔢", isOnline: true },
-  { name: "Informatika", slug: "informatika", icon: "Monitor", emoji: "💻", isOnline: true },
-  { name: "Tarix", slug: "tarix", icon: "BookOpen", emoji: "📜", isOnline: true },
-  { name: "Ingliz tili", slug: "ingliz-tili", icon: "Globe", emoji: "🇬🇧", isOnline: true },
-  { name: "Biologiya", slug: "biologiya", icon: "Dna", emoji: "🧬", isOnline: true },
-  { name: "Ona tili va adabiyoti", slug: "ona-tili", icon: "BookText", emoji: "📚", isOnline: false },
-  { name: "Jismoniy tarbiya", slug: "jismoniy-tarbiya", icon: "Dumbbell", emoji: "🏃", isOnline: false },
+  { name: "Matematika", slug: "matematika", icon: "Calculator", emoji: "🔢", image: `${NOTO_EMOJI_CDN}/1f9ee/512.png`, isOnline: true },
+  { name: "Informatika", slug: "informatika", icon: "Monitor", emoji: "💻", image: `${NOTO_EMOJI_CDN}/1f4bb/512.png`, isOnline: true },
+  { name: "Tarix", slug: "tarix", icon: "BookOpen", emoji: "📜", image: `${NOTO_EMOJI_CDN}/1f4dc/512.png`, isOnline: true },
+  { name: "Ingliz tili", slug: "ingliz-tili", icon: "Globe", emoji: "🇬🇧", image: `${NOTO_EMOJI_CDN}/1f310/512.png`, isOnline: true },
+  { name: "Biologiya", slug: "biologiya", icon: "Dna", emoji: "🧬", image: `${NOTO_EMOJI_CDN}/1f9ec/512.png`, isOnline: true },
+  { name: "Ona tili va adabiyoti", slug: "ona-tili", icon: "BookText", emoji: "📚", image: `${NOTO_EMOJI_CDN}/1f4da/512.png`, isOnline: false },
+  { name: "Jismoniy tarbiya", slug: "jismoniy-tarbiya", icon: "Dumbbell", emoji: "🏃", image: `${NOTO_EMOJI_CDN}/1f3c3/512.png`, isOnline: false },
 ] as const;
 
 export const REGIONS = [

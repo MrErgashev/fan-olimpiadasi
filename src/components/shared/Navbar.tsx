@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { NOTO_EMOJI_CDN } from "@/lib/constants";
 
 const NAV_LINKS = [
-  { href: "#fanlar", label: "Fanlar" },
-  { href: "#sovgalar", label: "Sovg'alar" },
-  { href: "#jadval", label: "Jadval" },
-  { href: "#faq", label: "Savol-javob" },
+  { href: "#fanlar", label: "Fanlar", icon: `${NOTO_EMOJI_CDN}/1f4d6/512.png` },
+  { href: "#sovgalar", label: "Sovg'alar", icon: `${NOTO_EMOJI_CDN}/1f381/512.png` },
+  { href: "#jadval", label: "Jadval", icon: `${NOTO_EMOJI_CDN}/1f4c5/512.png` },
+  { href: "#faq", label: "Savol-javob", icon: `${NOTO_EMOJI_CDN}/1f4ac/512.png` },
 ];
 
 export function Navbar() {
@@ -57,8 +58,9 @@ export function Navbar() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-white/70 hover:text-white transition-colors duration-200"
+                  className="flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-colors duration-200"
                 >
+                  <img src={link.icon} alt="" className="w-4 h-4 object-contain" loading="lazy" />
                   {link.label}
                 </a>
               ))}
@@ -125,9 +127,10 @@ export function Navbar() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ delay: i * 0.08, duration: 0.3 }}
-                  className="text-2xl text-white/80 hover:text-gold-400 transition-colors duration-200 font-medium"
+                  className="flex items-center gap-2.5 text-2xl text-white/80 hover:text-gold-400 transition-colors duration-200 font-medium"
                   onClick={() => setIsOpen(false)}
                 >
+                  <img src={link.icon} alt="" className="w-6 h-6 object-contain" loading="lazy" />
                   {link.label}
                 </motion.a>
               ))}

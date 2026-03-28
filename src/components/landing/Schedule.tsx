@@ -71,13 +71,20 @@ export function Schedule() {
                     {day.subjects.map((subject) => {
                       const colors =
                         SUBJECT_COLORS[subject] || "bg-slate-50 text-slate-600 border-slate-200";
-                      const emoji = SUBJECTS.find((s) => s.name === subject)?.emoji;
+                      const subjectData = SUBJECTS.find((s) => s.name === subject);
                       return (
                         <span
                           key={subject}
                           className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold border ${colors}`}
                         >
-                          {emoji && <span className="mr-1.5">{emoji}</span>}
+                          {subjectData?.image && (
+                            <img
+                              src={subjectData.image}
+                              alt={subject}
+                              className="w-4 h-4 object-contain mr-1.5"
+                              loading="lazy"
+                            />
+                          )}
                           {subject}
                         </span>
                       );
