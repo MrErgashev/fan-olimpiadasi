@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
 import { Plus, Search, Loader2, Trash2, Upload } from "lucide-react";
 import Link from "next/link";
@@ -18,21 +19,42 @@ interface Question {
   createdAt: string;
 }
 
+interface Subject {
+  id: string;
+  name: string;
+  emoji?: string;
+}
+
 export default function QuestionsPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [total, setTotal] = useState(0);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [selectedSubjectId, setSelectedSubjectId] = useState("");
 
   useEffect(() => {
+    fetchSubjects();
     fetchQuestions();
   }, []);
 
-  const fetchQuestions = async (s?: string) => {
+  const fetchSubjects = async () => {
+    try {
+      const res = await fetch("/api/subjects");
+      const data = await res.json();
+      setSubjects(data.subjects || []);
+    } catch {
+      // silent
+    }
+  };
+
+  const fetchQuestions = async (s?: string, subjectId?: string) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (s) params.set("search", s);
+      const sid = subjectId !== undefined ? subjectId : selectedSubjectId;
+      if (sid) params.set("subjectId", sid);
       const res = await fetch(`/api/admin/questions?${params}`);
       const data = await res.json();
       setQuestions(data.questions || []);
@@ -46,13 +68,34 @@ export default function QuestionsPage() {
 
   const handleSearch = () => fetchQuestions(search);
 
+  const handleSubjectFilter = (subjectId: string) => {
+    setSelectedSubjectId(subjectId);
+    fetchQuestions(search, subjectId);
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm("Bu savolni o'chirishni tasdiqlaysizmi?")) return;
     try {
       const res = await fetch(`/api/admin/questions?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         toast.success("Savol o'chirildi");
-        fetchQuestions();
+        fetchQuestions(search);
+      }
+    } catch {
+      toast.error("O'chirishda xatolik");
+    }
+  };
+
+  const handleDeleteBySubject = async () => {
+    if (!selectedSubjectId) return;
+    const subjectName = subjects.find((s) => s.id === selectedSubjectId)?.name || "";
+    if (!confirm(`"${subjectName}" fanidagi barcha savollarni o'chirishni tasdiqlaysizmi?`)) return;
+    try {
+      const res = await fetch(`/api/admin/questions?subjectId=${selectedSubjectId}`, { method: "DELETE" });
+      if (res.ok) {
+        const data = await res.json();
+        toast.success(`${data.count} ta savol o'chirildi`);
+        fetchQuestions(search);
       }
     } catch {
       toast.error("O'chirishda xatolik");
@@ -66,6 +109,11 @@ export default function QuestionsPage() {
       default: return <Badge variant="warning">O&apos;rta</Badge>;
     }
   };
+
+  const subjectOptions = subjects.map((s) => ({
+    value: s.id,
+    label: `${s.emoji || ""} ${s.name}`.trim(),
+  }));
 
   return (
     <div className="space-y-6">
@@ -84,18 +132,34 @@ export default function QuestionsPage() {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="flex gap-2">
-        <Input
-          placeholder="Savol qidirish..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="flex-1"
-        />
-        <Button variant="secondary" onClick={handleSearch}>
-          <Search className="w-4 h-4" />
-        </Button>
+      {/* Filter & Search */}
+      <div className="flex flex-col sm:flex-row gap-2">
+        <div className="w-full sm:w-64">
+          <Select
+            options={subjectOptions}
+            placeholder="Barcha fanlar"
+            value={selectedSubjectId}
+            onChange={(e) => handleSubjectFilter(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-2 flex-1">
+          <Input
+            placeholder="Savol qidirish..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            className="flex-1"
+          />
+          <Button variant="secondary" onClick={handleSearch}>
+            <Search className="w-4 h-4" />
+          </Button>
+        </div>
+        {selectedSubjectId && (
+          <Button variant="danger" onClick={handleDeleteBySubject}>
+            <Trash2 className="w-4 h-4 mr-2" />
+            Fan savollarini o&apos;chirish
+          </Button>
+        )}
       </div>
 
       {/* Questions list */}
