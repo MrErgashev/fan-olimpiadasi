@@ -13,7 +13,7 @@ async function main() {
     { name: "Tarix", slug: "tarix", icon: "BookOpen", emoji: "📜", isOnline: true, displayOrder: 3 },
     { name: "Ingliz tili", slug: "ingliz-tili", icon: "Globe", emoji: "🇬🇧", isOnline: true, displayOrder: 4 },
     { name: "Biologiya", slug: "biologiya", icon: "Dna", emoji: "🧬", isOnline: true, displayOrder: 5 },
-    { name: "Ona tili va adabiyoti", slug: "ona-tili", icon: "BookText", emoji: "📚", isOnline: false, displayOrder: 6 },
+    { name: "Ona tili va adabiyoti", slug: "ona-tili", icon: "BookText", emoji: "📚", isOnline: true, displayOrder: 6 },
     { name: "Jismoniy tarbiya", slug: "jismoniy-tarbiya", icon: "Dumbbell", emoji: "🏃", isOnline: false, displayOrder: 7 },
   ];
 

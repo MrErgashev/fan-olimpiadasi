@@ -24,7 +24,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Test qanday formatda o'tkaziladi?",
-    a: "Onlayn fanlar (Matematika, Informatika, Tarix, Ingliz tili, Biologiya) test formatida — 30 ta savol, 90 daqiqa vaqt. Ona tili va Jismoniy tarbiya offline formatda o'tkaziladi.",
+    a: "Onlayn fanlar (Matematika, Informatika, Tarix, Ingliz tili, Biologiya, Ona tili va adabiyoti) test formatida — 30 ta savol, 90 daqiqa vaqt. Jismoniy tarbiya offline formatda o'tkaziladi.",
   },
   {
     q: "Natijalar qachon e'lon qilinadi?",
