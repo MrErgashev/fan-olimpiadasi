@@ -24,9 +24,6 @@ export default function Home() {
       <Schedule />
       <ResultsPreview />
       <FAQ />
-
-      {/* Transition from light to dark for CTA */}
-      <div className="section-fade-light-to-dark" />
       <CTASection />
       <Footer />
     </main>
