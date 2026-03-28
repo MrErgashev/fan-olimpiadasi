@@ -6,16 +6,59 @@ Oriental Universiteti "Fan Olimpiadasi" platformasi.
 
 ## Tech Stack
 - Next.js 14 App Router + TypeScript
-- Tailwind CSS (custom green-gold theme)
+- Tailwind CSS (custom navy-gold theme)
 - Neon Postgres + Prisma ORM (database)
 - NextAuth.js (auth - telefon + parol)
+- Framer Motion (animatsiyalar)
 - Vercel deploy
 
 ## Dizayn qoidalari
-- Rang: quyuq yashil (#0a3d2a) + oltin (#d4a843) palitra
+- Rang: quyuq navy (#0a1628) + oltin (#d4a843) palitra
 - Font: Playfair Display (sarlavha) + Outfit (body) + JetBrains Mono (raqamlar)
 - Dark theme, glassmorphic kartochkalar, spotlight effektlar
 - Premium/tantanali ko'rinish
+- Animatsiyalar: shimmer, shine sweep, glow pulse, floating elementlar
+- Mobilga og'ir animatsiyalar o'chiriladi (useDeviceCapability hook)
+- `prefers-reduced-motion` hurmat qilinadi
+
+## Loyiha strukturasi
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── globals.css         # Global stillar, animatsiya keyframelar
+│   ├── layout.tsx          # Root layout (fontlar)
+│   └── page.tsx            # Landing sahifa
+├── components/
+│   ├── landing/            # Landing sahifa seksiyalari
+│   │   ├── Hero.tsx        # Bosh sahifa (particle, spotlight, parallax)
+│   │   ├── CountdownTimer.tsx  # Glassmorphic timer, 3D flip
+│   │   ├── ParticleBackground.tsx  # Canvas particle tizimi
+│   │   ├── SpotlightEffect.tsx     # Mouse-follow oltin nur
+│   │   └── ...             # Boshqa seksiyalar
+│   ├── shared/             # Navbar, Footer, Logo
+│   ├── ui/                 # Button, Card, Modal (cn() utility)
+│   ├── icons/              # SVG ikonlar
+│   ├── admin/              # Admin komponentlar
+│   └── test/               # Test komponentlar
+├── hooks/
+│   ├── useDeviceCapability.ts  # Mobile/reduced-motion aniqlash
+│   ├── useSecurity.ts      # Test xavfsizlik
+│   └── useTimer.ts         # Timer hook
+├── lib/
+│   ├── constants.ts        # Olimpiada sanasi, fanlar, jadval
+│   └── utils.ts            # cn() va boshqa utility
+└── types/                  # TypeScript tiplar
+```
+
+## CSS effektlar (globals.css)
+- `.text-gradient-gold` — oltin gradient matn
+- `.text-gradient-gold-shimmer` — animatsiyali oltin shimmer matn
+- `.title-shine` — yorug'lik to'lqini sarlavha ustidan o'tadi
+- `.badge-shimmer` — badge ga shimmer border
+- `.shine-sweep` — button ga hover shine effekt
+- `.glass-*` — glassmorphic effektlar (subtle, medium, gold, light)
+- `.ornamental-line` — dekorativ oltin chiziq
+- `.text-glow-gold`, `.text-glow-white` — matn glow effektlar
 
 ## Muhim qoidalar
 1. Barcha matn O'ZBEK TILIDA bo'lsin
@@ -25,6 +68,8 @@ Oriental Universiteti "Fan Olimpiadasi" platformasi.
 5. To'g'ri javob HECH QACHON client ga yuborilmasin
 6. Mobile responsive — 640px dan katta barcha qurilmalarda ishlashi kerak
 7. UI komponentlar src/components/ui/ da, cn() utility ishlatiladi
+8. Og'ir animatsiyalar (canvas, spotlight, floating) mobilga o'chiriladi
+9. CSS animatsiyalar (shimmer, glow) barcha qurilmalarda ishlaydi
 
 ## Test boshlash jarayoni (muhim!)
 1. O'quvchi "Testni boshlash" bosadi
