@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Award } from "lucide-react";
-import { NOTO_EMOJI_CDN } from "@/lib/constants";
+import { FLUENT_3D } from "@/lib/constants";
 
 const PRIZES = [
   {
@@ -10,7 +10,7 @@ const PRIZES = [
     label: "1-o'rin",
     prize: "1 yillik ta'lim granti",
     description: "Oriental Universitetida 1 yillik bepul ta'lim",
-    image: `${NOTO_EMOJI_CDN}/1f3c6/512.png`,
+    image: `${FLUENT_3D}/Trophy/3D/trophy_3d.png`,
     accent: "border-gold-500 bg-gradient-to-b from-gold-100/50 to-white",
     iconBg: "bg-gold-500",
     iconColor: "text-white",
@@ -22,7 +22,7 @@ const PRIZES = [
     label: "2-o'rin",
     prize: "Zamonaviy noutbuk",
     description: "Eng so'nggi modeldagi noutbuk",
-    image: `${NOTO_EMOJI_CDN}/1f4bb/512.png`,
+    image: `${FLUENT_3D}/Desktop%20computer/3D/desktop_computer_3d.png`,
     accent: "border-slate-300 bg-gradient-to-b from-slate-50 to-white",
     iconBg: "bg-slate-400",
     iconColor: "text-white",
@@ -34,7 +34,7 @@ const PRIZES = [
     label: "3-o'rin",
     prize: "Smartfon",
     description: "Zamonaviy smartfon",
-    image: `${NOTO_EMOJI_CDN}/1f4f1/512.png`,
+    image: `${FLUENT_3D}/Mobile%20phone/3D/mobile_phone_3d.png`,
     accent: "border-amber-600/30 bg-gradient-to-b from-amber-50/50 to-white",
     iconBg: "bg-amber-600",
     iconColor: "text-white",

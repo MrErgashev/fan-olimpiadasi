@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { NOTO_EMOJI_CDN } from "@/lib/constants";
+import { FLUENT_3D } from "@/lib/constants";
 
 const NAV_LINKS = [
-  { href: "#fanlar", label: "Fanlar", icon: `${NOTO_EMOJI_CDN}/1f4d6/512.png` },
-  { href: "#sovgalar", label: "Sovg'alar", icon: `${NOTO_EMOJI_CDN}/1f381/512.png` },
-  { href: "#jadval", label: "Jadval", icon: `${NOTO_EMOJI_CDN}/1f4c5/512.png` },
-  { href: "#faq", label: "Savol-javob", icon: `${NOTO_EMOJI_CDN}/1f4ac/512.png` },
+  { href: "#fanlar", label: "Fanlar", icon: `${FLUENT_3D}/Open%20book/3D/open_book_3d.png` },
+  { href: "#sovgalar", label: "Sovg'alar", icon: `${FLUENT_3D}/Wrapped%20gift/3D/wrapped_gift_3d.png` },
+  { href: "#jadval", label: "Jadval", icon: `${FLUENT_3D}/Calendar/3D/calendar_3d.png` },
+  { href: "#faq", label: "Savol-javob", icon: `${FLUENT_3D}/Speech%20balloon/3D/speech_balloon_3d.png` },
 ];
 
 export function Navbar() {
