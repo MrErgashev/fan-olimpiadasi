@@ -18,13 +18,13 @@ import toast from "react-hot-toast";
 import { SUBJECTS } from "@/lib/constants";
 
 const SUBJECT_ACCENT: Record<string, string> = {
-  matematika: "border-blue-400/50 bg-blue-500/10 text-blue-300",
-  informatika: "border-cyan-400/50 bg-cyan-500/10 text-cyan-300",
-  tarix: "border-amber-400/50 bg-amber-500/10 text-amber-300",
-  "ingliz-tili": "border-red-400/50 bg-red-500/10 text-red-300",
-  biologiya: "border-emerald-400/50 bg-emerald-500/10 text-emerald-300",
-  "ona-tili": "border-violet-400/50 bg-violet-500/10 text-violet-300",
-  "jismoniy-tarbiya": "border-orange-400/50 bg-orange-500/10 text-orange-300",
+  matematika: "border-blue-300 bg-blue-50 text-blue-700",
+  informatika: "border-cyan-300 bg-cyan-50 text-cyan-700",
+  tarix: "border-amber-300 bg-amber-50 text-amber-700",
+  "ingliz-tili": "border-red-300 bg-red-50 text-red-700",
+  biologiya: "border-emerald-300 bg-emerald-50 text-emerald-700",
+  "ona-tili": "border-violet-300 bg-violet-50 text-violet-700",
+  "jismoniy-tarbiya": "border-orange-300 bg-orange-50 text-orange-700",
 };
 
 interface StudentProfile {
@@ -134,7 +134,7 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="text-center text-white/50 py-20">
+      <div className="text-center text-slate-500 py-20">
         Profil topilmadi
       </div>
     );
@@ -148,62 +148,62 @@ export default function ProfilePage() {
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
             <User className="w-5 h-5 text-white" />
           </div>
           Mening profilim
         </h1>
-        <p className="text-white/50 mt-1">
+        <p className="text-slate-500 mt-1">
           Shaxsiy ma&apos;lumotlaringiz va tanlagan fanlaringiz
         </p>
       </div>
 
       {/* Shaxsiy ma'lumotlar */}
-      <Card variant="glass-blue" className="p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">
+      <Card variant="light" className="p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">
           Shaxsiy ma&apos;lumotlar
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <User className="w-4 h-4 text-primary-400" />
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+            <User className="w-4 h-4 text-primary-500" />
             <div>
-              <p className="text-xs text-white/40">Ism Familiya</p>
-              <p className="text-sm text-white font-medium">
+              <p className="text-xs text-slate-400">Ism Familiya</p>
+              <p className="text-sm text-slate-900 font-medium">
                 {profile.firstName} {profile.lastName}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <Phone className="w-4 h-4 text-primary-400" />
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+            <Phone className="w-4 h-4 text-primary-500" />
             <div>
-              <p className="text-xs text-white/40">Telefon</p>
-              <p className="text-sm text-white font-medium">{profile.phone}</p>
+              <p className="text-xs text-slate-400">Telefon</p>
+              <p className="text-sm text-slate-900 font-medium">{profile.phone}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <MapPin className="w-4 h-4 text-primary-400" />
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+            <MapPin className="w-4 h-4 text-primary-500" />
             <div>
-              <p className="text-xs text-white/40">Viloyat</p>
-              <p className="text-sm text-white font-medium">
+              <p className="text-xs text-slate-400">Viloyat</p>
+              <p className="text-sm text-slate-900 font-medium">
                 {profile.regionName || "Ko'rsatilmagan"}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <School className="w-4 h-4 text-primary-400" />
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+            <School className="w-4 h-4 text-primary-500" />
             <div>
-              <p className="text-xs text-white/40">Maktab</p>
-              <p className="text-sm text-white font-medium">{profile.schoolName}</p>
+              <p className="text-xs text-slate-400">Maktab</p>
+              <p className="text-sm text-slate-900 font-medium">{profile.schoolName}</p>
             </div>
           </div>
         </div>
       </Card>
 
       {/* Fan tanlash */}
-      <Card variant="glass-blue" className="p-6">
+      <Card variant="light" className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="text-lg font-semibold text-slate-900">
             Olimpiada fanlari
           </h2>
           <Badge variant="info" size="sm">
@@ -214,7 +214,7 @@ export default function ProfilePage() {
         </div>
 
         {maxSubjects === 1 && (
-          <p className="text-sm text-white/40 mb-4">
+          <p className="text-sm text-slate-400 mb-4">
             Faqat bitta fan tanlash mumkin. Boshqa fanga o&apos;tish uchun yangi fanni bosing.
           </p>
         )}
@@ -231,7 +231,7 @@ export default function ProfilePage() {
                 className={`flex items-center gap-2.5 p-3 rounded-xl border text-sm text-left transition-all duration-200 ${
                   isSelected
                     ? `${accent} shadow-sm`
-                    : "border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:bg-white/10"
+                    : "border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50"
                 }`}
               >
                 <span className="text-lg">{subject.emoji}</span>

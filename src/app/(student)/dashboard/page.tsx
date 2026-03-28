@@ -133,10 +133,10 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-10"
       >
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-blue-gradient">
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900">
           Assalomu alaykum!
         </h1>
-        <p className="mt-3 text-lg text-white/50">
+        <p className="mt-3 text-lg text-slate-500">
           Olimpiada testlaringiz quyida ko&apos;rsatilgan
         </p>
       </motion.div>
@@ -149,26 +149,26 @@ export default function DashboardPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-3 gap-3 sm:gap-4 mb-8"
         >
-          <div className="glass-blue-subtle rounded-2xl p-4 sm:p-5 text-center">
-            <BookOpen className="w-5 h-5 text-blue-400 mx-auto mb-2" />
-            <p className="text-2xl sm:text-3xl font-mono font-bold text-white">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-5 text-center">
+            <BookOpen className="w-5 h-5 text-blue-500 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-mono font-bold text-slate-900">
               {tests.length}
             </p>
-            <p className="text-xs sm:text-sm text-white/40 mt-1">Jami testlar</p>
+            <p className="text-xs sm:text-sm text-slate-400 mt-1">Jami testlar</p>
           </div>
-          <div className="glass-blue-subtle rounded-2xl p-4 sm:p-5 text-center">
-            <Target className="w-5 h-5 text-green-400 mx-auto mb-2" />
-            <p className="text-2xl sm:text-3xl font-mono font-bold text-white">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-5 text-center">
+            <Target className="w-5 h-5 text-emerald-500 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-mono font-bold text-slate-900">
               {completedTests}
             </p>
-            <p className="text-xs sm:text-sm text-white/40 mt-1">Tugatilgan</p>
+            <p className="text-xs sm:text-sm text-slate-400 mt-1">Tugatilgan</p>
           </div>
-          <div className="glass-blue-subtle rounded-2xl p-4 sm:p-5 text-center">
-            <Trophy className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
-            <p className="text-2xl sm:text-3xl font-mono font-bold text-cyan-400">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-5 text-center">
+            <Trophy className="w-5 h-5 text-cyan-600 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-mono font-bold text-cyan-600">
               {avgScore > 0 ? avgScore.toFixed(1) : "—"}
             </p>
-            <p className="text-xs sm:text-sm text-white/40 mt-1">O&apos;rtacha ball</p>
+            <p className="text-xs sm:text-sm text-slate-400 mt-1">O&apos;rtacha ball</p>
           </div>
         </motion.div>
       )}
@@ -176,15 +176,15 @@ export default function DashboardPage() {
       {/* Tests Grid */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+          <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
         </div>
       ) : tests.length === 0 ? (
-        <Card variant="glass-blue" className="text-center py-20 rounded-2xl">
-          <FileText className="w-16 h-16 text-white/10 mx-auto mb-6" />
-          <p className="text-xl text-white/50 font-medium">
+        <Card variant="light" className="text-center py-20 rounded-2xl">
+          <FileText className="w-16 h-16 text-slate-200 mx-auto mb-6" />
+          <p className="text-xl text-slate-500 font-medium">
             Hozircha testlar mavjud emas
           </p>
-          <p className="text-sm text-white/30 mt-2 max-w-sm mx-auto">
+          <p className="text-sm text-slate-400 mt-2 max-w-sm mx-auto">
             Testlar admin tomonidan faollashtirilganda bu yerda ko&apos;rinadi
           </p>
         </Card>
@@ -198,11 +198,11 @@ export default function DashboardPage() {
           {tests.map((test) => (
             <motion.div key={test.id} variants={item}>
               <Card
-                variant="glass-blue"
+                variant="light"
                 hover
                 className={`relative rounded-2xl ${
                   test.status === "active"
-                    ? "border border-primary-500/30 shadow-glow-blue"
+                    ? "border border-primary-500/30 shadow-md shadow-primary-500/10"
                     : ""
                 }`}
               >
@@ -211,12 +211,12 @@ export default function DashboardPage() {
                   {getStatusBadge(test.status)}
                 </div>
 
-                <h3 className="text-xl font-semibold text-white mb-1">
+                <h3 className="text-xl font-semibold text-slate-900 mb-1">
                   {test.subjectName}
                 </h3>
-                <p className="text-sm text-white/50 mb-5">{test.name}</p>
+                <p className="text-sm text-slate-500 mb-5">{test.name}</p>
 
-                <div className="flex items-center gap-4 text-sm text-white/40 mb-5">
+                <div className="flex items-center gap-4 text-sm text-slate-400 mb-5">
                   <span className="flex items-center gap-1.5">
                     <FileText className="w-4 h-4" />
                     {test.totalQuestions} savol
@@ -228,12 +228,12 @@ export default function DashboardPage() {
                 </div>
 
                 {test.status === "completed" && test.score !== undefined && (
-                  <div className="flex items-center gap-3 mb-5 p-4 rounded-xl bg-primary-500/10 border border-primary-500/20">
-                    <Trophy className="w-6 h-6 text-cyan-400" />
-                    <span className="font-mono text-2xl font-bold text-cyan-400 text-glow-gold">
+                  <div className="flex items-center gap-3 mb-5 p-4 rounded-xl bg-blue-50 border border-blue-200">
+                    <Trophy className="w-6 h-6 text-cyan-600" />
+                    <span className="font-mono text-2xl font-bold text-cyan-600">
                       {test.score.toFixed(1)}
                     </span>
-                    <span className="text-sm text-white/40">/ 100 ball</span>
+                    <span className="text-sm text-slate-400">/ 100 ball</span>
                   </div>
                 )}
 
@@ -255,8 +255,8 @@ export default function DashboardPage() {
 
                 {test.status === "completed" && (
                   <Button
-                    className="w-full"
-                    variant="outline"
+                    className="w-full border border-slate-200 text-slate-700 hover:bg-slate-50"
+                    variant="ghost"
                     onClick={() => router.push("/dashboard/results")}
                   >
                     Natijalarni ko&apos;rish
@@ -274,17 +274,17 @@ export default function DashboardPage() {
         onClose={() => setConfirmModal(null)}
         title="Diqqat!"
         size="md"
-        theme="blue"
+        theme="light"
       >
         {confirmModal && (
           <div className="space-y-5">
-            <div className="space-y-3 text-sm text-white/70">
+            <div className="space-y-3 text-sm text-slate-600">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
                 <p>
                   Test boshlanganidan keyin uni to&apos;xtatish yoki qayta
                   boshlash{" "}
-                  <strong className="text-white">MUMKIN EMAS</strong>.
+                  <strong className="text-slate-900">MUMKIN EMAS</strong>.
                 </p>
               </div>
               <div className="flex items-start gap-3">
@@ -296,16 +296,16 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl glass-blue-subtle space-y-2 text-sm">
-              <p className="text-white/60">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-sm">
+              <p className="text-slate-500">
                 Test vaqti:{" "}
-                <span className="text-white font-mono font-bold">
+                <span className="text-slate-900 font-mono font-bold">
                   {confirmModal.durationMinutes} daqiqa
                 </span>
               </p>
-              <p className="text-white/60">
+              <p className="text-slate-500">
                 Savollar soni:{" "}
-                <span className="text-white font-mono font-bold">
+                <span className="text-slate-900 font-mono font-bold">
                   {confirmModal.totalQuestions}
                 </span>
               </p>
