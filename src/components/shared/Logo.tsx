@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { GraduationCap } from "lucide-react";
+import { OrientalLogo } from "@/components/icons/OrientalLogo";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl";
@@ -28,7 +28,7 @@ export function Logo({ size = "md", className, variant = "dark" }: LogoProps) {
           }
         )}
       >
-        <GraduationCap
+        <OrientalLogo
           className={cn("text-navy-950", {
             "w-5 h-5": size === "sm",
             "w-6 h-6": size === "md",
