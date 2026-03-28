@@ -42,6 +42,23 @@ export async function POST(req: Request) {
       );
     }
 
+    // Viloyatni nom bo'yicha topish (forma nom yuboradi, ID emas)
+    const region = await db.region.findFirst({
+      where: { name: data.regionId },
+    });
+
+    // Fanlarni slug bo'yicha topish (forma slug yuboradi, ID emas)
+    const subjects = await db.subject.findMany({
+      where: { slug: { in: data.subjectIds } },
+    });
+
+    if (subjects.length === 0) {
+      return NextResponse.json(
+        { error: "Kamida bitta fan tanlang" },
+        { status: 400 }
+      );
+    }
+
     // Parolni hashlash
     const hashedPassword = await hash(data.password, 12);
 
@@ -52,13 +69,12 @@ export async function POST(req: Request) {
         lastName: data.lastName,
         phone: data.phone,
         password: hashedPassword,
-        regionId: data.regionId,
-        districtId: data.districtId,
+        regionId: region?.id || null,
         schoolName: data.schoolName,
         accessCodeId: accessCode.id,
         subjects: {
-          create: data.subjectIds.map((subjectId) => ({
-            subjectId,
+          create: subjects.map((s) => ({
+            subjectId: s.id,
           })),
         },
       },
@@ -74,7 +90,8 @@ export async function POST(req: Request) {
       { message: "Muvaffaqiyatli ro'yxatdan o'tdingiz!", studentId: student.id },
       { status: 201 }
     );
-  } catch {
+  } catch (error) {
+    console.error("Register error:", error);
     return NextResponse.json(
       { error: "Server xatosi. Qaytadan urinib ko'ring." },
       { status: 500 }
