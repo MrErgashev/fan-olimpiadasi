@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { OLYMPIAD_DATE } from "@/lib/constants";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface TimeLeft {
   days: number;
@@ -22,41 +24,49 @@ function calcTimeLeft(): TimeLeft {
 }
 
 function AnimatedDigit({ value }: { value: string }) {
-  const [displayValue, setDisplayValue] = useState(value);
-  const [isFlipping, setIsFlipping] = useState(false);
-  const prevValue = useRef(value);
-
-  useEffect(() => {
-    if (prevValue.current !== value) {
-      setIsFlipping(true);
-      const timer = setTimeout(() => {
-        setDisplayValue(value);
-        setIsFlipping(false);
-      }, 150);
-      prevValue.current = value;
-      return () => clearTimeout(timer);
-    }
-  }, [value]);
-
   return (
-    <span
-      className={`inline-block transition-all duration-300 ${
-        isFlipping
-          ? "opacity-0 -translate-y-1 scale-95"
-          : "opacity-100 translate-y-0 scale-100"
-      }`}
-    >
-      {displayValue}
-    </span>
+    <div className="relative inline-flex justify-center w-[0.6em]" style={{ perspective: "200px" }}>
+      <AnimatePresence mode="popLayout">
+        <motion.span
+          key={value}
+          initial={{ rotateX: -80, opacity: 0, filter: "blur(2px)" }}
+          animate={{ rotateX: 0, opacity: 1, filter: "blur(0px)" }}
+          exit={{ rotateX: 80, opacity: 0, filter: "blur(2px)" }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          style={{ transformOrigin: "bottom", backfaceVisibility: "hidden" }}
+          className="inline-block"
+        >
+          {value}
+        </motion.span>
+      </AnimatePresence>
+    </div>
   );
 }
 
-function TimeBlock({ value, label }: { value: number; label: string }) {
+function TimeBlock({
+  value,
+  label,
+  isSeconds = false,
+}: {
+  value: number;
+  label: string;
+  isSeconds?: boolean;
+}) {
   const digits = value.toString().padStart(2, "0");
 
   return (
     <div className="flex flex-col items-center">
-      <div className="bg-white/[0.06] border border-white/10 rounded-2xl px-5 py-4 sm:px-7 sm:py-5 min-w-[80px] sm:min-w-[100px]">
+      <div
+        className={cn(
+          "relative rounded-2xl px-5 py-4 sm:px-7 sm:py-5 min-w-[80px] sm:min-w-[100px]",
+          "bg-white/[0.04] backdrop-blur-xl border border-white/[0.08]",
+          "shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]",
+          isSeconds && "animate-glow-pulse"
+        )}
+      >
+        {/* Gold top-border glow */}
+        <div className="absolute top-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
+
         <div className="flex justify-center gap-0.5">
           {digits.split("").map((digit, i) => (
             <span
@@ -77,10 +87,17 @@ function TimeBlock({ value, label }: { value: number; label: string }) {
 
 function Separator() {
   return (
-    <div className="flex items-center pb-7">
-      <span className="text-2xl sm:text-3xl text-white/20 font-mono font-bold animate-pulse-subtle">
-        :
-      </span>
+    <div className="flex flex-col items-center justify-center gap-1.5 pb-7">
+      <motion.span
+        className="block w-1.5 h-1.5 rounded-full bg-gold-500/40"
+        animate={{ opacity: [0.4, 0.8, 0.4] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.span
+        className="block w-1.5 h-1.5 rounded-full bg-gold-500/40"
+        animate={{ opacity: [0.8, 0.4, 0.8] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+      />
     </div>
   );
 }
@@ -106,7 +123,7 @@ export function CountdownTimer() {
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
         {["Kun", "Soat", "Daqiqa", "Soniya"].map((label, i) => (
           <div key={label} className="flex items-center gap-3 sm:gap-4">
-            <TimeBlock value={0} label={label} />
+            <TimeBlock value={0} label={label} isSeconds={i === 3} />
             {i < 3 && <Separator />}
           </div>
         ))}
@@ -125,7 +142,11 @@ export function CountdownTimer() {
     <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
       {blocks.map((block, i) => (
         <div key={block.label} className="flex items-center gap-3 sm:gap-4">
-          <TimeBlock value={block.value} label={block.label} />
+          <TimeBlock
+            value={block.value}
+            label={block.label}
+            isSeconds={i === 3}
+          />
           {i < 3 && <Separator />}
         </div>
       ))}

@@ -38,8 +38,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             // Primary — bold gold CTA
             "bg-gold-500 text-navy-950 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/25 hover:-translate-y-0.5":
               variant === "primary",
-            // Premium — gold with stronger presence
-            "bg-gold-500 text-navy-950 font-bold hover:bg-gold-400 hover:shadow-xl hover:shadow-gold-500/30 hover:-translate-y-0.5":
+            // Premium — gold with animated glow
+            "bg-gold-500 text-navy-950 font-bold shine-sweep hover:bg-gold-400 hover:shadow-[0_0_30px_rgba(212,168,67,0.3),0_8px_30px_rgba(212,168,67,0.2)] hover:-translate-y-0.5":
               variant === "premium",
             // Secondary — navy solid
             "bg-navy-800 text-white hover:bg-navy-700 border border-navy-600/50":

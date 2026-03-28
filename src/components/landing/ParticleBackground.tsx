@@ -2,10 +2,15 @@
 
 import { useEffect, useRef } from "react";
 
-export function ParticleBackground() {
+interface ParticleBackgroundProps {
+  disabled?: boolean;
+}
+
+export function ParticleBackground({ disabled = false }: ParticleBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (disabled) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -32,7 +37,7 @@ export function ParticleBackground() {
       pulseOffset: number;
     }[] = [];
 
-    const count = Math.min(50, Math.floor(window.innerWidth / 25));
+    const count = Math.min(40, Math.floor(window.innerWidth / 35));
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * canvas.width,
@@ -71,7 +76,7 @@ export function ParticleBackground() {
         if (p.isGold) {
           ctx.fillStyle = `rgba(212, 168, 67, ${p.opacity * 0.6})`;
         } else {
-          ctx.fillStyle = `rgba(34, 153, 106, ${p.opacity})`;
+          ctx.fillStyle = `rgba(93, 122, 165, ${p.opacity})`;
         }
         ctx.fill();
       }
@@ -90,7 +95,7 @@ export function ParticleBackground() {
             if (particles[i].isGold || particles[j].isGold) {
               ctx.strokeStyle = `rgba(212, 168, 67, ${alpha})`;
             } else {
-              ctx.strokeStyle = `rgba(34, 153, 106, ${alpha})`;
+              ctx.strokeStyle = `rgba(93, 122, 165, ${alpha})`;
             }
             ctx.lineWidth = 0.5;
             ctx.stroke();
@@ -107,7 +112,7 @@ export function ParticleBackground() {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [disabled]);
 
   return (
     <canvas
