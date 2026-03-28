@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/validators";
+import { getMaxSubjects } from "@/lib/settings";
 
 export async function POST(req: Request) {
   try {
@@ -55,6 +56,15 @@ export async function POST(req: Request) {
     if (subjects.length === 0) {
       return NextResponse.json(
         { error: "Kamida bitta fan tanlang" },
+        { status: 400 }
+      );
+    }
+
+    // Maksimal fan soni cheklovi
+    const maxSubjects = await getMaxSubjects();
+    if (maxSubjects > 0 && subjects.length > maxSubjects) {
+      return NextResponse.json(
+        { error: `Maksimal ${maxSubjects} ta fan tanlash mumkin` },
         { status: 400 }
       );
     }

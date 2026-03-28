@@ -11,6 +11,7 @@ import {
   Trophy,
   KeyRound,
   ShieldAlert,
+  Settings,
   LogOut,
   Menu,
   X,
@@ -46,6 +47,12 @@ const NAV_GROUPS = [
     items: [
       { href: "/admin/results", label: "Natijalar", icon: Trophy },
       { href: "/admin/security-logs", label: "Xavfsizlik", icon: ShieldAlert },
+    ],
+  },
+  {
+    label: "SOZLAMALAR",
+    items: [
+      { href: "/admin/settings", label: "Sozlamalar", icon: Settings },
     ],
   },
 ];

@@ -26,8 +26,11 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
           </Link>
 
           <div className="flex items-center gap-4">
-            {/* Avatar with initials */}
-            <div className="flex items-center gap-3">
+            {/* Avatar with initials — profile link */}
+            <Link
+              href="/dashboard/profile"
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            >
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center shadow-glow-blue">
                 <span className="text-sm font-bold text-white">
                   {initials}
@@ -36,7 +39,7 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
               <span className="hidden sm:block text-sm text-white/70 font-medium">
                 {firstName} {lastName}
               </span>
-            </div>
+            </Link>
 
             <Button
               variant="ghost"
