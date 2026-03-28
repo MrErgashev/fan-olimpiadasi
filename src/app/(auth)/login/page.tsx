@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { Logo } from "@/components/shared/Logo";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Phone } from "lucide-react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -22,7 +23,6 @@ export default function LoginPage() {
     e.preventDefault();
     setErrors({});
 
-    // Validation
     const newErrors: Record<string, string> = {};
     if (!/^\+998\d{9}$/.test(form.phone))
       newErrors.phone = "+998XXXXXXXXX formatda kiriting";
@@ -55,34 +55,55 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-green-900 flex items-center justify-center p-4 relative">
+    <div className="min-h-screen bg-green-900 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background effects */}
       <div className="absolute inset-0 spotlight" />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-green-700/15 blur-[120px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-gold-500/5 blur-[100px]" />
 
-      <div className="relative w-full max-w-md">
-        <div className="text-center mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative w-full max-w-md"
+      >
+        <div className="text-center mb-10">
           <Link href="/" className="inline-block">
-            <Logo size="md" />
+            <Logo size="lg" />
           </Link>
-          <h1 className="mt-6 font-display text-2xl sm:text-3xl font-bold text-gold-gradient">
+          <h1 className="mt-8 font-display text-3xl sm:text-4xl font-bold text-gold-gradient">
             Kirish
           </h1>
-          <p className="mt-2 text-white/50">
+          <div className="ornamental-line mt-4 mb-4" />
+          <p className="text-white/50 text-lg">
             O&apos;quvchi kabinetiga kirish
           </p>
         </div>
 
-        <Card variant="gold" className="space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Telefon raqam"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              error={errors.phone}
-              placeholder="+998901234567"
-              type="tel"
-            />
+        <Card variant="glass-gold" className="p-8 sm:p-10 rounded-2xl">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Input
+                label="Telefon raqam"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                error={errors.phone}
+                placeholder="+998901234567"
+                type="tel"
+                icon={<Phone className="w-4 h-4" />}
+              />
+            </motion.div>
 
-            <div className="relative">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="relative"
+            >
               <Input
                 label="Parol"
                 type={showPassword ? "text" : "password"}
@@ -96,7 +117,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[38px] text-white/40 hover:text-white/70"
+                className="absolute right-3 top-[38px] text-white/40 hover:text-white/70 transition-colors"
               >
                 {showPassword ? (
                   <EyeOff className="w-4 h-4" />
@@ -104,35 +125,38 @@ export default function LoginPage() {
                   <Eye className="w-4 h-4" />
                 )}
               </button>
-            </div>
+            </motion.div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full"
-              size="lg"
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
             >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                "Kirish"
-              )}
-            </Button>
+              <Button
+                type="submit"
+                loading={loading}
+                variant="premium"
+                className="w-full"
+                size="lg"
+              >
+                Kirish
+              </Button>
+            </motion.div>
           </form>
 
-          <div className="text-center space-y-2">
+          <div className="text-center mt-6 pt-6 border-t border-white/5">
             <p className="text-sm text-white/40">
               Hali ro&apos;yxatdan o&apos;tmaganmisiz?{" "}
               <Link
                 href="/register"
-                className="text-gold-400 hover:text-gold-300"
+                className="text-gold-400 hover:text-gold-300 transition-colors font-medium"
               >
                 Ro&apos;yxatdan o&apos;tish
               </Link>
             </p>
           </div>
         </Card>
-      </div>
+      </motion.div>
     </div>
   );
 }

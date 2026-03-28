@@ -8,12 +8,16 @@ import { Footer } from "@/components/shared/Footer";
 
 export default function Home() {
   return (
-    <main>
+    <main className="noise-overlay">
       <Navbar />
       <Hero />
+      <div className="gradient-divider" />
       <SubjectsGrid />
+      <div className="gradient-divider" />
       <PrizePodium />
+      <div className="gradient-divider" />
       <Schedule />
+      <div className="gradient-divider" />
       <ContactSection />
       <Footer />
     </main>
