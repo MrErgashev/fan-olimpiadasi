@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/Button";
 import { CountdownTimer } from "./CountdownTimer";
 import { ParticleBackground } from "./ParticleBackground";
-import { Logo } from "@/components/shared/Logo";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
@@ -67,16 +66,6 @@ export function Hero() {
         >
           Oriental Universiteti taqdim etadi
         </motion.p>
-
-        {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center mb-10"
-        >
-          <Logo size="xl" />
-        </motion.div>
 
         {/* Main title */}
         <motion.h1
