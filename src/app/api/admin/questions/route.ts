@@ -40,6 +40,40 @@ export async function GET(req: Request) {
   }
 }
 
+// Savol(lar)ni o'chirish
+export async function DELETE(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !["admin", "superadmin"].includes(session.user.role || "")) {
+      return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    const subjectId = searchParams.get("subjectId");
+
+    if (id) {
+      await db.question.update({
+        where: { id },
+        data: { isActive: false },
+      });
+      return NextResponse.json({ success: true });
+    }
+
+    if (subjectId) {
+      const result = await db.question.updateMany({
+        where: { subjectId, isActive: true },
+        data: { isActive: false },
+      });
+      return NextResponse.json({ success: true, count: result.count });
+    }
+
+    return NextResponse.json({ error: "id yoki subjectId kerak" }, { status: 400 });
+  } catch {
+    return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
+  }
+}
+
 // Yangi savol yaratish
 export async function POST(req: Request) {
   try {
