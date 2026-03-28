@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Plus, Loader2, AlertTriangle } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -18,7 +18,6 @@ interface Test {
   endsAt: string | null;
   subject: { name: string; emoji: string };
   _count: { testAttempts: number };
-  activeQuestionCount: number;
 }
 
 export default function TestsPage() {
@@ -56,33 +55,22 @@ export default function TestsPage() {
         <Card variant="light" className="text-center py-12"><p className="text-slate-500">Testlar yo&apos;q</p></Card>
       ) : (
         <div className="space-y-3">
-          {tests.map((t) => {
-            const notEnough = t.activeQuestionCount < t.totalQuestions;
-            return (
-              <Card key={t.id} variant="light" className="p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span>{t.subject.emoji}</span>
-                      <span className="font-semibold text-slate-800">{t.name}</span>
-                      {statusBadge(t.status)}
-                    </div>
-                    <p className="text-sm text-slate-400">
-                      {t.totalQuestions} savol &middot; {t.durationMinutes} daqiqa &middot; {t._count.testAttempts} ishtirokchi
-                    </p>
-                    {notEnough && (
-                      <div className="flex items-center gap-1.5 mt-2 text-xs text-red-500">
-                        <AlertTriangle className="w-3.5 h-3.5" />
-                        <span>
-                          Bazada faqat {t.activeQuestionCount} ta aktiv savol bor, {t.totalQuestions} ta kerak!
-                        </span>
-                      </div>
-                    )}
+          {tests.map((t) => (
+            <Card key={t.id} variant="light" className="p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span>{t.subject.emoji}</span>
+                    <span className="font-semibold text-slate-800">{t.name}</span>
+                    {statusBadge(t.status)}
                   </div>
+                  <p className="text-sm text-slate-400">
+                    {t.totalQuestions} savol &middot; {t.durationMinutes} daqiqa &middot; {t._count.testAttempts} ishtirokchi
+                  </p>
                 </div>
-              </Card>
-            );
-          })}
+              </div>
+            </Card>
+          ))}
         </div>
       )}
     </div>

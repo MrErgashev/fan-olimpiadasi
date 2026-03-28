@@ -29,12 +29,10 @@ export async function GET() {
     );
     const countMap = Object.fromEntries(questionCounts.map((q) => [q.subjectId, q.count]));
 
-    const testsWithCounts = tests.map((t) => ({
-      ...t,
-      activeQuestionCount: countMap[t.subjectId] || 0,
-    }));
+    // Savollar yetarli bo'lmagan testlarni chiqarib tashlash
+    const filteredTests = tests.filter((t) => (countMap[t.subjectId] || 0) >= t.totalQuestions);
 
-    return NextResponse.json({ tests: testsWithCounts });
+    return NextResponse.json({ tests: filteredTests });
   } catch {
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }
