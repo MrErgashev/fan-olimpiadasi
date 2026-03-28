@@ -58,7 +58,7 @@ export default function LoginPage() {
       {/* Left brand panel */}
       <div className="hidden lg:flex lg:w-[45%] bg-navy-950 items-center justify-center p-12 relative overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-navy-700/30 blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-gold-500/[0.05] blur-[100px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-primary-500/[0.08] blur-[100px]" />
         <div className="relative text-center flex flex-col items-center">
           <Link href="/">
             <Logo size="xl" variant="dark" />
@@ -144,7 +144,7 @@ export default function LoginPage() {
               Hali ro&apos;yxatdan o&apos;tmaganmisiz?{" "}
               <Link
                 href="/register"
-                className="text-gold-600 hover:text-gold-500 transition-colors font-semibold"
+                className="text-primary-600 hover:text-primary-500 transition-colors font-semibold"
               >
                 Ro&apos;yxatdan o&apos;tish
               </Link>

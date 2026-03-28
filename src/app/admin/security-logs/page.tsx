@@ -48,7 +48,7 @@ export default function SecurityLogsPage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-gold-400" /></div>;
+    return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary-400" /></div>;
   }
 
   return (
@@ -85,7 +85,7 @@ export default function SecurityLogsPage() {
       {/* Recent logs */}
       <Card variant="glass">
         <div className="flex items-center gap-2 mb-4">
-          <ShieldAlert className="w-5 h-5 text-gold-400" />
+          <ShieldAlert className="w-5 h-5 text-primary-400" />
           <h2 className="text-lg font-semibold">Oxirgi hodisalar</h2>
         </div>
         {logs.length === 0 ? (

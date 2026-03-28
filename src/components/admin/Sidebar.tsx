@@ -64,7 +64,7 @@ export function Sidebar() {
 
       {/* Admin badge */}
       <div className="px-5 mb-3">
-        <Badge variant="gold" size="sm">
+        <Badge variant="info" size="sm">
           ADMIN
         </Badge>
       </div>
@@ -87,13 +87,13 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 relative",
                       isActive
-                        ? "bg-gold-500/15 text-gold-400 font-medium shadow-inner-gold"
-                        : "text-white/60 hover:text-white hover:bg-white/5"
+                        ? "bg-primary-500/15 text-primary-400 font-medium"
+                        : "text-white/60 hover:text-white hover:bg-white/8"
                     )}
                   >
                     {/* Active left accent bar */}
                     {isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full bg-gold-500" />
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full bg-gradient-to-b from-primary-500 to-accent-cyan" />
                     )}
                     <item.icon className="w-4 h-4 shrink-0" />
                     <span>{item.label}</span>
@@ -122,7 +122,7 @@ export function Sidebar() {
     <>
       {/* Mobile toggle */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-green-800/90 backdrop-blur-lg border border-white/10 text-white shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-app-dark/90 backdrop-blur-lg border border-white/10 text-white shadow-lg"
         onClick={() => setOpen(!open)}
       >
         {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -139,7 +139,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-full w-60 bg-green-900 border-r border-white/5 flex flex-col z-40 transition-transform duration-300 ease-out",
+          "fixed top-0 left-0 h-full w-60 bg-app-dark/95 backdrop-blur-2xl border-r border-white/10 flex flex-col z-40 transition-transform duration-300 ease-out",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >

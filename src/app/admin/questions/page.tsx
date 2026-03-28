@@ -101,7 +101,7 @@ export default function QuestionsPage() {
       {/* Questions list */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="w-6 h-6 animate-spin text-gold-400" />
+          <Loader2 className="w-6 h-6 animate-spin text-primary-400" />
         </div>
       ) : questions.length === 0 ? (
         <Card variant="glass" className="text-center py-12">
@@ -120,7 +120,7 @@ export default function QuestionsPage() {
                 <p className="text-sm text-white/80 truncate">{q.questionText}</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs font-mono text-gold-400 bg-gold-500/10 px-2 py-1 rounded">
+                <span className="text-xs font-mono text-primary-400 bg-primary-500/10 px-2 py-1 rounded">
                   {q.correctAnswer}
                 </span>
                 <Button variant="ghost" size="sm" onClick={() => handleDelete(q.id)}>
