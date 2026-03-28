@@ -11,7 +11,9 @@
       "Bash(npm install:*)",
       "Bash(npx next:*)",
       "Bash(npx prisma:*)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/_next/static/css/app/layout.css)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/_next/static/css/app/layout.css)",
+      "mcp__38a4c16c-2e55-46bc-9bf1-12eb7dbce8c5__get_access_to_vercel_url",
+      "mcp__38a4c16c-2e55-46bc-9bf1-12eb7dbce8c5__web_fetch_vercel_url"
     ]
   }
 }
