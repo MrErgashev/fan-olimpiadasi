@@ -5,10 +5,8 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
-import { Loader2 } from "lucide-react";
-import {
-  ClockIcon, DocumentIcon, WarningIcon, TrophyIcon, BookIcon, TargetIcon,
-} from "@/components/ui/Icon3D";
+import { Loader2, Clock, FileText, AlertTriangle } from "lucide-react";
+import { TrophyIcon, BookIcon, TargetIcon } from "@/components/ui/Icon3D";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -175,7 +173,7 @@ export default function DashboardPage() {
         </div>
       ) : tests.length === 0 ? (
         <Card variant="light" className="text-center py-20 rounded-2xl">
-          <DocumentIcon className="w-16 h-16 mx-auto mb-6 opacity-20" />
+          <FileText className="w-16 h-16 text-slate-200 mx-auto mb-6" />
           <p className="text-xl text-slate-500 font-medium">
             Hozircha testlar mavjud emas
           </p>
@@ -213,11 +211,11 @@ export default function DashboardPage() {
 
                 <div className="flex items-center gap-4 text-sm text-slate-400 mb-5">
                   <span className="flex items-center gap-1.5">
-                    <DocumentIcon className="w-4 h-4" />
+                    <FileText className="w-4 h-4" />
                     {test.totalQuestions} savol
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <ClockIcon className="w-4 h-4" />
+                    <Clock className="w-4 h-4" />
                     {test.durationMinutes} daqiqa
                   </span>
                 </div>
@@ -275,7 +273,7 @@ export default function DashboardPage() {
           <div className="space-y-5">
             <div className="space-y-3 text-sm text-slate-600">
               <div className="flex items-start gap-3">
-                <WarningIcon className="w-5 h-5 shrink-0 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
                 <p>
                   Test boshlanganidan keyin uni to&apos;xtatish yoki qayta
                   boshlash{" "}
@@ -283,7 +281,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <WarningIcon className="w-5 h-5 shrink-0 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
                 <p>
                   Boshqa tab/ilovaga o&apos;tish qayd etiladi va admin
                   tomonidan ko&apos;riladi.

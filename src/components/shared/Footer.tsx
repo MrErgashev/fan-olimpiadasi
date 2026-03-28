@@ -2,15 +2,11 @@
 
 import { Logo } from "./Logo";
 import { CONTACT_INFO, SUBJECTS } from "@/lib/constants";
-import {
-  SendIcon, PinIcon, PhoneIcon,
-  CalculatorIcon, MonitorIcon, BookIcon, GlobeIcon, DnaIcon, BooksIcon, RunningIcon,
-} from "@/components/ui/Icon3D";
+import { Send, MapPin, Phone, Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell } from "lucide-react";
 import Link from "next/link";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
-  Calculator: CalculatorIcon, Monitor: MonitorIcon, BookOpen: BookIcon,
-  Globe: GlobeIcon, Dna: DnaIcon, BookText: BooksIcon, Dumbbell: RunningIcon,
+  Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell,
 };
 
 export function Footer() {
@@ -35,7 +31,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-xl bg-white/5 hover:bg-gold-500/10 text-white/50 hover:text-gold-400 transition-all duration-300 hover:shadow-glow-gold"
               >
-                <SendIcon className="w-4 h-4" />
+                <Send className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -91,11 +87,11 @@ export function Footer() {
             </h4>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
-                <PinIcon className="w-4 h-4 text-gold-400/60 mt-0.5 shrink-0" />
+                <MapPin className="w-4 h-4 text-gold-400/60 mt-0.5 shrink-0" />
                 <p className="text-sm text-white/50">{CONTACT_INFO.address}</p>
               </div>
               <div className="flex items-center gap-3">
-                <PhoneIcon className="w-4 h-4 text-gold-400/60 shrink-0" />
+                <Phone className="w-4 h-4 text-gold-400/60 shrink-0" />
                 <p className="text-sm text-white/50">Telegram orqali</p>
               </div>
               {CONTACT_INFO.telegram.map((tg) => (
@@ -106,7 +102,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-sm text-white/50 hover:text-gold-400 transition-all duration-200 ml-7 group"
                 >
-                  <SendIcon className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-200" />
+                  <Send className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-200" />
                   {tg}
                 </a>
               ))}
