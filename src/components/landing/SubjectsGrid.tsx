@@ -65,7 +65,7 @@ export function SubjectsGrid() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+          className="flex flex-wrap justify-center gap-5"
         >
           {SUBJECTS.map((subject) => {
             const Icon = ICON_MAP[subject.icon];
@@ -75,7 +75,7 @@ export function SubjectsGrid() {
               <motion.div
                 key={subject.slug}
                 variants={item}
-                className="group bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                className="w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.8334rem)] xl:w-[calc(25%-0.9375rem)] group bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 {/* Color accent bar */}
                 <div className={`h-1 ${accent.bar}`} />
