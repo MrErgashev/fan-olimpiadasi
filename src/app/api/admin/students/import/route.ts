@@ -115,8 +115,17 @@ export async function POST(req: Request) {
 
     await db.$transaction(
       toCreate.map((item) => {
-        const { plainPassword, ...data } = item.data;
-        return db.student.create({ data });
+        return db.student.create({
+          data: {
+            firstName: item.data.firstName,
+            lastName: item.data.lastName,
+            phone: item.data.phone,
+            password: item.data.password,
+            schoolName: item.data.schoolName,
+            grade: item.data.grade,
+            regionId: item.data.regionId,
+          },
+        });
       })
     );
 

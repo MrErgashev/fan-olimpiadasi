@@ -14,7 +14,6 @@ import {
   ArrowRight,
   CheckCircle2,
   XCircle,
-  Loader2,
   Trash2,
   AlertTriangle,
   Edit3,
@@ -367,7 +366,7 @@ export default function ImportStudentsPage() {
 
           {/* Rows List */}
           <div className="space-y-2 max-h-[500px] overflow-y-auto">
-            {filteredRows.map((row, idx) => {
+            {filteredRows.map((row) => {
               const realIdx = rows.indexOf(row);
               const isEditing = editingIndex === realIdx;
 
