@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { OLYMPIAD_DATE } from "@/lib/constants";
 
 interface TimeLeft {
@@ -21,16 +21,65 @@ function calcTimeLeft(): TimeLeft {
   };
 }
 
+function AnimatedDigit({ value }: { value: string }) {
+  const [displayValue, setDisplayValue] = useState(value);
+  const [isFlipping, setIsFlipping] = useState(false);
+  const prevValue = useRef(value);
+
+  useEffect(() => {
+    if (prevValue.current !== value) {
+      setIsFlipping(true);
+      const timer = setTimeout(() => {
+        setDisplayValue(value);
+        setIsFlipping(false);
+      }, 150);
+      prevValue.current = value;
+      return () => clearTimeout(timer);
+    }
+  }, [value]);
+
+  return (
+    <span
+      className={`inline-block transition-all duration-300 ${
+        isFlipping
+          ? "opacity-0 -translate-y-1 scale-95"
+          : "opacity-100 translate-y-0 scale-100"
+      }`}
+    >
+      {displayValue}
+    </span>
+  );
+}
+
 function TimeBlock({ value, label }: { value: number; label: string }) {
+  const digits = value.toString().padStart(2, "0");
+
   return (
     <div className="flex flex-col items-center">
-      <div className="glass gold-border rounded-xl px-4 py-3 sm:px-6 sm:py-4 min-w-[70px] sm:min-w-[90px]">
-        <span className="block text-2xl sm:text-4xl font-mono font-bold text-gold-400 text-center tabular-nums">
-          {value.toString().padStart(2, "0")}
-        </span>
+      <div className="bg-white/[0.06] border border-white/10 rounded-2xl px-5 py-4 sm:px-7 sm:py-5 min-w-[80px] sm:min-w-[100px]">
+        <div className="flex justify-center gap-0.5">
+          {digits.split("").map((digit, i) => (
+            <span
+              key={i}
+              className="text-3xl sm:text-4xl md:text-5xl font-mono font-black text-white tabular-nums"
+            >
+              <AnimatedDigit value={digit} />
+            </span>
+          ))}
+        </div>
       </div>
-      <span className="mt-2 text-xs sm:text-sm text-white/50 uppercase tracking-wider">
+      <span className="mt-2.5 text-[10px] sm:text-xs text-white/30 uppercase tracking-[0.2em] font-medium">
         {label}
+      </span>
+    </div>
+  );
+}
+
+function Separator() {
+  return (
+    <div className="flex items-center pb-7">
+      <span className="text-2xl sm:text-3xl text-white/20 font-mono font-bold animate-pulse-subtle">
+        :
       </span>
     </div>
   );
@@ -54,20 +103,32 @@ export function CountdownTimer() {
 
   if (!mounted) {
     return (
-      <div className="flex gap-3 sm:gap-4 justify-center">
-        {["Kun", "Soat", "Daqiqa", "Soniya"].map((label) => (
-          <TimeBlock key={label} value={0} label={label} />
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+        {["Kun", "Soat", "Daqiqa", "Soniya"].map((label, i) => (
+          <div key={label} className="flex items-center gap-3 sm:gap-4">
+            <TimeBlock value={0} label={label} />
+            {i < 3 && <Separator />}
+          </div>
         ))}
       </div>
     );
   }
 
+  const blocks = [
+    { value: time.days, label: "Kun" },
+    { value: time.hours, label: "Soat" },
+    { value: time.minutes, label: "Daqiqa" },
+    { value: time.seconds, label: "Soniya" },
+  ];
+
   return (
-    <div className="flex gap-3 sm:gap-4 justify-center">
-      <TimeBlock value={time.days} label="Kun" />
-      <TimeBlock value={time.hours} label="Soat" />
-      <TimeBlock value={time.minutes} label="Daqiqa" />
-      <TimeBlock value={time.seconds} label="Soniya" />
+    <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+      {blocks.map((block, i) => (
+        <div key={block.label} className="flex items-center gap-3 sm:gap-4">
+          <TimeBlock value={block.value} label={block.label} />
+          {i < 3 && <Separator />}
+        </div>
+      ))}
     </div>
   );
 }

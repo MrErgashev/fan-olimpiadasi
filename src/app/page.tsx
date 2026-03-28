@@ -1,9 +1,14 @@
 import { Navbar } from "@/components/shared/Navbar";
 import { Hero } from "@/components/landing/Hero";
+import { TrustStrip } from "@/components/landing/TrustStrip";
+import { WhyParticipate } from "@/components/landing/WhyParticipate";
 import { SubjectsGrid } from "@/components/landing/SubjectsGrid";
-import { PrizePodium } from "@/components/landing/PrizePodium";
+import { PrizesSection } from "@/components/landing/PrizesSection";
+import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Schedule } from "@/components/landing/Schedule";
-import { ContactSection } from "@/components/landing/ContactSection";
+import { ResultsPreview } from "@/components/landing/ResultsPreview";
+import { FAQ } from "@/components/landing/FAQ";
+import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/shared/Footer";
 
 export default function Home() {
@@ -11,10 +16,15 @@ export default function Home() {
     <main>
       <Navbar />
       <Hero />
+      <TrustStrip />
+      <WhyParticipate />
       <SubjectsGrid />
-      <PrizePodium />
+      <PrizesSection />
+      <HowItWorks />
       <Schedule />
-      <ContactSection />
+      <ResultsPreview />
+      <FAQ />
+      <CTASection />
       <Footer />
     </main>
   );

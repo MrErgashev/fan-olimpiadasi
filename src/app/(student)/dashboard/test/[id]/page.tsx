@@ -55,7 +55,6 @@ export default function TestPage() {
 
   const fetchingRef = useRef(false);
 
-  // Timer
   const handleTimeExpire = useCallback(async () => {
     toast.error("Vaqt tugadi! Test avtomatik topshirilmoqda...");
     await submitTest();
@@ -67,20 +66,17 @@ export default function TestPage() {
     onExpire: handleTimeExpire,
   });
 
-  // Security
   const { requestFullscreen } = useSecurity({
     attemptId: attemptId || "",
     enabled: !!attemptId,
   });
 
-  // Oxirgi 1 daqiqada ogohlantirish
   useEffect(() => {
     if (isCritical && !showTimeWarning && seconds > 0) {
       setShowTimeWarning(true);
     }
   }, [isCritical, showTimeWarning, seconds]);
 
-  // Test boshlash
   useEffect(() => {
     startTest();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -125,15 +121,17 @@ export default function TestPage() {
         setSelected(data.selectedAnswer);
         setCurrentQ(num);
 
-        // Vaqtni yangilash (server-side)
         if (!timerReady && data.timeRemaining > 0) {
           setInitialSeconds(data.timeRemaining);
           setTimerReady(true);
         }
 
-        // Javob berilgan savollarni kuzatish
         if (data.selectedAnswer) {
-          setAnsweredQuestions((prev) => { const next = new Set(Array.from(prev)); next.add(num); return next; });
+          setAnsweredQuestions((prev) => {
+            const next = new Set(Array.from(prev));
+            next.add(num);
+            return next;
+          });
         }
       } else {
         toast.error(data.error || "Savolni yuklashda xatolik");
@@ -150,7 +148,11 @@ export default function TestPage() {
     if (!questionData) return;
 
     setSelected(answer);
-    setAnsweredQuestions((prev) => (() => { const next = new Set(Array.from(prev)); next.add(currentQ); return next; })());
+    setAnsweredQuestions((prev) => {
+      const next = new Set(Array.from(prev));
+      next.add(currentQ);
+      return next;
+    });
 
     try {
       await fetch(`/api/student/test/${testId}/answer`, {
@@ -182,13 +184,10 @@ export default function TestPage() {
       const data = await res.json();
 
       if (res.ok) {
-        // Fullscreen dan chiqish
         if (document.fullscreenElement) {
           document.exitFullscreen().catch(() => {});
         }
-        toast.success(
-          `Test yakunlandi! Ball: ${data.totalScore}`
-        );
+        toast.success(`Test yakunlandi! Ball: ${data.totalScore}`);
         router.push("/dashboard/results");
       } else {
         toast.error(data.error || "Topshirishda xatolik");
@@ -201,12 +200,15 @@ export default function TestPage() {
     }
   };
 
+  // Progress percentage
+  const progress = totalQuestions > 0 ? (currentQ / totalQuestions) * 100 : 0;
+
   if (loading && !questionData) {
     return (
       <div className="fixed inset-0 bg-green-900 flex items-center justify-center z-50">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-gold-400 mx-auto mb-4" />
-          <p className="text-white/60">Test yuklanmoqda...</p>
+          <Loader2 className="w-12 h-12 animate-spin text-gold-400 mx-auto mb-4" />
+          <p className="text-white/60 text-lg">Test yuklanmoqda...</p>
         </div>
       </div>
     );
@@ -214,12 +216,25 @@ export default function TestPage() {
 
   return (
     <div className="fixed inset-0 bg-green-900 z-50 flex flex-col test-content select-none">
+      {/* Top progress bar */}
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-white/5 z-10">
+        <div
+          className="h-full bg-gradient-to-r from-green-500 to-gold-500 transition-all duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
       {/* Header */}
-      <header className="shrink-0 border-b border-white/5 bg-green-900/95 backdrop-blur-sm">
+      <header className="shrink-0 border-b border-white/5 bg-green-900/95 backdrop-blur-xl pt-1">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="text-sm text-white/60">
-            <span className="font-mono text-gold-400">
-              {currentQ}/{totalQuestions}
+          <div className="flex items-center gap-2">
+            <span className="w-9 h-9 rounded-xl bg-gold-500/20 flex items-center justify-center">
+              <span className="font-mono text-sm font-bold text-gold-400">
+                {currentQ}
+              </span>
+            </span>
+            <span className="text-sm text-white/40">
+              / {totalQuestions}
             </span>
           </div>
 
@@ -231,9 +246,9 @@ export default function TestPage() {
             />
           )}
 
-          <div className="text-sm text-white/40">
-            Ball:{" "}
-            <span className="font-mono text-gold-400">
+          <div className="text-sm text-white/40 flex items-center gap-2">
+            <span>Ball:</span>
+            <span className="font-mono font-bold text-gold-400 text-lg">
               {questionData?.score}
             </span>
           </div>
@@ -242,33 +257,33 @@ export default function TestPage() {
 
       {/* Question Content */}
       <main className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-4 py-6 sm:py-8">
+        <div className="max-w-4xl mx-auto px-4 py-8 sm:py-10">
           {questionData && (
             <>
-              {/* Savol */}
-              <div className="mb-6 sm:mb-8">
-                <div className="flex items-start gap-3 mb-4">
-                  <span className="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-gold-500/20 text-gold-400 font-mono font-bold text-sm">
+              {/* Question */}
+              <div className="mb-8 sm:mb-10">
+                <div className="flex items-start gap-4 mb-5">
+                  <span className="shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 font-mono font-bold text-base shadow-glow-gold">
                     {currentQ}
                   </span>
-                  <h2 className="text-base sm:text-lg text-white/90 leading-relaxed">
+                  <h2 className="text-lg sm:text-xl text-white/90 leading-relaxed pt-1.5">
                     {questionData.question.text}
                   </h2>
                 </div>
 
                 {questionData.question.imageUrl && (
-                  <div className="ml-11 rounded-xl overflow-hidden bg-white/5 inline-block">
+                  <div className="ml-14 rounded-2xl overflow-hidden bg-white/5 inline-block">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={questionData.question.imageUrl}
                       alt="Savol rasmi"
-                      className="max-h-64 object-contain"
+                      className="max-h-72 object-contain"
                     />
                   </div>
                 )}
               </div>
 
-              {/* Variantlar */}
+              {/* Options */}
               <div className="space-y-3">
                 {(["A", "B", "C", "D"] as const).map((key) => {
                   const opt = questionData.options[key];
@@ -291,9 +306,8 @@ export default function TestPage() {
       </main>
 
       {/* Footer Navigation */}
-      <footer className="shrink-0 border-t border-white/5 bg-green-900/95 backdrop-blur-sm">
-        <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
-          {/* Question nav dots */}
+      <footer className="shrink-0 border-t border-white/5 bg-green-900/95 backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto px-4 py-4 space-y-3">
           <QuestionNav
             total={totalQuestions}
             current={currentQ}
@@ -301,7 +315,6 @@ export default function TestPage() {
             onNavigate={goToQuestion}
           />
 
-          {/* Nav buttons */}
           <div className="flex items-center justify-between gap-3">
             <Button
               variant="secondary"
@@ -317,8 +330,8 @@ export default function TestPage() {
               variant="danger"
               size="sm"
               onClick={() => setShowSubmitModal(true)}
+              icon={<Send className="w-4 h-4" />}
             >
-              <Send className="w-4 h-4 mr-1" />
               Yakunlash
             </Button>
 
@@ -342,14 +355,14 @@ export default function TestPage() {
         title="Testni yakunlash"
         size="sm"
       >
-        <div className="space-y-4">
-          <p className="text-white/70 text-sm">
+        <div className="space-y-5">
+          <p className="text-white/70">
             Siz{" "}
-            <span className="text-green-400 font-mono font-bold">
+            <span className="text-green-400 font-mono font-bold text-lg">
               {answeredQuestions.size}
             </span>{" "}
             ta savolga javob berdingiz.{" "}
-            <span className="text-yellow-400 font-mono font-bold">
+            <span className="text-yellow-400 font-mono font-bold text-lg">
               {totalQuestions - answeredQuestions.size}
             </span>{" "}
             ta javobsiz qoldi.
@@ -366,15 +379,12 @@ export default function TestPage() {
               Bekor qilish
             </Button>
             <Button
+              variant="premium"
               className="flex-1"
-              disabled={submitting}
+              loading={submitting}
               onClick={submitTest}
             >
-              {submitting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                "HA, YAKUNLASH"
-              )}
+              HA, YAKUNLASH
             </Button>
           </div>
         </div>
@@ -387,12 +397,17 @@ export default function TestPage() {
         title="Ogohlantirish!"
         size="sm"
       >
-        <div className="space-y-4 text-center">
-          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto" />
-          <p className="text-white/80">
-            Test vaqti tugashiga <strong className="text-red-400">1 daqiqa</strong> qoldi!
+        <div className="space-y-5 text-center">
+          <AlertTriangle className="w-16 h-16 text-red-400 mx-auto" />
+          <p className="text-white/80 text-lg">
+            Test vaqti tugashiga{" "}
+            <strong className="text-red-400">1 daqiqa</strong> qoldi!
           </p>
-          <Button onClick={() => setShowTimeWarning(false)} className="w-full">
+          <Button
+            variant="premium"
+            onClick={() => setShowTimeWarning(false)}
+            className="w-full"
+          >
             Tushundim
           </Button>
         </div>

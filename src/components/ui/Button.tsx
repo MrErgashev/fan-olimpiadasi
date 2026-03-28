@@ -1,42 +1,80 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { forwardRef, type ButtonHTMLAttributes } from "react";
+import { Loader2 } from "lucide-react";
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
-  size?: "sm" | "md" | "lg";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "premium";
+  size?: "sm" | "md" | "lg" | "xl";
+  loading?: boolean;
+  icon?: ReactNode;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", children, ...props }, ref) => {
+  (
+    {
+      className,
+      variant = "primary",
+      size = "md",
+      loading = false,
+      icon,
+      children,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <button
         ref={ref}
+        disabled={disabled || loading}
         className={cn(
-          "inline-flex items-center justify-center font-medium transition-all duration-200 rounded-button focus:outline-none focus:ring-2 focus:ring-gold-500/50 disabled:opacity-50 disabled:cursor-not-allowed",
+          "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 ease-out rounded-xl",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/50 focus-visible:ring-offset-2",
+          "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none",
+          "active:scale-[0.98]",
           {
-            "gradient-btn text-white hover:shadow-lg hover:shadow-gold-500/20 hover:-translate-y-0.5 active:translate-y-0":
+            // Primary — bold gold CTA
+            "bg-gold-500 text-navy-950 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/25 hover:-translate-y-0.5":
               variant === "primary",
-            "bg-green-700 text-white hover:bg-green-600 border border-white/10":
+            // Premium — gold with stronger presence
+            "bg-gold-500 text-navy-950 font-bold hover:bg-gold-400 hover:shadow-xl hover:shadow-gold-500/30 hover:-translate-y-0.5":
+              variant === "premium",
+            // Secondary — navy solid
+            "bg-navy-800 text-white hover:bg-navy-700 border border-navy-600/50":
               variant === "secondary",
-            "bg-transparent border border-gold-500/40 text-gold-400 hover:bg-gold-500/10":
+            // Outline — border only
+            "bg-transparent border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50":
               variant === "outline",
-            "bg-transparent text-gray-200 hover:text-white hover:bg-white/5":
+            // Ghost — minimal
+            "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100":
               variant === "ghost",
-            "bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30":
+            // Danger
+            "bg-red-500/10 text-red-600 border border-red-500/30 hover:bg-red-500/20 hover:border-red-500/50":
               variant === "danger",
           },
           {
-            "px-3 py-1.5 text-sm": size === "sm",
-            "px-5 py-2.5 text-base": size === "md",
+            "px-4 py-2 text-sm": size === "sm",
+            "px-6 py-3 text-base": size === "md",
             "px-8 py-3.5 text-lg": size === "lg",
+            "px-10 py-4 text-lg rounded-2xl": size === "xl",
           },
           className
         )}
         {...props}
       >
-        {children}
+        {loading ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Yuklanmoqda...</span>
+          </>
+        ) : (
+          <>
+            {icon && <span className="shrink-0">{icon}</span>}
+            {children}
+          </>
+        )}
       </button>
     );
   }
