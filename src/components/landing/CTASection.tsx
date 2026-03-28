@@ -7,9 +7,7 @@ import { BookOpen, Users, Sparkles } from "lucide-react";
 
 export function CTASection() {
   return (
-    <section className="bg-navy-950 pt-40 sm:pt-48 pb-24 sm:pb-32 relative overflow-hidden">
-      {/* Top gradient fade from FAQ's bg-slate-50 */}
-      <div className="absolute top-0 left-0 right-0 h-40 sm:h-48 bg-gradient-to-b from-slate-50 via-slate-50/0 to-transparent" style={{ top: "-1px" }} />
+    <section className="bg-navy-950 py-24 sm:py-32 relative overflow-hidden">
       {/* Multi-layered background effects */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Central gold glow */}
