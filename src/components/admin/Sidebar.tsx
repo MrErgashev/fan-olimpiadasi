@@ -65,8 +65,8 @@ export function Sidebar() {
     <>
       {/* Logo area */}
       <div className="p-5 pb-4">
-        <Logo size="sm" />
-        <div className="gradient-divider-blue mt-4" />
+        <Logo size="sm" variant="light" />
+        <div className="mt-4 border-b border-slate-200" />
       </div>
 
       {/* Admin badge */}
@@ -80,7 +80,7 @@ export function Sidebar() {
       <nav className="flex-1 px-3 space-y-4 overflow-y-auto">
         {NAV_GROUPS.map((group) => (
           <div key={group.label}>
-            <p className="px-3 mb-1.5 text-[10px] uppercase tracking-[0.2em] text-white/25 font-semibold">
+            <p className="px-3 mb-1.5 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-semibold">
               {group.label}
             </p>
             <div className="space-y-0.5">
@@ -94,8 +94,8 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 relative",
                       isActive
-                        ? "bg-primary-500/15 text-primary-400 font-medium"
-                        : "text-white/60 hover:text-white hover:bg-white/8"
+                        ? "bg-primary-50 text-primary-600 font-medium"
+                        : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
                     )}
                   >
                     {/* Active left accent bar */}
@@ -113,10 +113,10 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom */}
-      <div className="p-3 border-t border-white/5">
+      <div className="p-3 border-t border-slate-200">
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 w-full"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200 w-full"
         >
           <LogOut className="w-4 h-4" />
           <span>Chiqish</span>
@@ -129,7 +129,7 @@ export function Sidebar() {
     <>
       {/* Mobile toggle */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-app-dark/90 backdrop-blur-lg border border-white/10 text-white shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 shadow-sm"
         onClick={() => setOpen(!open)}
       >
         {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -138,7 +138,7 @@ export function Sidebar() {
       {/* Mobile overlay */}
       {open && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+          className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
           onClick={() => setOpen(false)}
         />
       )}
@@ -146,7 +146,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-full w-60 bg-app-dark/95 backdrop-blur-2xl border-r border-white/10 flex flex-col z-40 transition-transform duration-300 ease-out",
+          "fixed top-0 left-0 h-full w-60 bg-white border-r border-slate-200 shadow-sm flex flex-col z-40 transition-transform duration-300 ease-out",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >

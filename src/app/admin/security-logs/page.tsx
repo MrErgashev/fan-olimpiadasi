@@ -48,31 +48,31 @@ export default function SecurityLogsPage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary-400" /></div>;
+    return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary-600" /></div>;
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-2xl font-bold text-blue-gradient">Xavfsizlik loglari</h1>
+      <h1 className="font-display text-2xl font-bold text-slate-800">Xavfsizlik loglari</h1>
 
       {/* Flagged students */}
       {flagged.length > 0 && (
-        <Card variant="glass-blue" className="border-red-500/30">
+        <Card variant="light" className="border-red-200 p-5">
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
-            <h2 className="text-lg font-semibold text-red-400">Shubhali o&apos;quvchilar</h2>
+            <AlertTriangle className="w-5 h-5 text-red-500" />
+            <h2 className="text-lg font-semibold text-red-600">Shubhali o&apos;quvchilar</h2>
           </div>
           <div className="space-y-2">
             {flagged.map((f) => (
-              <div key={f.studentId} className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+              <div key={f.studentId} className="flex items-center gap-3 p-3 rounded-lg bg-slate-50">
                 <Badge variant={f.level === "red" ? "error" : "warning"}>
                   {f.level === "red" ? "QIZIL" : "SARIQ"}
                 </Badge>
-                <span className="font-medium text-white">{f.name}</span>
+                <span className="font-medium text-slate-800">{f.name}</span>
                 <div className="flex gap-2 ml-auto">
                   {Object.entries(f.counts).map(([type, count]) => (
-                    <span key={type} className="text-xs text-white/40">
-                      {eventLabel(type)}: <span className="text-white/70 font-mono">{count}</span>
+                    <span key={type} className="text-xs text-slate-400">
+                      {eventLabel(type)}: <span className="text-slate-600 font-mono">{count}</span>
                     </span>
                   ))}
                 </div>
@@ -83,21 +83,21 @@ export default function SecurityLogsPage() {
       )}
 
       {/* Recent logs */}
-      <Card variant="glass-blue">
+      <Card variant="light" className="p-5">
         <div className="flex items-center gap-2 mb-4">
-          <ShieldAlert className="w-5 h-5 text-primary-400" />
-          <h2 className="text-lg font-semibold">Oxirgi hodisalar</h2>
+          <ShieldAlert className="w-5 h-5 text-primary-600" />
+          <h2 className="text-lg font-semibold text-slate-800">Oxirgi hodisalar</h2>
         </div>
         {logs.length === 0 ? (
-          <p className="text-white/50 text-center py-8">Hodisalar yo&apos;q</p>
+          <p className="text-slate-500 text-center py-8">Hodisalar yo&apos;q</p>
         ) : (
           <div className="space-y-1 max-h-96 overflow-y-auto">
             {logs.slice(0, 50).map((l) => (
-              <div key={l.id} className="flex items-center gap-3 py-2 px-3 rounded hover:bg-white/5 text-sm">
-                <span className="text-white/30 font-mono text-xs w-36 shrink-0">
+              <div key={l.id} className="flex items-center gap-3 py-2 px-3 rounded hover:bg-slate-50 text-sm">
+                <span className="text-slate-400 font-mono text-xs w-36 shrink-0">
                   {new Date(l.createdAt).toLocaleString("uz-UZ")}
                 </span>
-                <span className="text-white/70 w-32 shrink-0">{l.studentName}</span>
+                <span className="text-slate-600 w-32 shrink-0">{l.studentName}</span>
                 <Badge variant={
                   ["DEVTOOLS_OPEN", "MULTIPLE_DEVICE"].includes(l.eventType) ? "error" :
                   ["TAB_SWITCH", "FULLSCREEN_EXIT"].includes(l.eventType) ? "warning" : "default"

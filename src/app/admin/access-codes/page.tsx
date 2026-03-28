@@ -60,10 +60,10 @@ export default function AccessCodesPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-2xl font-bold text-blue-gradient">Access kodlar</h1>
+      <h1 className="font-display text-2xl font-bold text-slate-800">Access kodlar</h1>
 
       {/* Generate */}
-      <Card variant="glass-blue">
+      <Card variant="light" className="p-5">
         <div className="flex flex-col sm:flex-row gap-4 items-end">
           <Input label="Nechta kod" type="number" value={count} onChange={(e) => setCount(e.target.value)} className="w-32" />
           <Input label="Max ishlatish" type="number" value={maxUses} onChange={(e) => setMaxUses(e.target.value)} className="w-32" />
@@ -75,22 +75,22 @@ export default function AccessCodesPage() {
 
       {/* Codes list */}
       {loading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-600" /></div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {codes.map((c) => (
-            <Card key={c.id} variant="glass-blue" className="flex items-center gap-3">
-              <KeyRound className="w-4 h-4 text-primary-400 shrink-0" />
+            <Card key={c.id} variant="light" className="flex items-center gap-3 p-4">
+              <KeyRound className="w-4 h-4 text-primary-600 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="font-mono text-sm text-primary-300 truncate">{c.code}</p>
-                <p className="text-xs text-white/40">{c.currentUses}/{c.maxUses} ishlatilgan</p>
+                <p className="font-mono text-sm text-primary-600 truncate">{c.code}</p>
+                <p className="text-xs text-slate-400">{c.currentUses}/{c.maxUses} ishlatilgan</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <Badge variant={c.isActive ? "success" : "error"}>
                   {c.isActive ? "Faol" : "O'chiq"}
                 </Badge>
-                <button onClick={() => copyCode(c.code)} className="p-1 hover:bg-white/10 rounded">
-                  <Copy className="w-3.5 h-3.5 text-white/40" />
+                <button onClick={() => copyCode(c.code)} className="p-1 hover:bg-slate-100 rounded">
+                  <Copy className="w-3.5 h-3.5 text-slate-400" />
                 </button>
               </div>
             </Card>
