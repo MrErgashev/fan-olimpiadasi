@@ -69,7 +69,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-gold-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary-400" />
       </div>
     );
   }
@@ -104,8 +104,8 @@ export default function AdminDashboard() {
       label: "Topshirilgan testlar",
       value: stats.submittedAttempts,
       icon: Trophy,
-      color: "text-gold-400",
-      bgColor: "bg-gold-500/15",
+      color: "text-cyan-400",
+      bgColor: "bg-cyan-500/15",
     },
   ];
 
@@ -156,8 +156,8 @@ export default function AdminDashboard() {
             variant="interactive"
             className="flex items-center gap-4 rounded-2xl"
           >
-            <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center">
-              <Plus className="w-5 h-5 text-green-900" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
+              <Plus className="w-5 h-5 text-white" />
             </div>
             <div>
               <p className="font-semibold text-white">Yangi test yaratish</p>
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
       {/* Subject statistics */}
       <Card variant="glass" className="rounded-2xl">
         <div className="flex items-center gap-2 mb-6">
-          <BarChart3 className="w-5 h-5 text-gold-400" />
+          <BarChart3 className="w-5 h-5 text-primary-400" />
           <h2 className="text-lg font-semibold">
             Fan bo&apos;yicha statistika
           </h2>
@@ -211,7 +211,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex items-center gap-4 text-xs text-white/40">
                     <span>
-                      <span className="font-mono text-gold-400 text-sm">
+                      <span className="font-mono text-primary-400 text-sm">
                         {s.questions}
                       </span>{" "}
                       savol

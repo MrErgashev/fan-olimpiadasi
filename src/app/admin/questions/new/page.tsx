@@ -105,7 +105,7 @@ export default function NewQuestionPage() {
               value={form.questionText}
               onChange={(e) => set("questionText", e.target.value)}
               rows={4}
-              className="w-full px-4 py-2.5 bg-green-800/60 border border-white/10 rounded-button text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500/40 resize-y"
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-button text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/40 resize-y"
               placeholder="Savol matnini yozing..."
             />
           </div>
@@ -142,7 +142,7 @@ export default function NewQuestionPage() {
               value={form.explanation}
               onChange={(e) => set("explanation", e.target.value)}
               rows={2}
-              className="w-full px-4 py-2.5 bg-green-800/60 border border-white/10 rounded-button text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500/40 resize-y"
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-button text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/40 resize-y"
               placeholder="To'g'ri javob uchun tushuntirish..."
             />
           </div>

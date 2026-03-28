@@ -15,9 +15,9 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
   const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-green-900/80 backdrop-blur-2xl shadow-xl shadow-black/10">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-app-dark/80 backdrop-blur-2xl shadow-xl shadow-black/10">
       {/* Bottom gradient border */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gold-500/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
 
       <div className="max-w-container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
@@ -28,8 +28,8 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
           <div className="flex items-center gap-4">
             {/* Avatar with initials */}
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl gradient-gold flex items-center justify-center shadow-glow-gold">
-                <span className="text-sm font-bold text-green-900">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center shadow-glow-blue">
+                <span className="text-sm font-bold text-white">
                   {initials}
                 </span>
               </div>

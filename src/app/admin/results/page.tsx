@@ -36,7 +36,7 @@ export default function ResultsPage() {
       <h1 className="font-display text-2xl font-bold text-gold-gradient">Natijalar</h1>
 
       {loading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gold-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-400" /></div>
       ) : results.length === 0 ? (
         <Card variant="glass" className="text-center py-12">
           <Trophy className="w-12 h-12 text-white/20 mx-auto mb-4" />
@@ -61,7 +61,7 @@ export default function ResultsPage() {
                 <tr key={`${r.studentName}-${r.subjectName}`} className="border-b border-white/5 hover:bg-white/5">
                   <td className="py-3 px-2">
                     {r.rank <= 3 ? (
-                      <Medal className={`w-5 h-5 ${r.rank === 1 ? "text-gold-400" : r.rank === 2 ? "text-gray-300" : "text-amber-600"}`} />
+                      <Medal className={`w-5 h-5 ${r.rank === 1 ? "text-yellow-400" : r.rank === 2 ? "text-gray-300" : "text-amber-600"}`} />
                     ) : (
                       <span className="text-white/40 font-mono">{r.rank}</span>
                     )}
@@ -71,7 +71,7 @@ export default function ResultsPage() {
                   <td className="py-3 px-2 text-white/60">{r.region}</td>
                   <td className="py-3 px-2 text-white/60">{r.school}</td>
                   <td className="py-3 px-2 text-center">
-                    <span className="font-mono font-bold text-gold-400">{r.totalScore.toFixed(1)}</span>
+                    <span className="font-mono font-bold text-primary-400">{r.totalScore.toFixed(1)}</span>
                   </td>
                   <td className="py-3 px-2 text-center">
                     <Badge variant="success">{r.correctCount}</Badge>

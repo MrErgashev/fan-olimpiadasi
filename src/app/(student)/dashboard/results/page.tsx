@@ -49,7 +49,7 @@ export default function ResultsPage() {
   if (loading) {
     return (
       <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-gold-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
       </div>
     );
   }
@@ -89,7 +89,7 @@ export default function ResultsPage() {
                 {/* Ball */}
                 <div className="flex items-center gap-6">
                   <div className="text-center">
-                    <p className="font-mono text-3xl font-bold text-gold-400">
+                    <p className="font-mono text-3xl font-bold text-cyan-400">
                       {r.totalScore.toFixed(1)}
                     </p>
                     <p className="text-xs text-white/40">/ 100 ball</p>

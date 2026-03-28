@@ -28,12 +28,21 @@
   --slate-600: #475569;
   --slate-700: #334155;
 
-  /* Legacy green for admin/dashboard compat */
+  /* Legacy green (landing only) */
   --green-900: #062a1e;
   --green-800: #0a3d2a;
   --green-700: #0f5c3a;
   --green-600: #1a7a4e;
   --green-500: #22996a;
+
+  /* App blue theme (admin/student) */
+  --app-dark: #0a0e1a;
+  --primary-600: #2563eb;
+  --primary-500: #3b82f6;
+  --primary-400: #60a5fa;
+  --primary-300: #93c5fd;
+  --cyan-500: #06b6d4;
+  --cyan-400: #22d3ee;
 
   /* Status */
   --success: #22c55e;
@@ -49,28 +58,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar — premium dark/gold */
+/* Scrollbar — blue theme */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--navy-950);
+  background: var(--app-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--gold-600), var(--gold-500));
+  background: linear-gradient(180deg, var(--primary-600), var(--primary-500));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--gold-500), var(--gold-400));
+  background: linear-gradient(180deg, var(--primary-500), var(--primary-400));
 }
 
 /* Selection */
 ::selection {
-  background: rgba(212, 168, 67, 0.25);
-  color: var(--navy-900);
+  background: rgba(59, 130, 246, 0.25);
+  color: white;
 }
 
 /* Smooth scroll */
@@ -79,33 +88,33 @@ html {
 }
 
 @layer components {
-  /* ===== LEGACY GLASS CLASSES (admin/student pages) ===== */
+  /* ===== GLASS CLASSES (blue/white tinted — admin/student) ===== */
   .glass {
-    background: rgba(10, 61, 42, 0.4);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .glass-subtle {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .glass-medium {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .glass-strong {
-    background: rgba(10, 61, 42, 0.6);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
   }
 
   .glass-gold {
@@ -122,6 +131,29 @@ html {
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  /* Blue gradient mesh background for admin/student */
+  .bg-app-mesh {
+    background-color: #0a0e1a;
+    background-image:
+      radial-gradient(ellipse at 15% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 30%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 90%, rgba(37, 99, 235, 0.08) 0%, transparent 50%);
+  }
+
+  /* Neo-morphism effects */
+  .neo-raised {
+    box-shadow:
+      6px 6px 12px rgba(0, 0, 0, 0.3),
+      -2px -2px 8px rgba(255, 255, 255, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .neo-inset {
+    box-shadow:
+      inset 4px 4px 8px rgba(0, 0, 0, 0.3),
+      inset -2px -2px 6px rgba(255, 255, 255, 0.03);
+  }
+
   /* Legacy border utilities */
   .gold-border {
     border: 1px solid rgba(212, 168, 67, 0.3);
@@ -131,31 +163,31 @@ html {
     border: 1px solid rgba(212, 168, 67, 0.6);
   }
 
-  /* Legacy gradients (admin/dashboard) */
+  /* Blue gradients (admin/student) */
   .gradient-gold {
-    background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
+    background: linear-gradient(135deg, var(--primary-500), var(--cyan-500));
   }
 
   .gradient-green {
-    background: linear-gradient(135deg, var(--green-700), var(--green-500));
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
   }
 
   .gradient-btn {
-    background: linear-gradient(135deg, var(--green-600), var(--gold-500));
+    background: linear-gradient(135deg, var(--primary-600), var(--cyan-500));
   }
 
   .gradient-btn-premium {
     background: linear-gradient(
       90deg,
-      var(--green-600),
-      var(--gold-500),
-      var(--green-600)
+      var(--primary-600),
+      var(--cyan-500),
+      var(--primary-600)
     );
     background-size: 200% 100%;
   }
 
   .text-gold-gradient {
-    background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
+    background: linear-gradient(135deg, var(--primary-400), var(--cyan-400));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -166,7 +198,7 @@ html {
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(212, 168, 67, 0.4),
+      rgba(59, 130, 246, 0.4),
       transparent
     );
   }
@@ -208,29 +240,29 @@ html {
 
   /* Premium text gradient */
   .text-gradient-gold {
-    background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
+    background: linear-gradient(135deg, var(--primary-400), var(--cyan-400));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  /* Gold shimmer — traveling highlight on text */
+  /* Blue shimmer — traveling highlight on text */
   .text-gradient-gold-shimmer {
     background: linear-gradient(
       110deg,
-      #d4a843 0%,
-      #e8c36a 20%,
-      #f5e5b0 40%,
-      #faf3d8 50%,
-      #f5e5b0 60%,
-      #e8c36a 80%,
-      #d4a843 100%
+      #3b82f6 0%,
+      #60a5fa 20%,
+      #93c5fd 40%,
+      #bfdbfe 50%,
+      #93c5fd 60%,
+      #60a5fa 80%,
+      #3b82f6 100%
     );
     background-size: 200% 100%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    color: #d4a843;
+    color: #3b82f6;
     animation: gold-shimmer 4s ease-in-out infinite;
   }
 
@@ -239,23 +271,23 @@ html {
     position: relative;
     background: conic-gradient(
       from var(--border-angle, 0deg),
-      #b8922e,
-      #f0d68a,
-      #d4a843,
-      #b8922e
+      #2563eb,
+      #06b6d4,
+      #3b82f6,
+      #2563eb
     );
     padding: 2px;
     border-radius: 16px;
   }
 
   .btn-premium-border > .btn-premium-inner {
-    background: var(--gold-500);
+    background: var(--primary-500);
     border-radius: 14px;
     transition: all 0.3s ease;
   }
 
   .btn-premium-border:hover > .btn-premium-inner {
-    background: var(--gold-400);
+    background: var(--primary-400);
   }
 
   /* Shine sweep effect */
@@ -312,7 +344,7 @@ html {
     inset: 0;
     padding: 1px;
     border-radius: 16px;
-    background: linear-gradient(135deg, transparent 40%, rgba(212, 168, 67, 0.3) 50%, transparent 60%);
+    background: linear-gradient(135deg, transparent 40%, rgba(59, 130, 246, 0.3) 50%, transparent 60%);
     background-size: 300% 300%;
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -327,7 +359,7 @@ html {
 
   /* Counter glow effect */
   .counter-glow {
-    text-shadow: 0 0 30px rgba(212, 168, 67, 0.4), 0 0 60px rgba(212, 168, 67, 0.1);
+    text-shadow: 0 0 30px rgba(59, 130, 246, 0.4), 0 0 60px rgba(59, 130, 246, 0.1);
   }
 
   /* Premium section heading */
@@ -341,7 +373,7 @@ html {
     display: block;
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, var(--gold-500), var(--gold-300));
+    background: linear-gradient(90deg, var(--primary-500), var(--cyan-500));
     margin: 16px auto 0;
     border-radius: 2px;
   }
@@ -362,7 +394,7 @@ html {
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(212, 168, 67, 0.3),
+      rgba(59, 130, 246, 0.3),
       transparent
     );
     animation: badge-shine 3s ease-in-out infinite;
@@ -370,25 +402,25 @@ html {
   }
 }
 
-/* Legacy glow effects (admin) */
+/* Glow effects — blue theme */
 .glow-gold {
-  box-shadow: 0 0 20px rgba(212, 168, 67, 0.15),
-    0 0 60px rgba(212, 168, 67, 0.05);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2),
+    0 0 60px rgba(59, 130, 246, 0.08);
 }
 
 .glow-green {
-  box-shadow: 0 0 20px rgba(34, 153, 106, 0.15),
-    0 0 60px rgba(34, 153, 106, 0.05);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.2),
+    0 0 60px rgba(6, 182, 212, 0.08);
 }
 
 .text-glow-gold {
-  text-shadow: 0 0 20px rgba(212, 168, 67, 0.5),
-    0 0 40px rgba(212, 168, 67, 0.2);
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.5),
+    0 0 40px rgba(59, 130, 246, 0.2);
 }
 
 .text-glow-green {
-  text-shadow: 0 0 20px rgba(34, 153, 106, 0.5),
-    0 0 40px rgba(34, 153, 106, 0.2);
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.5),
+    0 0 40px rgba(6, 182, 212, 0.2);
 }
 
 /* Legacy animation (admin) */

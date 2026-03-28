@@ -164,8 +164,8 @@ export default function DashboardPage() {
             <p className="text-xs sm:text-sm text-white/40 mt-1">Tugatilgan</p>
           </div>
           <div className="glass-subtle rounded-2xl p-4 sm:p-5 text-center">
-            <Trophy className="w-5 h-5 text-gold-400 mx-auto mb-2" />
-            <p className="text-2xl sm:text-3xl font-mono font-bold text-gold-400">
+            <Trophy className="w-5 h-5 text-cyan-400 mx-auto mb-2" />
+            <p className="text-2xl sm:text-3xl font-mono font-bold text-cyan-400">
               {avgScore > 0 ? avgScore.toFixed(1) : "—"}
             </p>
             <p className="text-xs sm:text-sm text-white/40 mt-1">O&apos;rtacha ball</p>
@@ -176,7 +176,7 @@ export default function DashboardPage() {
       {/* Tests Grid */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-gold-400" />
+          <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
         </div>
       ) : tests.length === 0 ? (
         <Card variant="glass" className="text-center py-20 rounded-2xl">
@@ -202,7 +202,7 @@ export default function DashboardPage() {
                 hover
                 className={`relative rounded-2xl ${
                   test.status === "active"
-                    ? "border border-green-500/30 shadow-glow-green"
+                    ? "border border-primary-500/30 shadow-glow-blue"
                     : ""
                 }`}
               >
@@ -228,9 +228,9 @@ export default function DashboardPage() {
                 </div>
 
                 {test.status === "completed" && test.score !== undefined && (
-                  <div className="flex items-center gap-3 mb-5 p-4 rounded-xl bg-gold-500/10 border border-gold-500/20">
-                    <Trophy className="w-6 h-6 text-gold-400" />
-                    <span className="font-mono text-2xl font-bold text-gold-400 text-glow-gold">
+                  <div className="flex items-center gap-3 mb-5 p-4 rounded-xl bg-primary-500/10 border border-primary-500/20">
+                    <Trophy className="w-6 h-6 text-cyan-400" />
+                    <span className="font-mono text-2xl font-bold text-cyan-400 text-glow-gold">
                       {test.score.toFixed(1)}
                     </span>
                     <span className="text-sm text-white/40">/ 100 ball</span>

@@ -19,7 +19,7 @@ export function TestTimer({ seconds, isWarning, isCritical }: TestTimerProps) {
           ? "bg-red-500/20 text-red-400 border border-red-500/40 animate-countdown shadow-lg shadow-red-500/20"
           : isWarning
             ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 shadow-lg shadow-yellow-500/10"
-            : "bg-green-700/30 text-green-300 border border-green-500/20"
+            : "bg-primary-700/30 text-primary-300 border border-primary-500/20"
       )}
     >
       <Clock className={cn("w-5 h-5", isCritical && "animate-pulse")} />

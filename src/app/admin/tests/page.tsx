@@ -50,7 +50,7 @@ export default function TestsPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gold-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-400" /></div>
       ) : tests.length === 0 ? (
         <Card variant="glass" className="text-center py-12"><p className="text-white/50">Testlar yo&apos;q</p></Card>
       ) : (

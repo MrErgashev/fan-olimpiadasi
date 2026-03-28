@@ -62,7 +62,7 @@ export function Modal({
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
-              "relative glass-strong gold-border rounded-card p-8 w-full shadow-2xl shadow-black/40",
+              "relative glass-strong border border-primary-500/20 rounded-card p-8 w-full shadow-2xl shadow-black/40",
               {
                 "max-w-sm": size === "sm",
                 "max-w-md": size === "md",
@@ -72,12 +72,12 @@ export function Modal({
               className
             )}
           >
-            {/* Gold accent line at top */}
-            <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-gold-500/60 to-transparent" />
+            {/* Blue accent line at top */}
+            <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-primary-500/60 to-transparent" />
 
             {title && (
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-display font-semibold text-gold-400">
+                <h3 className="text-xl font-display font-semibold text-primary-400">
                   {title}
                 </h3>
                 <button

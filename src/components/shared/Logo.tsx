@@ -19,7 +19,7 @@ export function Logo({ size = "md", className, variant = "dark" }: LogoProps) {
     >
       <div
         className={cn(
-          "flex items-center justify-center rounded-xl bg-gold-500",
+          "flex items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan",
           {
             "w-8 h-8": size === "sm",
             "w-10 h-10": size === "md",
@@ -29,7 +29,7 @@ export function Logo({ size = "md", className, variant = "dark" }: LogoProps) {
         )}
       >
         <OrientalLogo
-          className={cn("text-navy-950", {
+          className={cn("text-white", {
             "w-5 h-5": size === "sm",
             "w-6 h-6": size === "md",
             "w-8 h-8": size === "lg",

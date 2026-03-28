@@ -205,9 +205,9 @@ export default function TestPage() {
 
   if (loading && !questionData) {
     return (
-      <div className="fixed inset-0 bg-green-900 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-app-dark flex items-center justify-center z-50">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-gold-400 mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 animate-spin text-primary-400 mx-auto mb-4" />
           <p className="text-white/60 text-lg">Test yuklanmoqda...</p>
         </div>
       </div>
@@ -215,21 +215,21 @@ export default function TestPage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-green-900 z-50 flex flex-col test-content select-none">
+    <div className="fixed inset-0 bg-app-dark z-50 flex flex-col test-content select-none">
       {/* Top progress bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-white/5 z-10">
         <div
-          className="h-full bg-gradient-to-r from-green-500 to-gold-500 transition-all duration-500 ease-out"
+          className="h-full bg-gradient-to-r from-primary-500 to-accent-cyan transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {/* Header */}
-      <header className="shrink-0 border-b border-white/5 bg-green-900/95 backdrop-blur-xl pt-1">
+      <header className="shrink-0 border-b border-white/5 bg-app-dark/95 backdrop-blur-xl pt-1">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-9 h-9 rounded-xl bg-gold-500/20 flex items-center justify-center">
-              <span className="font-mono text-sm font-bold text-gold-400">
+            <span className="w-9 h-9 rounded-xl bg-primary-500/20 flex items-center justify-center">
+              <span className="font-mono text-sm font-bold text-primary-400">
                 {currentQ}
               </span>
             </span>
@@ -248,7 +248,7 @@ export default function TestPage() {
 
           <div className="text-sm text-white/40 flex items-center gap-2">
             <span>Ball:</span>
-            <span className="font-mono font-bold text-gold-400 text-lg">
+            <span className="font-mono font-bold text-primary-400 text-lg">
               {questionData?.score}
             </span>
           </div>
@@ -263,7 +263,7 @@ export default function TestPage() {
               {/* Question */}
               <div className="mb-8 sm:mb-10">
                 <div className="flex items-start gap-4 mb-5">
-                  <span className="shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 font-mono font-bold text-base shadow-glow-gold">
+                  <span className="shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-primary-500/20 text-primary-400 font-mono font-bold text-base shadow-glow-blue">
                     {currentQ}
                   </span>
                   <h2 className="text-lg sm:text-xl text-white/90 leading-relaxed pt-1.5">
@@ -306,7 +306,7 @@ export default function TestPage() {
       </main>
 
       {/* Footer Navigation */}
-      <footer className="shrink-0 border-t border-white/5 bg-green-900/95 backdrop-blur-xl">
+      <footer className="shrink-0 border-t border-white/5 bg-app-dark/95 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-4 py-4 space-y-3">
           <QuestionNav
             total={totalQuestions}

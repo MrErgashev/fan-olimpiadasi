@@ -35,10 +35,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             id={id}
             className={cn(
               "w-full px-4 py-3 border rounded-xl appearance-none transition-all duration-200",
-              "focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50",
+              "focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500/50",
               isLight
                 ? "bg-white border-slate-200 text-slate-900 hover:border-slate-300"
-                : "bg-green-800/60 border-white/10 text-white hover:border-white/20 focus:bg-green-800/80",
+                : "bg-white/5 border-white/10 text-white hover:border-white/20 focus:bg-white/8",
               error
                 ? "border-red-400"
                 : "",
@@ -47,7 +47,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             {...props}
           >
             {placeholder && (
-              <option value="" className={isLight ? "text-slate-400" : "bg-green-800 text-gray-400"}>
+              <option value="" className={isLight ? "text-slate-400" : "bg-app-dark text-gray-400"}>
                 {placeholder}
               </option>
             )}
@@ -55,7 +55,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               <option
                 key={opt.value}
                 value={opt.value}
-                className={isLight ? "" : "bg-green-800"}
+                className={isLight ? "" : "bg-app-dark"}
               >
                 {opt.label}
               </option>

@@ -75,14 +75,14 @@ export default function AccessCodesPage() {
 
       {/* Codes list */}
       {loading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gold-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-400" /></div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {codes.map((c) => (
             <Card key={c.id} variant="glass" className="flex items-center gap-3">
-              <KeyRound className="w-4 h-4 text-gold-400 shrink-0" />
+              <KeyRound className="w-4 h-4 text-primary-400 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="font-mono text-sm text-gold-300 truncate">{c.code}</p>
+                <p className="font-mono text-sm text-primary-300 truncate">{c.code}</p>
                 <p className="text-xs text-white/40">{c.currentUses}/{c.maxUses} ishlatilgan</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
