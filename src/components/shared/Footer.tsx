@@ -1,3 +1,5 @@
+"use client";
+
 import { Logo } from "./Logo";
 import { CONTACT_INFO, SUBJECTS } from "@/lib/constants";
 import { Send, MapPin, Phone, Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell, ArrowUp } from "lucide-react";
