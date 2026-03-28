@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -f FAN_OLIMPIADASI_PRD.md)",
+      "Bash(npx create-next-app@14 fan-olimpiadasi --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --use-npm)",
+      "Bash(cp -r fan-olimpiadasi/* .)",
+      "Bash(cp fan-olimpiadasi/.eslintrc.json .)",
+      "Bash(cp fan-olimpiadasi/.gitignore .)",
+      "Bash(cp -r fan-olimpiadasi/.git .)",
+      "Bash(rm -rf fan-olimpiadasi)",
+      "Bash(npm install:*)",
+      "Bash(npx next:*)",
+      "Bash(npx prisma:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/_next/static/css/app/layout.css)"
+    ]
+  }
+}
