@@ -7,23 +7,32 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   icon?: ReactNode;
+  variant?: "light" | "dark";
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, icon, id, ...props }, ref) => {
+  ({ className, label, error, icon, id, variant = "light", ...props }, ref) => {
+    const isLight = variant === "light";
+
     return (
       <div className="space-y-1.5">
         {label && (
           <label
             htmlFor={id}
-            className="block text-sm font-medium text-gray-200"
+            className={cn(
+              "block text-sm font-medium",
+              isLight ? "text-slate-700" : "text-gray-200"
+            )}
           >
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40">
+            <div className={cn(
+              "absolute left-4 top-1/2 -translate-y-1/2",
+              isLight ? "text-slate-400" : "text-white/40"
+            )}>
               {icon}
             </div>
           )}
@@ -31,19 +40,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={id}
             className={cn(
-              "w-full px-4 py-3 bg-green-800/60 border rounded-xl text-white placeholder:text-gray-500 transition-all duration-300",
-              "focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50 focus:bg-green-800/80",
-              "focus:shadow-[0_0_0_3px_rgba(212,168,67,0.1)]",
+              "w-full px-4 py-3 border rounded-xl transition-all duration-200",
+              "focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50",
+              isLight
+                ? "bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 hover:border-slate-300"
+                : "bg-green-800/60 border-white/10 text-white placeholder:text-gray-500 hover:border-white/20 focus:bg-green-800/80",
               error
-                ? "border-red-500/50 focus:ring-red-500/40 focus:border-red-500/50"
-                : "border-white/10 hover:border-white/20",
+                ? "border-red-400 focus:ring-red-500/30 focus:border-red-500/50"
+                : "",
               icon && "pl-11",
               className
             )}
             {...props}
           />
         </div>
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
     );
   }

@@ -30,35 +30,35 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          "inline-flex items-center justify-center gap-2 font-medium transition-all duration-300 ease-out rounded-button",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-green-900",
+          "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 ease-out rounded-xl",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/50 focus-visible:ring-offset-2",
           "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none",
           "active:scale-[0.98]",
           {
-            // Primary
-            "gradient-btn text-white hover:shadow-lg hover:shadow-gold-500/25 hover:-translate-y-0.5 hover:scale-[1.02]":
+            // Primary — bold gold CTA
+            "bg-gold-500 text-navy-950 hover:bg-gold-400 hover:shadow-lg hover:shadow-gold-500/25 hover:-translate-y-0.5":
               variant === "primary",
-            // Premium — animated gradient
-            "gradient-btn-premium animate-gradient text-white font-semibold hover:shadow-xl hover:shadow-gold-500/30 hover:-translate-y-1 hover:scale-[1.02]":
+            // Premium — gold with stronger presence
+            "bg-gold-500 text-navy-950 font-bold hover:bg-gold-400 hover:shadow-xl hover:shadow-gold-500/30 hover:-translate-y-0.5":
               variant === "premium",
-            // Secondary
-            "bg-green-700 text-white hover:bg-green-600 border border-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-green-500/10":
+            // Secondary — navy solid
+            "bg-navy-800 text-white hover:bg-navy-700 border border-navy-600/50":
               variant === "secondary",
-            // Outline
-            "bg-transparent border border-gold-500/40 text-gold-400 hover:bg-gold-500/10 hover:border-gold-500/60 hover:shadow-lg hover:shadow-gold-500/10":
+            // Outline — border only
+            "bg-transparent border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50":
               variant === "outline",
-            // Ghost
-            "bg-transparent text-gray-200 hover:text-white hover:bg-white/5":
+            // Ghost — minimal
+            "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100":
               variant === "ghost",
             // Danger
-            "bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 hover:border-red-500/50":
+            "bg-red-500/10 text-red-600 border border-red-500/30 hover:bg-red-500/20 hover:border-red-500/50":
               variant === "danger",
           },
           {
-            "px-3 py-1.5 text-sm": size === "sm",
-            "px-5 py-2.5 text-base": size === "md",
+            "px-4 py-2 text-sm": size === "sm",
+            "px-6 py-3 text-base": size === "md",
             "px-8 py-3.5 text-lg": size === "lg",
-            "px-12 py-5 text-xl rounded-2xl": size === "xl",
+            "px-10 py-4 text-lg rounded-2xl": size === "xl",
           },
           className
         )}

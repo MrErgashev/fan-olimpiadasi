@@ -1,37 +1,16 @@
 import { Logo } from "./Logo";
 import { CONTACT_INFO, SUBJECTS } from "@/lib/constants";
-import { Send, ExternalLink, Heart, MapPin, Phone } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Send, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="relative bg-green-900">
-      {/* CTA Section */}
-      <div className="max-w-container mx-auto px-4 sm:px-6 pt-20 pb-16 text-center">
-        <h3 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-gold-gradient mb-4">
-          Olimpiadaga tayyormisiz?
-        </h3>
-        <p className="text-white/50 text-lg mb-8 max-w-lg mx-auto">
-          Hoziroq ro&apos;yxatdan o&apos;ting va o&apos;z bilimingizni sinab
-          ko&apos;ring
-        </p>
-        <Link href="/register">
-          <Button variant="premium" size="xl">
-            Ro&apos;yxatdan o&apos;tish
-          </Button>
-        </Link>
-      </div>
-
-      {/* Gold gradient separator */}
-      <div className="gradient-divider" />
-
-      {/* Footer content */}
+    <footer className="bg-navy-950 text-white">
       <div className="max-w-container mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Logo & Info */}
           <div className="space-y-4 sm:col-span-2 lg:col-span-1">
-            <Logo size="md" />
+            <Logo size="md" variant="dark" />
             <p className="text-sm text-white/50 max-w-xs leading-relaxed">
               Oriental Universiteti tomonidan tashkil etiladigan respublika
               miqyosidagi Fan Olimpiadasi
@@ -41,21 +20,9 @@ export function Footer() {
                 href="https://t.me/Dilya0103"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-gold-500/10 text-white/60 hover:text-gold-400 transition-all duration-300 hover:scale-110"
+                className="p-2.5 rounded-xl bg-white/5 hover:bg-gold-500/10 text-white/50 hover:text-gold-400 transition-all duration-200"
               >
                 <Send className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-gold-500/10 text-white/60 hover:text-gold-400 transition-all duration-300 hover:scale-110"
-              >
-                <ExternalLink className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-gold-500/10 text-white/60 hover:text-gold-400 transition-all duration-300 hover:scale-110"
-              >
-                <Heart className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -68,19 +35,19 @@ export function Footer() {
             <div className="flex flex-col gap-2.5">
               <Link
                 href="/results"
-                className="text-sm text-white/60 hover:text-gold-400 transition-colors duration-300"
+                className="text-sm text-white/50 hover:text-white transition-colors duration-200"
               >
                 Natijalar
               </Link>
               <Link
                 href="/login"
-                className="text-sm text-white/60 hover:text-gold-400 transition-colors duration-300"
+                className="text-sm text-white/50 hover:text-white transition-colors duration-200"
               >
                 Kirish
               </Link>
               <Link
                 href="/register"
-                className="text-sm text-white/60 hover:text-gold-400 transition-colors duration-300"
+                className="text-sm text-white/50 hover:text-white transition-colors duration-200"
               >
                 Ro&apos;yxatdan o&apos;tish
               </Link>
@@ -97,7 +64,7 @@ export function Footer() {
                 <a
                   key={subject.slug}
                   href="#fanlar"
-                  className="text-sm text-white/60 hover:text-gold-400 transition-colors duration-300"
+                  className="text-sm text-white/50 hover:text-white transition-colors duration-200"
                 >
                   {subject.emoji} {subject.name}
                 </a>
@@ -112,12 +79,12 @@ export function Footer() {
             </h4>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-gold-400 mt-0.5 shrink-0" />
-                <p className="text-sm text-white/60">{CONTACT_INFO.address}</p>
+                <MapPin className="w-4 h-4 text-gold-400/60 mt-0.5 shrink-0" />
+                <p className="text-sm text-white/50">{CONTACT_INFO.address}</p>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-gold-400 shrink-0" />
-                <p className="text-sm text-white/60">Telegram orqali</p>
+                <Phone className="w-4 h-4 text-gold-400/60 shrink-0" />
+                <p className="text-sm text-white/50">Telegram orqali</p>
               </div>
               {CONTACT_INFO.telegram.map((tg) => (
                 <a
@@ -125,7 +92,7 @@ export function Footer() {
                   href={`https://t.me/${tg.replace("@", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-white/60 hover:text-gold-400 transition-colors duration-300 ml-7"
+                  className="flex items-center gap-2 text-sm text-white/50 hover:text-gold-400 transition-colors duration-200 ml-7"
                 >
                   <Send className="w-3 h-3" />
                   {tg}
@@ -143,10 +110,6 @@ export function Footer() {
             <p className="text-sm text-white/30">
               &copy; {CONTACT_INFO.year} {CONTACT_INFO.university}. Barcha
               huquqlar himoyalangan.
-            </p>
-            <p className="text-sm text-white/20 flex items-center gap-1">
-              Made with <Heart className="w-3 h-3 text-red-400/60" /> by
-              Oriental
             </p>
           </div>
         </div>

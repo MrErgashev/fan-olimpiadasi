@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Badge } from "@/components/ui/Badge";
 import { Navbar } from "@/components/shared/Navbar";
 import { Footer } from "@/components/shared/Footer";
 import {
@@ -34,15 +32,14 @@ interface Subject {
   emoji: string;
 }
 
-// Subject filter colors
 const SUBJECT_FILTER_COLORS: Record<string, string> = {
-  matematika: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  informatika: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-  tarix: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-  "ingliz-tili": "bg-red-500/20 text-red-400 border-red-500/30",
-  biologiya: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-  "ona-tili": "bg-violet-500/20 text-violet-400 border-violet-500/30",
-  "jismoniy-tarbiya": "bg-orange-500/20 text-orange-400 border-orange-500/30",
+  matematika: "bg-blue-50 text-blue-700 border-blue-200",
+  informatika: "bg-cyan-50 text-cyan-700 border-cyan-200",
+  tarix: "bg-amber-50 text-amber-700 border-amber-200",
+  "ingliz-tili": "bg-red-50 text-red-700 border-red-200",
+  biologiya: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  "ona-tili": "bg-violet-50 text-violet-700 border-violet-200",
+  "jismoniy-tarbiya": "bg-orange-50 text-orange-700 border-orange-200",
 };
 
 export default function PublicResultsPage() {
@@ -77,27 +74,23 @@ export default function PublicResultsPage() {
   const handleSearch = () => fetchResults();
 
   const top3 = results.slice(0, 3);
-  const podiumOrder = [top3[1], top3[0], top3[2]]; // 2, 1, 3
+  const podiumOrder = [top3[1], top3[0], top3[2]];
 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen pt-24 pb-16 bg-green-900 relative">
-        {/* Subtle background glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-gold-500/[0.03] blur-[150px]" />
-
-        <div className="relative max-w-container mx-auto px-4 sm:px-6">
+      <main className="min-h-screen pt-24 pb-16 bg-slate-50">
+        <div className="max-w-container mx-auto px-4 sm:px-6">
           {/* Header */}
           <div className="text-center mb-12">
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gold-gradient"
+              className="text-4xl sm:text-5xl font-bold text-navy-950"
             >
               Natijalar
             </motion.h1>
-            <div className="ornamental-line mt-5 mb-5" />
-            <p className="text-lg text-white/50">
+            <p className="mt-3 text-lg text-slate-500">
               Fan Olimpiadasi umumiy reyting jadvali
             </p>
           </div>
@@ -106,10 +99,10 @@ export default function PublicResultsPage() {
           <div className="flex flex-wrap gap-2 justify-center mb-8">
             <button
               onClick={() => setActiveSubject("")}
-              className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-300 ${
+              className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-200 ${
                 activeSubject === ""
-                  ? "bg-gold-500/20 text-gold-400 border-gold-500/30 shadow-glow-gold"
-                  : "bg-white/5 text-white/60 border-white/10 hover:border-white/20"
+                  ? "bg-navy-950 text-white border-navy-950"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
               }`}
             >
               Barchasi
@@ -117,14 +110,13 @@ export default function PublicResultsPage() {
             {subjects.map((s) => {
               const isActive = activeSubject === s.slug;
               const colors = isActive
-                ? SUBJECT_FILTER_COLORS[s.slug] ||
-                  "bg-gold-500/20 text-gold-400 border-gold-500/30"
-                : "bg-white/5 text-white/60 border-white/10 hover:border-white/20";
+                ? SUBJECT_FILTER_COLORS[s.slug] || "bg-navy-950 text-white border-navy-950"
+                : "bg-white text-slate-600 border-slate-200 hover:border-slate-300";
               return (
                 <button
                   key={s.slug}
                   onClick={() => setActiveSubject(s.slug)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-300 ${colors}`}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-200 ${colors}`}
                 >
                   {s.emoji} {s.name}
                 </button>
@@ -140,6 +132,7 @@ export default function PublicResultsPage() {
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               icon={<Search className="w-4 h-4" />}
+              variant="light"
             />
             <Button variant="secondary" onClick={handleSearch} className="shrink-0 px-5">
               <Search className="w-4 h-4" />
@@ -148,90 +141,77 @@ export default function PublicResultsPage() {
 
           {loading ? (
             <div className="flex justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-gold-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
             </div>
           ) : results.length === 0 ? (
-            <Card
-              variant="glass"
-              className="text-center py-20 rounded-2xl"
-            >
-              <Trophy className="w-16 h-16 text-white/10 mx-auto mb-6" />
-              <p className="text-xl text-white/50">
-                Hali natijalar yo&apos;q
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-card text-center py-20">
+              <div className="w-16 h-16 rounded-2xl bg-gold-500/10 flex items-center justify-center mx-auto mb-6">
+                <Trophy className="w-8 h-8 text-gold-500" />
+              </div>
+              <h3 className="text-xl font-bold text-navy-950 mb-2">
+                Natijalar tez orada e&apos;lon qilinadi
+              </h3>
+              <p className="text-slate-500 max-w-md mx-auto">
+                Olimpiada yakunlangandan so&apos;ng natijalar ushbu sahifada chop etiladi
               </p>
-            </Card>
+            </div>
           ) : (
             <>
               {/* Podium - Top 3 */}
               {top3.length >= 3 && (
-                <div className="flex items-end justify-center gap-3 sm:gap-6 md:gap-8 mb-14 sm:mb-16 max-w-3xl mx-auto">
+                <div className="flex items-end justify-center gap-3 sm:gap-6 md:gap-8 mb-14 max-w-3xl mx-auto">
                   {podiumOrder.map((r, idx) => {
                     if (!r) return null;
                     const place = idx === 1 ? 1 : idx === 0 ? 2 : 3;
-                    const heights = [
-                      "h-36 sm:h-48",
-                      "h-48 sm:h-64",
-                      "h-28 sm:h-36",
-                    ];
-                    const colors = [
-                      "from-gray-400 to-gray-300",
+                    const heights = ["h-36 sm:h-48", "h-48 sm:h-64", "h-28 sm:h-36"];
+                    const bgColors = [
+                      "from-slate-300 to-slate-200",
                       "from-gold-500 to-gold-300",
-                      "from-amber-700 to-amber-500",
+                      "from-amber-600 to-amber-400",
                     ];
                     const initials = `${r.firstName.charAt(0)}${r.lastName.charAt(0)}`;
 
                     return (
                       <motion.div
                         key={r.rank}
-                        initial={{ opacity: 0, y: 50 }}
+                        initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          delay: idx * 0.2,
-                          duration: 0.6,
-                          ease: [0.16, 1, 0.3, 1],
-                        }}
+                        transition={{ delay: idx * 0.15, duration: 0.5 }}
                         className="flex-1 max-w-[220px] text-center"
                       >
                         <div className="mb-3">
-                          {/* Crown for 1st */}
                           {place === 1 && (
                             <motion.div
                               animate={{ y: [0, -4, 0] }}
-                              transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                              }}
+                              transition={{ duration: 2, repeat: Infinity }}
                               className="flex justify-center mb-1"
                             >
-                              <Crown className="w-7 h-7 text-gold-400" />
+                              <Crown className="w-7 h-7 text-gold-500" />
                             </motion.div>
                           )}
 
-                          {/* Avatar */}
                           <div
-                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-b ${colors[idx]} flex items-center justify-center mx-auto mb-2 shadow-lg`}
+                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-b ${bgColors[idx]} flex items-center justify-center mx-auto mb-2 shadow-lg`}
                           >
-                            <span className="text-sm sm:text-base font-bold text-green-900">
+                            <span className="text-sm sm:text-base font-bold text-white">
                               {initials}
                             </span>
                           </div>
 
-                          <p className="text-sm sm:text-base font-semibold text-white truncate">
+                          <p className="text-sm sm:text-base font-semibold text-navy-950 truncate">
                             {r.firstName} {r.lastName}
                           </p>
-                          <p className="text-xs text-white/40">{r.region}</p>
-                          <p className="font-mono font-bold text-gold-400 text-lg mt-1 text-glow-gold">
+                          <p className="text-xs text-slate-400">{r.region}</p>
+                          <p className="font-mono font-bold text-gold-600 text-lg mt-1">
                             {r.totalScore.toFixed(1)}
                           </p>
                         </div>
                         <div
-                          className={`${heights[idx]} rounded-t-2xl bg-gradient-to-b ${colors[idx]} flex items-start justify-center pt-4 sm:pt-5 relative overflow-hidden`}
+                          className={`${heights[idx]} rounded-t-2xl bg-gradient-to-b ${bgColors[idx]} flex items-start justify-center pt-4 sm:pt-5 relative overflow-hidden`}
                         >
-                          <span className="text-2xl sm:text-3xl font-display font-bold text-green-900">
+                          <span className="text-2xl sm:text-3xl font-bold text-white/90">
                             {place}
                           </span>
-                          {/* Shine effect */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-shine opacity-60" />
                         </div>
                       </motion.div>
                     );
@@ -241,26 +221,26 @@ export default function PublicResultsPage() {
 
               {/* Desktop Table */}
               <div className="hidden md:block">
-                <Card variant="glass" className="overflow-x-auto rounded-2xl">
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-card overflow-hidden">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-white/10">
-                        <th className="text-left py-4 px-4 text-white/50 font-medium">
+                      <tr className="border-b border-slate-100 bg-slate-50/50">
+                        <th className="text-left py-4 px-5 text-slate-500 font-medium text-xs uppercase tracking-wider">
                           O&apos;rin
                         </th>
-                        <th className="text-left py-4 px-4 text-white/50 font-medium">
+                        <th className="text-left py-4 px-5 text-slate-500 font-medium text-xs uppercase tracking-wider">
                           Ism
                         </th>
-                        <th className="text-left py-4 px-4 text-white/50 font-medium">
+                        <th className="text-left py-4 px-5 text-slate-500 font-medium text-xs uppercase tracking-wider">
                           Fan
                         </th>
-                        <th className="text-left py-4 px-4 text-white/50 font-medium">
+                        <th className="text-left py-4 px-5 text-slate-500 font-medium text-xs uppercase tracking-wider">
                           Viloyat
                         </th>
-                        <th className="text-left py-4 px-4 text-white/50 font-medium">
+                        <th className="text-left py-4 px-5 text-slate-500 font-medium text-xs uppercase tracking-wider">
                           Maktab
                         </th>
-                        <th className="text-center py-4 px-4 text-white/50 font-medium">
+                        <th className="text-center py-4 px-5 text-slate-500 font-medium text-xs uppercase tracking-wider">
                           Ball
                         </th>
                       </tr>
@@ -269,48 +249,44 @@ export default function PublicResultsPage() {
                       {results.map((r, i) => (
                         <motion.tr
                           key={`${r.rank}-${r.firstName}`}
-                          initial={{ opacity: 0, y: 10 }}
+                          initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: Math.min(i * 0.03, 0.5) }}
-                          className={`border-b border-white/5 hover:bg-white/[0.03] transition-colors ${
-                            i % 2 === 0 ? "" : "bg-white/[0.01]"
-                          }`}
+                          className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"
                         >
-                          <td className="py-4 px-4">
+                          <td className="py-4 px-5">
                             {r.rank <= 3 ? (
-                              <div className="flex items-center gap-1">
-                                <Medal
-                                  className={`w-5 h-5 ${
-                                    r.rank === 1
-                                      ? "text-gold-400"
-                                      : r.rank === 2
-                                        ? "text-gray-300"
-                                        : "text-amber-600"
-                                  }`}
-                                />
-                              </div>
+                              <Medal
+                                className={`w-5 h-5 ${
+                                  r.rank === 1
+                                    ? "text-gold-500"
+                                    : r.rank === 2
+                                      ? "text-slate-400"
+                                      : "text-amber-600"
+                                }`}
+                              />
                             ) : (
-                              <span className="font-mono text-white/40">
+                              <span className="font-mono text-slate-400">
                                 {r.rank}
                               </span>
                             )}
                           </td>
-                          <td className="py-4 px-4 font-medium">
+                          <td className="py-4 px-5 font-medium text-navy-950">
                             {r.firstName} {r.lastName}
                           </td>
-                          <td className="py-4 px-4">
-                            <Badge variant="default" size="md">
+                          <td className="py-4 px-5">
+                            <span className="inline-flex items-center gap-1 text-slate-600">
                               {r.subjectEmoji} {r.subjectName}
-                            </Badge>
+                            </span>
                           </td>
-                          <td className="py-4 px-4 text-white/60">
+                          <td className="py-4 px-5 text-slate-500">
                             {r.region}
                           </td>
-                          <td className="py-4 px-4 text-white/60">
+                          <td className="py-4 px-5 text-slate-500">
                             {r.school}
                           </td>
-                          <td className="py-4 px-4 text-center">
-                            <span className="font-mono font-bold text-gold-400 text-base">
+                          <td className="py-4 px-5 text-center">
+                            <span className="font-mono font-bold text-gold-600 text-base">
                               {r.totalScore.toFixed(1)}
                             </span>
                           </td>
@@ -318,7 +294,7 @@ export default function PublicResultsPage() {
                       ))}
                     </tbody>
                   </table>
-                </Card>
+                </div>
               </div>
 
               {/* Mobile Card Layout */}
@@ -326,45 +302,43 @@ export default function PublicResultsPage() {
                 {results.map((r, i) => (
                   <motion.div
                     key={`${r.rank}-${r.firstName}-mobile`}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: Math.min(i * 0.05, 0.5) }}
+                    transition={{ delay: Math.min(i * 0.04, 0.5) }}
+                    className="bg-white rounded-xl border border-slate-100 shadow-card p-4"
                   >
-                    <Card variant="glass" className="p-4 rounded-xl">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          {/* Rank */}
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white/5">
-                            {r.rank <= 3 ? (
-                              <Medal
-                                className={`w-5 h-5 ${
-                                  r.rank === 1
-                                    ? "text-gold-400"
-                                    : r.rank === 2
-                                      ? "text-gray-300"
-                                      : "text-amber-600"
-                                }`}
-                              />
-                            ) : (
-                              <span className="font-mono text-sm text-white/40">
-                                {r.rank}
-                              </span>
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-medium text-white text-sm">
-                              {r.firstName} {r.lastName}
-                            </p>
-                            <p className="text-xs text-white/40">
-                              {r.subjectEmoji} {r.subjectName} · {r.region}
-                            </p>
-                          </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-slate-50">
+                          {r.rank <= 3 ? (
+                            <Medal
+                              className={`w-5 h-5 ${
+                                r.rank === 1
+                                  ? "text-gold-500"
+                                  : r.rank === 2
+                                    ? "text-slate-400"
+                                    : "text-amber-600"
+                              }`}
+                            />
+                          ) : (
+                            <span className="font-mono text-sm text-slate-400">
+                              {r.rank}
+                            </span>
+                          )}
                         </div>
-                        <span className="font-mono font-bold text-gold-400 text-lg">
-                          {r.totalScore.toFixed(1)}
-                        </span>
+                        <div>
+                          <p className="font-medium text-navy-950 text-sm">
+                            {r.firstName} {r.lastName}
+                          </p>
+                          <p className="text-xs text-slate-400">
+                            {r.subjectEmoji} {r.subjectName} · {r.region}
+                          </p>
+                        </div>
                       </div>
-                    </Card>
+                      <span className="font-mono font-bold text-gold-600 text-lg">
+                        {r.totalScore.toFixed(1)}
+                      </span>
+                    </div>
                   </motion.div>
                 ))}
               </div>
