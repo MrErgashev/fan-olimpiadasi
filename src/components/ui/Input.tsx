@@ -31,7 +31,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {icon && (
             <div className={cn(
               "absolute left-4 top-1/2 -translate-y-1/2",
-              isLight ? "text-slate-400" : "text-white/40"
+              isLight ? "text-slate-400" : "text-gold-400"
             )}>
               {icon}
             </div>
