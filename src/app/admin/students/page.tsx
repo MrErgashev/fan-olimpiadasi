@@ -44,8 +44,8 @@ export default function StudentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-blue-gradient">O&apos;quvchilar</h1>
-        <p className="text-sm text-white/40 mt-1">Jami: {total} ta</p>
+        <h1 className="font-display text-2xl font-bold text-slate-800">O&apos;quvchilar</h1>
+        <p className="text-sm text-slate-400 mt-1">Jami: {total} ta</p>
       </div>
 
       <div className="flex gap-2">
@@ -54,18 +54,18 @@ export default function StudentsPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-600" /></div>
       ) : (
         <div className="space-y-3">
           {students.map((s) => (
-            <Card key={s.id} variant="glass-blue">
+            <Card key={s.id} variant="light" className="p-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-white">{s.firstName} {s.lastName}</span>
+                    <span className="font-semibold text-slate-800">{s.firstName} {s.lastName}</span>
                     {s.isBlocked && <Badge variant="error">Bloklangan</Badge>}
                   </div>
-                  <p className="text-sm text-white/40">
+                  <p className="text-sm text-slate-400">
                     {s.phone} &middot; {s.region?.name || ""} &middot; {s.schoolName}
                   </p>
                   <div className="flex gap-1 mt-2 flex-wrap">
@@ -74,7 +74,7 @@ export default function StudentsPage() {
                     ))}
                   </div>
                 </div>
-                <div className="text-sm text-white/40">
+                <div className="text-sm text-slate-400">
                   {s._count.testAttempts} test
                 </div>
               </div>

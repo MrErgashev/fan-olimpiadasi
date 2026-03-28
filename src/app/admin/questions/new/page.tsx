@@ -74,10 +74,10 @@ export default function NewQuestionPage() {
         <Link href="/admin/questions">
           <Button variant="ghost" size="sm"><ArrowLeft className="w-4 h-4" /></Button>
         </Link>
-        <h1 className="font-display text-2xl font-bold text-blue-gradient">Yangi savol</h1>
+        <h1 className="font-display text-2xl font-bold text-slate-800">Yangi savol</h1>
       </div>
 
-      <Card variant="glass-blue">
+      <Card variant="light" className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select
@@ -100,12 +100,12 @@ export default function NewQuestionPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-200">Savol matni</label>
+            <label className="block text-sm font-medium text-slate-700">Savol matni</label>
             <textarea
               value={form.questionText}
               onChange={(e) => set("questionText", e.target.value)}
               rows={4}
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-button text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/40 resize-y"
+              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-button text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50 hover:border-slate-300 resize-y"
               placeholder="Savol matnini yozing..."
             />
           </div>
@@ -137,12 +137,12 @@ export default function NewQuestionPage() {
           />
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-gray-200">Izoh (ixtiyoriy)</label>
+            <label className="block text-sm font-medium text-slate-700">Izoh (ixtiyoriy)</label>
             <textarea
               value={form.explanation}
               onChange={(e) => set("explanation", e.target.value)}
               rows={2}
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-button text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/40 resize-y"
+              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-button text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50 hover:border-slate-300 resize-y"
               placeholder="To'g'ri javob uchun tushuntirish..."
             />
           </div>

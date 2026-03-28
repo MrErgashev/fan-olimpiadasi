@@ -21,7 +21,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-app-mesh">
+    <div className="min-h-screen bg-slate-50">
       <Sidebar />
       <main className="lg:ml-60 min-h-screen p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8">
         {children}

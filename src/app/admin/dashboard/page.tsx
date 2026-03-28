@@ -69,7 +69,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
       </div>
     );
   }
@@ -83,41 +83,41 @@ export default function AdminDashboard() {
       label: "Jami o'quvchilar",
       value: stats.totalStudents,
       icon: Users,
-      color: "text-blue-400",
-      bgColor: "bg-blue-500/15",
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
     },
     {
       label: "Savollar bazasi",
       value: stats.totalQuestions,
       icon: FileQuestion,
-      color: "text-green-400",
-      bgColor: "bg-green-500/15",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
     },
     {
       label: "Faol testlar",
       value: stats.activeTests,
       icon: ClipboardList,
-      color: "text-yellow-400",
-      bgColor: "bg-yellow-500/15",
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50",
     },
     {
       label: "Topshirilgan testlar",
       value: stats.submittedAttempts,
       icon: Trophy,
-      color: "text-cyan-400",
-      bgColor: "bg-cyan-500/15",
+      color: "text-cyan-600",
+      bgColor: "bg-cyan-50",
     },
   ];
 
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl sm:text-3xl font-bold text-blue-gradient">
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-slate-800">
           Admin Dashboard
         </h1>
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-green-400" />
-          <span className="text-sm text-white/40">Bugun</span>
+          <TrendingUp className="w-4 h-4 text-green-500" />
+          <span className="text-sm text-slate-400">Bugun</span>
         </div>
       </div>
 
@@ -130,11 +130,11 @@ export default function AdminDashboard() {
       >
         {cards.map((card) => (
           <motion.div key={card.label} variants={item}>
-            <Card variant="glass-blue" className="rounded-2xl">
-              <div className="flex items-center justify-between">
+            <Card variant="light" className="rounded-2xl">
+              <div className="flex items-center justify-between p-5">
                 <div>
-                  <p className="text-sm text-white/50">{card.label}</p>
-                  <p className="mt-2 text-3xl sm:text-4xl font-mono font-bold text-white">
+                  <p className="text-sm text-slate-500">{card.label}</p>
+                  <p className="mt-2 text-3xl sm:text-4xl font-mono font-bold text-slate-800">
                     {card.value}
                   </p>
                 </div>
@@ -153,15 +153,16 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link href="/admin/tests/new">
           <Card
-            variant="interactive-blue"
-            className="flex items-center gap-4 rounded-2xl"
+            variant="light"
+            hover
+            className="flex items-center gap-4 rounded-2xl p-5"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
               <Plus className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-white">Yangi test yaratish</p>
-              <p className="text-sm text-white/40">
+              <p className="font-semibold text-slate-800">Yangi test yaratish</p>
+              <p className="text-sm text-slate-400">
                 Test konfiguratsiyasi va sozlamalari
               </p>
             </div>
@@ -169,15 +170,16 @@ export default function AdminDashboard() {
         </Link>
         <Link href="/admin/access-codes">
           <Card
-            variant="interactive-blue"
-            className="flex items-center gap-4 rounded-2xl"
+            variant="light"
+            hover
+            className="flex items-center gap-4 rounded-2xl p-5"
           >
-            <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-              <KeyRound className="w-5 h-5 text-blue-400" />
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+              <KeyRound className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <p className="font-semibold text-white">Kod generatsiya qilish</p>
-              <p className="text-sm text-white/40">
+              <p className="font-semibold text-slate-800">Kod generatsiya qilish</p>
+              <p className="text-sm text-slate-400">
                 Access kodlarni boshqarish
               </p>
             </div>
@@ -186,10 +188,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* Subject statistics */}
-      <Card variant="glass-blue" className="rounded-2xl">
+      <Card variant="light" className="rounded-2xl p-6">
         <div className="flex items-center gap-2 mb-6">
-          <BarChart3 className="w-5 h-5 text-primary-400" />
-          <h2 className="text-lg font-semibold">
+          <BarChart3 className="w-5 h-5 text-primary-600" />
+          <h2 className="text-lg font-semibold text-slate-800">
             Fan bo&apos;yicha statistika
           </h2>
         </div>
@@ -205,35 +207,35 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">{s.emoji}</span>
-                    <span className="text-sm font-medium text-white/80">
+                    <span className="text-sm font-medium text-slate-700">
                       {s.name}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-white/40">
+                  <div className="flex items-center gap-4 text-xs text-slate-400">
                     <span>
-                      <span className="font-mono text-primary-400 text-sm">
+                      <span className="font-mono text-primary-600 text-sm">
                         {s.questions}
                       </span>{" "}
                       savol
                     </span>
                     <span>
-                      <span className="font-mono text-sm">{s.tests}</span>{" "}
+                      <span className="font-mono text-sm text-slate-600">{s.tests}</span>{" "}
                       test
                     </span>
                     <span>
-                      <span className="font-mono text-sm">{s.students}</span>{" "}
+                      <span className="font-mono text-sm text-slate-600">{s.students}</span>{" "}
                       ishtirokchi
                     </span>
                   </div>
                 </div>
                 {/* Progress bar */}
-                <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: `${percentage}%` }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className={`h-full rounded-full ${barColor} opacity-60 group-hover:opacity-100 transition-opacity`}
+                    className={`h-full rounded-full ${barColor} opacity-70 group-hover:opacity-100 transition-opacity`}
                   />
                 </div>
               </div>

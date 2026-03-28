@@ -68,9 +68,9 @@ export default function NewTestPage() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
         <Link href="/admin/tests"><Button variant="ghost" size="sm"><ArrowLeft className="w-4 h-4" /></Button></Link>
-        <h1 className="font-display text-2xl font-bold text-blue-gradient">Yangi test</h1>
+        <h1 className="font-display text-2xl font-bold text-slate-800">Yangi test</h1>
       </div>
-      <Card variant="glass-blue">
+      <Card variant="light" className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <Select label="Fan" value={form.subjectId} onChange={(e) => set("subjectId", e.target.value)} placeholder="Fanni tanlang" options={subjects.map((s) => ({ value: s.id, label: s.name }))} />
           <Input label="Test nomi" value={form.name} onChange={(e) => set("name", e.target.value)} placeholder='Masalan: "Matematika — I tur"' />
@@ -80,13 +80,13 @@ export default function NewTestPage() {
             <Input label="Umumiy ball" type="number" value={form.totalScore} onChange={(e) => set("totalScore", e.target.value)} />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <label className="flex items-center gap-3 p-3 rounded-button border border-white/10 bg-white/5 cursor-pointer">
+            <label className="flex items-center gap-3 p-3 rounded-button border border-slate-200 bg-white cursor-pointer hover:border-slate-300">
               <input type="checkbox" checked={form.isRandomOrder} onChange={(e) => set("isRandomOrder", e.target.checked)} className="w-4 h-4 rounded" />
-              <span className="text-sm text-white/70">Random tartib</span>
+              <span className="text-sm text-slate-600">Random tartib</span>
             </label>
-            <label className="flex items-center gap-3 p-3 rounded-button border border-white/10 bg-white/5 cursor-pointer">
+            <label className="flex items-center gap-3 p-3 rounded-button border border-slate-200 bg-white cursor-pointer hover:border-slate-300">
               <input type="checkbox" checked={form.isShuffleOptions} onChange={(e) => set("isShuffleOptions", e.target.checked)} className="w-4 h-4 rounded" />
-              <span className="text-sm text-white/70">Variantlar shuffle</span>
+              <span className="text-sm text-slate-600">Variantlar shuffle</span>
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
