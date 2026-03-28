@@ -290,7 +290,18 @@ enum SecurityEvent {
 }
 
 // ============================================
-// 12. TEST UCHUN TANLANGAN SAVOLLAR
+// 12. SAYT SOZLAMALARI
+// ============================================
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
+
+// ============================================
+// 13. TEST UCHUN TANLANGAN SAVOLLAR
 // ============================================
 model AttemptQuestion {
   id            String @id @default(cuid())

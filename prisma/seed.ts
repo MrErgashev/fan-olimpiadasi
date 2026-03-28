@@ -79,6 +79,14 @@ async function main() {
   });
   console.log("✓ Test access kodi yaratildi (ORIENTAL-2026-TEST)");
 
+  // 5. Default sozlamalar
+  await prisma.siteSetting.upsert({
+    where: { key: "maxSubjectsPerStudent" },
+    update: {},
+    create: { key: "maxSubjectsPerStudent", value: "1" },
+  });
+  console.log("✓ Default sozlamalar yaratildi (maxSubjectsPerStudent=1)");
+
   console.log("\n✅ Seeding tugadi!");
 }
 

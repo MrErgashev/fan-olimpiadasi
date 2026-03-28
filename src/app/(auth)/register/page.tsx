@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -30,8 +30,19 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [maxSubjects, setMaxSubjects] = useState(1);
+
   const [accessCode, setAccessCode] = useState("");
   const [codeError, setCodeError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/settings/max-subjects")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.maxSubjects !== undefined) setMaxSubjects(data.maxSubjects);
+      })
+      .catch(() => {});
+  }, []);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -77,12 +88,22 @@ export default function RegisterPage() {
   };
 
   const handleSubjectToggle = (subjectId: string) => {
-    setForm((prev) => ({
-      ...prev,
-      subjectIds: prev.subjectIds.includes(subjectId)
-        ? prev.subjectIds.filter((id) => id !== subjectId)
-        : [...prev.subjectIds, subjectId],
-    }));
+    setForm((prev) => {
+      const alreadySelected = prev.subjectIds.includes(subjectId);
+      if (alreadySelected) {
+        return { ...prev, subjectIds: prev.subjectIds.filter((id) => id !== subjectId) };
+      }
+      // max=1 → radio xatti-harakat (yangi fan eskisini almashtiradi)
+      if (maxSubjects === 1) {
+        return { ...prev, subjectIds: [subjectId] };
+      }
+      // max>1 → limitga tekshirish
+      if (maxSubjects > 0 && prev.subjectIds.length >= maxSubjects) {
+        toast.error(`Maksimal ${maxSubjects} ta fan tanlash mumkin`);
+        return prev;
+      }
+      return { ...prev, subjectIds: [...prev.subjectIds, subjectId] };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -327,7 +348,11 @@ export default function RegisterPage() {
                   {/* Fan tanlash */}
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">
-                      Olimpiada fanlari
+                      {maxSubjects === 1
+                        ? "Olimpiada fani (1 ta tanlang)"
+                        : maxSubjects > 1
+                          ? `Olimpiada fanlari (maks. ${maxSubjects} ta)`
+                          : "Olimpiada fanlari"}
                     </label>
                     <div className="grid grid-cols-2 gap-2.5">
                       {SUBJECTS.map((subject) => {
