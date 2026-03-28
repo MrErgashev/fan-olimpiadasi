@@ -13,7 +13,6 @@ import {
   Search,
   Loader2,
   Crown,
-  Sparkles,
 } from "lucide-react";
 import { motion } from "framer-motion";
 

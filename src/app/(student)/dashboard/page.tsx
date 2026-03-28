@@ -118,7 +118,6 @@ export default function DashboardPage() {
 
   // Stats
   const completedTests = tests.filter((t) => t.status === "completed").length;
-  const activeTests = tests.filter((t) => t.status === "active").length;
   const avgScore =
     completedTests > 0
       ? tests
