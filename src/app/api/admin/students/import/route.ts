@@ -115,7 +115,7 @@ export async function POST(req: Request) {
 
     await db.$transaction(
       toCreate.map((item) => {
-        const { plainPassword, ...data } = item.data;
+        const { plainPassword: _plainPassword, ...data } = item.data;
         return db.student.create({ data });
       })
     );
