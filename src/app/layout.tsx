@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Outfit, JetBrains_Mono, DM_Sans } from "next/font/google";
+import { Playfair_Display, Outfit, JetBrains_Mono } from "next/font/google";
 import { Providers } from "@/components/shared/Providers";
 import "./globals.css";
 
@@ -18,12 +18,6 @@ const outfit = Outfit({
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
-  display: "swap",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
   display: "swap",
 });
 
@@ -56,7 +50,7 @@ export default function RootLayout({
   return (
     <html
       lang="uz"
-      className={`${playfair.variable} ${outfit.variable} ${jetbrains.variable} ${dmSans.variable}`}
+      className={`${playfair.variable} ${outfit.variable} ${jetbrains.variable}`}
     >
       <body className="font-body antialiased min-h-screen bg-slate-50 text-slate-900">
         <Providers>{children}</Providers>

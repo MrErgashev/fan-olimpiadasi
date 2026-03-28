@@ -26,7 +26,7 @@ const config: Config = {
           200: "#f5e5b0",
           100: "#faf3d8",
         },
-        // Keep green for legacy landing compat
+        // Keep green for admin/student pages backward compat
         green: {
           900: "#062a1e",
           800: "#0a3d2a",
@@ -38,9 +38,6 @@ const config: Config = {
         // App blue theme (admin/student)
         app: {
           dark: "#0a0e1a",
-          950: "#0c1222",
-          900: "#111827",
-          800: "#1e293b",
         },
         primary: {
           50: "#eff6ff",
@@ -100,8 +97,6 @@ const config: Config = {
           "0 0 20px rgba(59, 130, 246, 0.2), 0 0 60px rgba(59, 130, 246, 0.08)",
         "glow-blue-lg":
           "0 0 30px rgba(59, 130, 246, 0.3), 0 0 80px rgba(59, 130, 246, 0.12)",
-        "glow-cyan":
-          "0 0 20px rgba(6, 182, 212, 0.2), 0 0 60px rgba(6, 182, 212, 0.08)",
         "card": "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06)",
         "card-hover": "0 4px 16px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06)",
         "card-dark": "0 4px 16px rgba(0,0,0,0.3)",
@@ -135,8 +130,8 @@ const config: Config = {
           "100%": { transform: "rotateX(0deg)" },
         },
         "glow-pulse": {
-          "0%, 100%": { boxShadow: "0 0 0 rgba(59,130,246,0)" },
-          "50%": { boxShadow: "0 0 20px rgba(59,130,246,0.15), 0 0 40px rgba(59,130,246,0.05)" },
+          "0%, 100%": { boxShadow: "0 0 0 rgba(212,168,67,0)" },
+          "50%": { boxShadow: "0 0 20px rgba(212,168,67,0.15), 0 0 40px rgba(212,168,67,0.05)" },
         },
         "float": {
           "0%, 100%": { transform: "translateY(0px)" },
@@ -147,8 +142,8 @@ const config: Config = {
           "50%": { transform: "translateY(-8px)" },
         },
         "breathing-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(59,130,246,0.2), 0 0 60px rgba(59,130,246,0.05)" },
-          "50%": { boxShadow: "0 0 30px rgba(59,130,246,0.35), 0 0 80px rgba(59,130,246,0.12)" },
+          "0%, 100%": { boxShadow: "0 0 20px rgba(212,168,67,0.2), 0 0 60px rgba(212,168,67,0.05)" },
+          "50%": { boxShadow: "0 0 30px rgba(212,168,67,0.35), 0 0 80px rgba(212,168,67,0.12)" },
         },
         "border-rotate": {
           "0%": { "--border-angle": "0deg" },

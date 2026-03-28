@@ -137,7 +137,7 @@ export default function RegisterPage() {
       {/* Left brand panel */}
       <div className="hidden lg:flex lg:w-[40%] bg-navy-950 items-center justify-center p-12 relative overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-navy-700/30 blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-primary-500/[0.08] blur-[100px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-gold-500/[0.05] blur-[100px]" />
         <div className="relative text-center flex flex-col items-center">
           <Link href="/">
             <Logo size="xl" variant="dark" />
@@ -175,7 +175,7 @@ export default function RegisterPage() {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                     currentStepNum >= 1
-                      ? "bg-primary-500 text-white"
+                      ? "bg-gold-500 text-navy-950"
                       : "bg-slate-100 text-slate-400"
                   }`}
                 >
@@ -189,7 +189,7 @@ export default function RegisterPage() {
                   initial={{ width: "0%" }}
                   animate={{ width: currentStepNum >= 2 ? "100%" : "0%" }}
                   transition={{ duration: 0.4 }}
-                  className="absolute inset-y-0 left-0 bg-primary-500"
+                  className="absolute inset-y-0 left-0 bg-gold-500"
                 />
               </div>
 
@@ -198,7 +198,7 @@ export default function RegisterPage() {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                     currentStepNum >= 2
-                      ? "bg-primary-500 text-white"
+                      ? "bg-gold-500 text-navy-950"
                       : "bg-slate-100 text-slate-400"
                   }`}
                 >
@@ -220,7 +220,7 @@ export default function RegisterPage() {
                 className="space-y-6"
               >
                 <div className="bg-slate-50 rounded-2xl border border-slate-200 p-8 text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-primary-500 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gold-500 flex items-center justify-center mx-auto mb-4">
                     <KeyRound className="w-7 h-7 text-navy-950" />
                   </div>
                   <h3 className="text-lg font-semibold text-navy-950 mb-2">
@@ -254,7 +254,7 @@ export default function RegisterPage() {
                   Allaqachon ro&apos;yxatdan o&apos;tganmisiz?{" "}
                   <Link
                     href="/login"
-                    className="text-primary-600 hover:text-primary-500 font-semibold transition-colors"
+                    className="text-gold-600 hover:text-gold-500 font-semibold transition-colors"
                   >
                     Kirish
                   </Link>
@@ -400,7 +400,7 @@ export default function RegisterPage() {
                       type="checkbox"
                       checked={form.consent}
                       onChange={(e) => setForm({ ...form, consent: e.target.checked })}
-                      className="mt-1 w-4 h-4 rounded border-slate-300 text-primary-500 focus:ring-primary-500/40"
+                      className="mt-1 w-4 h-4 rounded border-slate-300 text-gold-500 focus:ring-gold-500/40"
                     />
                     <span className="text-sm text-slate-600 group-hover:text-slate-700 transition-colors">
                       Shaxsiy ma&apos;lumotlarimni qayta ishlashga rozilik beraman

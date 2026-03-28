@@ -33,17 +33,17 @@ export default function ResultsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-2xl font-bold text-gold-gradient">Natijalar</h1>
+      <h1 className="font-display text-2xl font-bold text-blue-gradient">Natijalar</h1>
 
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-400" /></div>
       ) : results.length === 0 ? (
-        <Card variant="glass" className="text-center py-12">
+        <Card variant="glass-blue" className="text-center py-12">
           <Trophy className="w-12 h-12 text-white/20 mx-auto mb-4" />
           <p className="text-white/50">Hali natijalar yo&apos;q</p>
         </Card>
       ) : (
-        <Card variant="glass" className="overflow-x-auto">
+        <Card variant="glass-blue" className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/10">

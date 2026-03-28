@@ -354,6 +354,7 @@ export default function TestPage() {
         onClose={() => setShowSubmitModal(false)}
         title="Testni yakunlash"
         size="sm"
+        theme="blue"
       >
         <div className="space-y-5">
           <p className="text-white/70">
@@ -379,7 +380,7 @@ export default function TestPage() {
               Bekor qilish
             </Button>
             <Button
-              variant="premium"
+              variant="blue-premium"
               className="flex-1"
               loading={submitting}
               onClick={submitTest}
@@ -396,6 +397,7 @@ export default function TestPage() {
         onClose={() => setShowTimeWarning(false)}
         title="Ogohlantirish!"
         size="sm"
+        theme="blue"
       >
         <div className="space-y-5 text-center">
           <AlertTriangle className="w-16 h-16 text-red-400 mx-auto" />
@@ -404,7 +406,7 @@ export default function TestPage() {
             <strong className="text-red-400">1 daqiqa</strong> qoldi!
           </p>
           <Button
-            variant="premium"
+            variant="blue-premium"
             onClick={() => setShowTimeWarning(false)}
             className="w-full"
           >

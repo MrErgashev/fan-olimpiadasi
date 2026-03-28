@@ -71,7 +71,7 @@ export default function QuestionsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-gold-gradient">Savollar bazasi</h1>
+          <h1 className="font-display text-2xl font-bold text-blue-gradient">Savollar bazasi</h1>
           <p className="text-sm text-white/40 mt-1">Jami: {total} ta savol</p>
         </div>
         <div className="flex gap-2">
@@ -104,13 +104,13 @@ export default function QuestionsPage() {
           <Loader2 className="w-6 h-6 animate-spin text-primary-400" />
         </div>
       ) : questions.length === 0 ? (
-        <Card variant="glass" className="text-center py-12">
+        <Card variant="glass-blue" className="text-center py-12">
           <p className="text-white/50">Savollar topilmadi</p>
         </Card>
       ) : (
         <div className="space-y-3">
           {questions.map((q) => (
-            <Card key={q.id} variant="glass" className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <Card key={q.id} variant="glass-blue" className="flex flex-col sm:flex-row sm:items-center gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span>{q.subject.emoji}</span>
