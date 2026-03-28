@@ -3,25 +3,126 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary Colors */
+  --green-900: #062a1e;
+  --green-800: #0a3d2a;
+  --green-700: #0f5c3a;
+  --green-600: #1a7a4e;
+  --green-500: #22996a;
+
+  /* Gold Colors */
+  --gold-500: #d4a843;
+  --gold-400: #e8c36a;
+  --gold-300: #f0d68a;
+  --gold-200: #f5e5b0;
+
+  /* Neutral */
+  --white: #ffffff;
+  --gray-100: #f4f4f4;
+  --gray-200: #e0e0e0;
+  --gray-500: #888888;
+  --dark-900: #111111;
+
+  /* Status */
+  --success: #22c55e;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base styles */
+body {
+  color: var(--white);
+  background: var(--green-900);
+  font-family: var(--font-outfit), "Outfit", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--green-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--green-600);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-500);
+}
+
+/* Selection */
+::selection {
+  background: rgba(212, 168, 67, 0.3);
+  color: var(--white);
+}
+
+/* Glassmorphism utility */
+@layer components {
+  .glass {
+    background: rgba(10, 61, 42, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-light {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .gold-border {
+    border: 1px solid rgba(212, 168, 67, 0.3);
+  }
+
+  .gold-border-bright {
+    border: 1px solid rgba(212, 168, 67, 0.6);
+  }
+
+  .spotlight {
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      rgba(34, 153, 106, 0.15) 0%,
+      transparent 70%
+    );
+  }
+
+  .gradient-gold {
+    background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
+  }
+
+  .gradient-green {
+    background: linear-gradient(135deg, var(--green-700), var(--green-500));
+  }
+
+  .gradient-btn {
+    background: linear-gradient(135deg, var(--green-600), var(--gold-500));
+  }
+
+  .text-gold-gradient {
+    background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Print protection for test pages */
+@media print {
+  .test-content {
+    display: none !important;
   }
 }

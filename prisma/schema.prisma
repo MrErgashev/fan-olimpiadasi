@@ -1,0 +1,307 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// 1. ADMINLAR
+// ============================================
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  fullName  String   @map("full_name")
+  role      AdminRole @default(admin)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  accessCodes AccessCode[]
+  questions   Question[]
+  tests       Test[]
+
+  @@map("admins")
+}
+
+enum AdminRole {
+  superadmin
+  admin
+  moderator
+}
+
+// ============================================
+// 2. FANLAR
+// ============================================
+model Subject {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  icon         String?
+  emoji        String?
+  isOnline     Boolean  @default(true) @map("is_online")
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  questions       Question[]
+  tests           Test[]
+  studentSubjects StudentSubject[]
+
+  @@map("subjects")
+}
+
+// ============================================
+// 3. ACCESS KODLAR
+// ============================================
+model AccessCode {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  maxUses     Int       @default(1) @map("max_uses")
+  currentUses Int       @default(0) @map("current_uses")
+  isActive    Boolean   @default(true) @map("is_active")
+  expiresAt   DateTime? @map("expires_at")
+  createdBy   String?   @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  admin    Admin?    @relation(fields: [createdBy], references: [id])
+  students Student[]
+
+  @@map("access_codes")
+}
+
+// ============================================
+// 4. VILOYATLAR
+// ============================================
+model Region {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  districts District[]
+  students  Student[]
+
+  @@map("regions")
+}
+
+// ============================================
+// 5. TUMANLAR
+// ============================================
+model District {
+  id       String @id @default(cuid())
+  regionId String @map("region_id")
+  name     String
+
+  region   Region    @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  students Student[]
+
+  @@map("districts")
+}
+
+// ============================================
+// 6. O'QUVCHILAR
+// ============================================
+model Student {
+  id           String   @id @default(cuid())
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  phone        String   @unique
+  password     String
+  regionId     String?  @map("region_id")
+  districtId   String?  @map("district_id")
+  schoolName   String   @map("school_name")
+  grade        Int      @default(11)
+  accessCodeId String?  @map("access_code_id")
+  isBlocked    Boolean  @default(false) @map("is_blocked")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  region       Region?          @relation(fields: [regionId], references: [id])
+  district     District?        @relation(fields: [districtId], references: [id])
+  accessCode   AccessCode?      @relation(fields: [accessCodeId], references: [id])
+  subjects     StudentSubject[]
+  testAttempts TestAttempt[]
+  securityLogs SecurityLog[]
+
+  @@map("students")
+}
+
+// O'quvchi tanlagan fanlar (many-to-many)
+model StudentSubject {
+  id        String @id @default(cuid())
+  studentId String @map("student_id")
+  subjectId String @map("subject_id")
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subjectId])
+  @@map("student_subjects")
+}
+
+// ============================================
+// 7. SAVOLLAR BAZASI
+// ============================================
+model Question {
+  id              String     @id @default(cuid())
+  subjectId       String     @map("subject_id")
+  difficulty      Difficulty @default(medium)
+  questionText    String     @map("question_text")
+  questionImageUrl String?   @map("question_image_url")
+  questionHasFormula Boolean @default(false) @map("question_has_formula")
+  optionA         String     @map("option_a")
+  optionAImageUrl String?    @map("option_a_image_url")
+  optionB         String     @map("option_b")
+  optionBImageUrl String?    @map("option_b_image_url")
+  optionC         String     @map("option_c")
+  optionCImageUrl String?    @map("option_c_image_url")
+  optionD         String     @map("option_d")
+  optionDImageUrl String?    @map("option_d_image_url")
+  correctAnswer   String     @map("correct_answer")
+  explanation     String?
+  isActive        Boolean    @default(true) @map("is_active")
+  createdBy       String?    @map("created_by")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  subject          Subject           @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  admin            Admin?            @relation(fields: [createdBy], references: [id])
+  attemptQuestions AttemptQuestion[]
+  attemptAnswers   AttemptAnswer[]
+
+  @@map("questions")
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
+// ============================================
+// 8. TESTLAR
+// ============================================
+model Test {
+  id                  String     @id @default(cuid())
+  subjectId           String     @map("subject_id")
+  name                String
+  totalQuestions       Int        @map("total_questions")
+  durationMinutes     Int        @map("duration_minutes")
+  totalScore          Float      @default(100) @map("total_score")
+  scorePerQuestion    Float?     @map("score_per_question")
+  extraScoreQuestions Int?       @map("extra_score_questions")
+  isRandomOrder       Boolean    @default(true) @map("is_random_order")
+  isShuffleOptions    Boolean    @default(true) @map("is_shuffle_options")
+  startsAt            DateTime?  @map("starts_at")
+  endsAt              DateTime?  @map("ends_at")
+  status              TestStatus @default(draft)
+  createdBy           String?    @map("created_by")
+  createdAt           DateTime   @default(now()) @map("created_at")
+
+  subject      Subject       @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  admin        Admin?        @relation(fields: [createdBy], references: [id])
+  testAttempts TestAttempt[]
+
+  @@map("tests")
+}
+
+enum TestStatus {
+  draft
+  active
+  closed
+}
+
+// ============================================
+// 9. TEST URINISHLARI (ATTEMPTS)
+// ============================================
+model TestAttempt {
+  id               String    @id @default(cuid())
+  studentId        String    @map("student_id")
+  testId           String    @map("test_id")
+  startedAt        DateTime  @default(now()) @map("started_at")
+  finishedAt       DateTime? @map("finished_at")
+  isSubmitted      Boolean   @default(false) @map("is_submitted")
+  totalScore       Float     @default(0) @map("total_score")
+  correctCount     Int       @default(0) @map("correct_count")
+  wrongCount       Int       @default(0) @map("wrong_count")
+  unansweredCount  Int       @default(0) @map("unanswered_count")
+  ipAddress        String?   @map("ip_address")
+  userAgent        String?   @map("user_agent")
+  deviceFingerprint String?  @map("device_fingerprint")
+
+  student          Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  test             Test              @relation(fields: [testId], references: [id], onDelete: Cascade)
+  attemptQuestions AttemptQuestion[]
+  attemptAnswers   AttemptAnswer[]
+  securityLogs     SecurityLog[]
+
+  @@unique([studentId, testId])
+  @@map("test_attempts")
+}
+
+// ============================================
+// 10. O'QUVCHI JAVOBLARI
+// ============================================
+model AttemptAnswer {
+  id              String    @id @default(cuid())
+  attemptId       String    @map("attempt_id")
+  questionId      String    @map("question_id")
+  displayOrder    Int       @map("display_order")
+  selectedAnswer  String?   @map("selected_answer")
+  isCorrect       Boolean?  @map("is_correct")
+  score           Float     @default(0)
+  answeredAt      DateTime? @map("answered_at")
+  timeSpentSeconds Int?     @map("time_spent_seconds")
+  shuffledOptions  Json?    @map("shuffled_options")
+
+  attempt  TestAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id])
+
+  @@unique([attemptId, questionId])
+  @@map("attempt_answers")
+}
+
+// ============================================
+// 11. XAVFSIZLIK LOGLARI
+// ============================================
+model SecurityLog {
+  id        String          @id @default(cuid())
+  attemptId String?         @map("attempt_id")
+  studentId String?         @map("student_id")
+  eventType SecurityEvent   @map("event_type")
+  details   Json?
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  attempt TestAttempt? @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  student Student?     @relation(fields: [studentId], references: [id])
+
+  @@map("security_logs")
+}
+
+enum SecurityEvent {
+  TAB_SWITCH
+  FULLSCREEN_EXIT
+  COPY_ATTEMPT
+  DEVTOOLS_OPEN
+  MULTIPLE_DEVICE
+  RIGHT_CLICK
+  KEYBOARD_SHORTCUT
+  WINDOW_BLUR
+  SUSPICIOUS_SPEED
+}
+
+// ============================================
+// 12. TEST UCHUN TANLANGAN SAVOLLAR
+// ============================================
+model AttemptQuestion {
+  id            String @id @default(cuid())
+  attemptId     String @map("attempt_id")
+  questionId    String @map("question_id")
+  displayOrder  Int    @map("display_order")
+  assignedScore Float  @map("assigned_score")
+
+  attempt  TestAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id])
+
+  @@unique([attemptId, questionId])
+  @@map("attempt_questions")
+}
