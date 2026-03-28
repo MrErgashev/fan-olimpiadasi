@@ -58,10 +58,9 @@ function TimeBlock({
     <div className="flex flex-col items-center">
       <div
         className={cn(
-          "relative rounded-2xl px-5 py-4 sm:px-8 sm:py-6 min-w-[84px] sm:min-w-[110px] md:min-w-[120px]",
+          "relative rounded-2xl px-5 py-4 sm:px-7 sm:py-5 min-w-[80px] sm:min-w-[100px]",
           "bg-white/[0.04] backdrop-blur-xl border border-white/[0.08]",
           "shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]",
-          "hover:bg-white/[0.06] transition-colors duration-300",
           isSeconds && "animate-glow-pulse"
         )}
       >
@@ -72,14 +71,14 @@ function TimeBlock({
           {digits.split("").map((digit, i) => (
             <span
               key={i}
-              className="text-4xl sm:text-5xl md:text-6xl font-mono font-black text-white tabular-nums counter-glow"
+              className="text-3xl sm:text-4xl md:text-5xl font-mono font-black text-white tabular-nums"
             >
               <AnimatedDigit value={digit} />
             </span>
           ))}
         </div>
       </div>
-      <span className="mt-3 text-[10px] sm:text-xs text-white/40 uppercase tracking-[0.25em] font-semibold">
+      <span className="mt-2.5 text-[10px] sm:text-xs text-white/30 uppercase tracking-[0.2em] font-medium">
         {label}
       </span>
     </div>
@@ -88,15 +87,15 @@ function TimeBlock({
 
 function Separator() {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 pb-8">
+    <div className="flex flex-col items-center justify-center gap-1.5 pb-7">
       <motion.span
-        className="block w-1.5 h-1.5 rounded-full bg-gold-500/50"
-        animate={{ opacity: [0.4, 1, 0.4] }}
+        className="block w-1.5 h-1.5 rounded-full bg-gold-500/40"
+        animate={{ opacity: [0.4, 0.8, 0.4] }}
         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.span
-        className="block w-1.5 h-1.5 rounded-full bg-gold-500/50"
-        animate={{ opacity: [1, 0.4, 1] }}
+        className="block w-1.5 h-1.5 rounded-full bg-gold-500/40"
+        animate={{ opacity: [0.8, 0.4, 0.8] }}
         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
       />
     </div>
@@ -140,9 +139,9 @@ export function CountdownTimer() {
   ];
 
   return (
-    <div className="flex flex-wrap justify-center gap-3 sm:gap-5">
+    <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
       {blocks.map((block, i) => (
-        <div key={block.label} className="flex items-center gap-3 sm:gap-5">
+        <div key={block.label} className="flex items-center gap-3 sm:gap-4">
           <TimeBlock
             value={block.value}
             label={block.label}
