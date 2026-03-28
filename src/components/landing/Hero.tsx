@@ -3,14 +3,7 @@
 import { Button } from "@/components/ui/Button";
 import { CountdownTimer } from "./CountdownTimer";
 import { motion } from "framer-motion";
-import { BookOpen, Users, Trophy } from "lucide-react";
 import Link from "next/link";
-
-const TRUST_BULLETS = [
-  { icon: BookOpen, text: "7 ta fan bo'yicha" },
-  { icon: Users, text: "1000+ ishtirokchi" },
-  { icon: Trophy, text: "Qimmatbaho sovg'alar" },
-];
 
 export function Hero() {
   return (
@@ -79,21 +72,6 @@ export function Hero() {
           11-sinf o&apos;quvchilari orasida respublika miqyosidagi bilim bellashuvi.
           O&apos;zingizni sinab ko&apos;ring va kelajagingizni yarating.
         </motion.p>
-
-        {/* Trust bullets */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 mb-10"
-        >
-          {TRUST_BULLETS.map((bullet) => (
-            <div key={bullet.text} className="flex items-center gap-2 text-white/40">
-              <bullet.icon className="w-4 h-4 text-gold-500/60" />
-              <span className="text-sm font-medium">{bullet.text}</span>
-            </div>
-          ))}
-        </motion.div>
 
         {/* CTA Buttons */}
         <motion.div
