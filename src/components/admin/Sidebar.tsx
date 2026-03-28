@@ -3,19 +3,11 @@
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/Logo";
 import { Badge } from "@/components/ui/Badge";
+import { Menu, X } from "lucide-react";
 import {
-  LayoutDashboard,
-  FileQuestion,
-  ClipboardList,
-  Users,
-  Trophy,
-  KeyRound,
-  ShieldAlert,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-} from "lucide-react";
+  DashboardIcon, QuestionIcon, ClipboardIcon, UsersIcon,
+  TrophyIcon, KeyIcon, ShieldIcon, GearIcon, LogoutIcon,
+} from "@/components/ui/Icon3D";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -25,34 +17,34 @@ const NAV_GROUPS = [
   {
     label: "ASOSIY",
     items: [
-      { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/admin/dashboard", label: "Dashboard", icon: DashboardIcon },
     ],
   },
   {
     label: "KONTENT",
     items: [
-      { href: "/admin/questions", label: "Savollar", icon: FileQuestion },
-      { href: "/admin/tests", label: "Testlar", icon: ClipboardList },
+      { href: "/admin/questions", label: "Savollar", icon: QuestionIcon },
+      { href: "/admin/tests", label: "Testlar", icon: ClipboardIcon },
     ],
   },
   {
     label: "FOYDALANUVCHILAR",
     items: [
-      { href: "/admin/students", label: "O'quvchilar", icon: Users },
-      { href: "/admin/access-codes", label: "Access kodlar", icon: KeyRound },
+      { href: "/admin/students", label: "O'quvchilar", icon: UsersIcon },
+      { href: "/admin/access-codes", label: "Access kodlar", icon: KeyIcon },
     ],
   },
   {
     label: "TAHLIL",
     items: [
-      { href: "/admin/results", label: "Natijalar", icon: Trophy },
-      { href: "/admin/security-logs", label: "Xavfsizlik", icon: ShieldAlert },
+      { href: "/admin/results", label: "Natijalar", icon: TrophyIcon },
+      { href: "/admin/security-logs", label: "Xavfsizlik", icon: ShieldIcon },
     ],
   },
   {
     label: "SOZLAMALAR",
     items: [
-      { href: "/admin/settings", label: "Sozlamalar", icon: Settings },
+      { href: "/admin/settings", label: "Sozlamalar", icon: GearIcon },
     ],
   },
 ];
@@ -118,7 +110,7 @@ export function Sidebar() {
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200 w-full"
         >
-          <LogOut className="w-4 h-4" />
+          <LogoutIcon className="w-4 h-4" />
           <span>Chiqish</span>
         </button>
       </div>

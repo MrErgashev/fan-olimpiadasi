@@ -1,32 +1,32 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { UserPlus, KeyRound, FileText, BarChart3, Award } from "lucide-react";
+import { PersonIcon, KeyIcon, DocumentIcon, ChartIcon, AwardIcon } from "@/components/ui/Icon3D";
 import { useRef } from "react";
 
 const STEPS = [
   {
-    icon: UserPlus,
+    icon: PersonIcon,
     title: "Ro'yxatdan o'ting",
     description: "Access kod orqali platformaga ro'yxatdan o'ting",
   },
   {
-    icon: KeyRound,
+    icon: KeyIcon,
     title: "Kabinetga kiring",
     description: "Telefon raqam va parol bilan tizimga kiring",
   },
   {
-    icon: FileText,
+    icon: DocumentIcon,
     title: "Test topshiring",
     description: "Belgilangan vaqtda onlayn test yechishni boshlang",
   },
   {
-    icon: BarChart3,
+    icon: ChartIcon,
     title: "Natijalarni ko'ring",
     description: "Test tugagandan so'ng natijalaringizni kuzating",
   },
   {
-    icon: Award,
+    icon: AwardIcon,
     title: "Mukofot oling",
     description: "G'oliblar tantanali ravishda taqdirlanadi",
   },

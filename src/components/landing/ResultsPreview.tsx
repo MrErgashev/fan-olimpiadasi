@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { TrophyIcon } from "@/components/ui/Icon3D";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
@@ -50,7 +51,7 @@ export function ResultsPreview() {
                   animate={{ rotate: [0, -5, 5, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <Trophy className="w-8 h-8 text-gold-500" />
+                  <TrophyIcon className="w-8 h-8" />
                 </motion.div>
               </div>
             </div>

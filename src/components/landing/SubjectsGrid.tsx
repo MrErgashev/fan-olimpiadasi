@@ -4,24 +4,17 @@ import { Badge } from "@/components/ui/Badge";
 import { SUBJECTS } from "@/lib/constants";
 import { motion } from "framer-motion";
 import {
-  Calculator,
-  Monitor,
-  BookOpen,
-  Globe,
-  Dna,
-  BookText,
-  Dumbbell,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+  CalculatorIcon, MonitorIcon, BookIcon, GlobeIcon, DnaIcon, BooksIcon, RunningIcon,
+} from "@/components/ui/Icon3D";
 
-const ICON_MAP: Record<string, LucideIcon> = {
-  Calculator,
-  Monitor,
-  BookOpen,
-  Globe,
-  Dna,
-  BookText,
-  Dumbbell,
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Calculator: CalculatorIcon,
+  Monitor: MonitorIcon,
+  BookOpen: BookIcon,
+  Globe: GlobeIcon,
+  Dna: DnaIcon,
+  BookText: BooksIcon,
+  Dumbbell: RunningIcon,
 };
 
 const ACCENT_MAP: Record<string, { bar: string; icon: string; bg: string; glow: string }> = {
@@ -102,7 +95,7 @@ export function SubjectsGrid() {
                 <div className="p-6 relative">
                   <div className="flex items-start justify-between mb-5">
                     <div className={`p-3 rounded-xl ${accent.bg} group-hover:shadow-md transition-shadow duration-300`}>
-                      {Icon && <Icon className={`w-6 h-6 ${accent.icon}`} />}
+                      {Icon && <Icon className="w-6 h-6" />}
                     </div>
                     <img
                       src={subject.image}

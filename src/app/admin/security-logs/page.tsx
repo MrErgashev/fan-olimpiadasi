@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Loader2, ShieldAlert, AlertTriangle } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { ShieldIcon, WarningIcon } from "@/components/ui/Icon3D";
 import toast from "react-hot-toast";
 
 interface Log {
@@ -59,7 +60,7 @@ export default function SecurityLogsPage() {
       {flagged.length > 0 && (
         <Card variant="light" className="border-red-200 p-5">
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle className="w-5 h-5 text-red-500" />
+            <WarningIcon className="w-5 h-5" />
             <h2 className="text-lg font-semibold text-red-600">Shubhali o&apos;quvchilar</h2>
           </div>
           <div className="space-y-2">
@@ -85,7 +86,7 @@ export default function SecurityLogsPage() {
       {/* Recent logs */}
       <Card variant="light" className="p-5">
         <div className="flex items-center gap-2 mb-4">
-          <ShieldAlert className="w-5 h-5 text-primary-600" />
+          <ShieldIcon className="w-5 h-5" />
           <h2 className="text-lg font-semibold text-slate-800">Oxirgi hodisalar</h2>
         </div>
         {logs.length === 0 ? (

@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { CONTACT_INFO } from "@/lib/constants";
-import { MapPin, Send, Phone } from "lucide-react";
+import { PinIcon, SendIcon, PhoneIcon } from "@/components/ui/Icon3D";
 import { motion } from "framer-motion";
 
 export function ContactSection() {
@@ -34,7 +34,7 @@ export function ContactSection() {
             >
               <div className="text-center">
                 <div className="w-20 h-20 rounded-2xl gradient-gold flex items-center justify-center mx-auto mb-6 shadow-glow-gold">
-                  <MapPin className="w-10 h-10 text-green-900" />
+                  <PinIcon className="w-10 h-10 text-green-900" />
                 </div>
                 <p className="text-white/70 font-medium text-lg mb-2">
                   {CONTACT_INFO.address}
@@ -57,7 +57,7 @@ export function ContactSection() {
               className="flex items-center gap-5 p-6 hover:-translate-y-0.5 transition-all duration-300 rounded-2xl"
             >
               <div className="p-4 rounded-2xl bg-green-700/30 border border-green-500/20">
-                <MapPin className="w-6 h-6 text-green-400" />
+                <PinIcon className="w-6 h-6 text-green-400" />
               </div>
               <div>
                 <p className="text-sm text-white/40 mb-1">Manzil</p>
@@ -72,7 +72,7 @@ export function ContactSection() {
               className="flex items-center gap-5 p-6 hover:-translate-y-0.5 transition-all duration-300 rounded-2xl"
             >
               <div className="p-4 rounded-2xl bg-blue-500/20 border border-blue-500/20">
-                <Send className="w-6 h-6 text-blue-400" />
+                <SendIcon className="w-6 h-6 text-blue-400" />
               </div>
               <div>
                 <p className="text-sm text-white/40 mb-1">Telegram</p>
@@ -97,7 +97,7 @@ export function ContactSection() {
               className="flex items-center gap-5 p-6 hover:-translate-y-0.5 transition-all duration-300 rounded-2xl"
             >
               <div className="p-4 rounded-2xl bg-gold-500/20 border border-gold-500/20">
-                <Phone className="w-6 h-6 text-gold-400" />
+                <PhoneIcon className="w-6 h-6 text-gold-400" />
               </div>
               <div>
                 <p className="text-sm text-white/40 mb-1">
@@ -116,7 +116,7 @@ export function ContactSection() {
               rel="noopener noreferrer"
               className="block pt-2"
             >
-              <Button variant="outline" size="lg" className="w-full" icon={<Send className="w-4 h-4" />}>
+              <Button variant="outline" size="lg" className="w-full" icon={<SendIcon className="w-4 h-4" />}>
                 Telegram orqali yozing
               </Button>
             </a>

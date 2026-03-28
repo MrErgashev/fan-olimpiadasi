@@ -2,17 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
+import { Loader2, Plus } from "lucide-react";
 import {
-  Users,
-  FileQuestion,
-  ClipboardList,
-  Trophy,
-  Loader2,
-  BarChart3,
-  Plus,
-  KeyRound,
-  TrendingUp,
-} from "lucide-react";
+  UsersIcon, QuestionIcon, ClipboardIcon, TrophyIcon,
+  ChartIcon, KeyIcon, TrendingIcon,
+} from "@/components/ui/Icon3D";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -82,29 +76,25 @@ export default function AdminDashboard() {
     {
       label: "Jami o'quvchilar",
       value: stats.totalStudents,
-      icon: Users,
-      color: "text-blue-600",
+      icon: UsersIcon,
       bgColor: "bg-blue-50",
     },
     {
       label: "Savollar bazasi",
       value: stats.totalQuestions,
-      icon: FileQuestion,
-      color: "text-green-600",
+      icon: QuestionIcon,
       bgColor: "bg-green-50",
     },
     {
       label: "Faol testlar",
       value: stats.activeTests,
-      icon: ClipboardList,
-      color: "text-yellow-600",
+      icon: ClipboardIcon,
       bgColor: "bg-yellow-50",
     },
     {
       label: "Topshirilgan testlar",
       value: stats.submittedAttempts,
-      icon: Trophy,
-      color: "text-cyan-600",
+      icon: TrophyIcon,
       bgColor: "bg-cyan-50",
     },
   ];
@@ -116,7 +106,7 @@ export default function AdminDashboard() {
           Admin Dashboard
         </h1>
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-green-500" />
+          <TrendingIcon className="w-4 h-4" />
           <span className="text-sm text-slate-400">Bugun</span>
         </div>
       </div>
@@ -141,7 +131,7 @@ export default function AdminDashboard() {
                 <div
                   className={`w-12 h-12 rounded-2xl ${card.bgColor} flex items-center justify-center`}
                 >
-                  <card.icon className={`w-6 h-6 ${card.color}`} />
+                  <card.icon className="w-6 h-6" />
                 </div>
               </div>
             </Card>
@@ -175,7 +165,7 @@ export default function AdminDashboard() {
             className="flex items-center gap-4 rounded-2xl p-5"
           >
             <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-              <KeyRound className="w-5 h-5 text-blue-600" />
+              <KeyIcon className="w-5 h-5" />
             </div>
             <div>
               <p className="font-semibold text-slate-800">Kod generatsiya qilish</p>
@@ -190,7 +180,7 @@ export default function AdminDashboard() {
       {/* Subject statistics */}
       <Card variant="light" className="rounded-2xl p-6">
         <div className="flex items-center gap-2 mb-6">
-          <BarChart3 className="w-5 h-5 text-primary-600" />
+          <ChartIcon className="w-5 h-5" />
           <h2 className="text-lg font-semibold text-slate-800">
             Fan bo&apos;yicha statistika
           </h2>

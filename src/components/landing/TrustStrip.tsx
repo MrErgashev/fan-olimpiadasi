@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { BookOpen, CalendarDays, Users, Building2 } from "lucide-react";
+import { BookIcon, CalendarIcon, UsersIcon, BuildingIcon } from "@/components/ui/Icon3D";
 import { useRef, useEffect, useState } from "react";
 
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -35,10 +35,10 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
 }
 
 const STATS = [
-  { icon: BookOpen, value: 7, suffix: "", label: "ta fan", text: false },
-  { icon: CalendarDays, value: 2, suffix: "", label: "kunlik musobaqa", text: false },
-  { icon: Users, value: 1000, suffix: "+", label: "ishtirokchi", text: false },
-  { icon: Building2, value: 0, suffix: "", label: "Universiteti", text: "Oriental" },
+  { icon: BookIcon, value: 7, suffix: "", label: "ta fan", text: false },
+  { icon: CalendarIcon, value: 2, suffix: "", label: "kunlik musobaqa", text: false },
+  { icon: UsersIcon, value: 1000, suffix: "+", label: "ishtirokchi", text: false },
+  { icon: BuildingIcon, value: 0, suffix: "", label: "Universiteti", text: "Oriental" },
 ];
 
 export function TrustStrip() {
@@ -65,7 +65,7 @@ export function TrustStrip() {
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-8 rounded-full bg-gradient-to-b from-gold-500/0 via-gold-500/40 to-gold-500/0 hidden md:block group-first:hidden" />
 
               <div className="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center shrink-0 group-hover:bg-gold-500/15 group-hover:shadow-glow-gold transition-all duration-300">
-                <stat.icon className="w-5 h-5 text-gold-500" />
+                <stat.icon className="w-5 h-5" />
               </div>
               <div>
                 {stat.text ? (

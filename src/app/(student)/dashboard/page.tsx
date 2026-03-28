@@ -5,15 +5,10 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
+import { Loader2 } from "lucide-react";
 import {
-  Clock,
-  FileText,
-  AlertTriangle,
-  Loader2,
-  Trophy,
-  BookOpen,
-  Target,
-} from "lucide-react";
+  ClockIcon, DocumentIcon, WarningIcon, TrophyIcon, BookIcon, TargetIcon,
+} from "@/components/ui/Icon3D";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -150,21 +145,21 @@ export default function DashboardPage() {
           className="grid grid-cols-3 gap-3 sm:gap-4 mb-8"
         >
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-5 text-center">
-            <BookOpen className="w-5 h-5 text-blue-500 mx-auto mb-2" />
+            <BookIcon className="w-5 h-5 mx-auto mb-2" />
             <p className="text-2xl sm:text-3xl font-mono font-bold text-slate-900">
               {tests.length}
             </p>
             <p className="text-xs sm:text-sm text-slate-400 mt-1">Jami testlar</p>
           </div>
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-5 text-center">
-            <Target className="w-5 h-5 text-emerald-500 mx-auto mb-2" />
+            <TargetIcon className="w-5 h-5 mx-auto mb-2" />
             <p className="text-2xl sm:text-3xl font-mono font-bold text-slate-900">
               {completedTests}
             </p>
             <p className="text-xs sm:text-sm text-slate-400 mt-1">Tugatilgan</p>
           </div>
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-5 text-center">
-            <Trophy className="w-5 h-5 text-cyan-600 mx-auto mb-2" />
+            <TrophyIcon className="w-5 h-5 mx-auto mb-2" />
             <p className="text-2xl sm:text-3xl font-mono font-bold text-cyan-600">
               {avgScore > 0 ? avgScore.toFixed(1) : "—"}
             </p>
@@ -180,7 +175,7 @@ export default function DashboardPage() {
         </div>
       ) : tests.length === 0 ? (
         <Card variant="light" className="text-center py-20 rounded-2xl">
-          <FileText className="w-16 h-16 text-slate-200 mx-auto mb-6" />
+          <DocumentIcon className="w-16 h-16 mx-auto mb-6 opacity-20" />
           <p className="text-xl text-slate-500 font-medium">
             Hozircha testlar mavjud emas
           </p>
@@ -218,18 +213,18 @@ export default function DashboardPage() {
 
                 <div className="flex items-center gap-4 text-sm text-slate-400 mb-5">
                   <span className="flex items-center gap-1.5">
-                    <FileText className="w-4 h-4" />
+                    <DocumentIcon className="w-4 h-4" />
                     {test.totalQuestions} savol
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Clock className="w-4 h-4" />
+                    <ClockIcon className="w-4 h-4" />
                     {test.durationMinutes} daqiqa
                   </span>
                 </div>
 
                 {test.status === "completed" && test.score !== undefined && (
                   <div className="flex items-center gap-3 mb-5 p-4 rounded-xl bg-blue-50 border border-blue-200">
-                    <Trophy className="w-6 h-6 text-cyan-600" />
+                    <TrophyIcon className="w-6 h-6" />
                     <span className="font-mono text-2xl font-bold text-cyan-600">
                       {test.score.toFixed(1)}
                     </span>
@@ -280,7 +275,7 @@ export default function DashboardPage() {
           <div className="space-y-5">
             <div className="space-y-3 text-sm text-slate-600">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
+                <WarningIcon className="w-5 h-5 shrink-0 mt-0.5" />
                 <p>
                   Test boshlanganidan keyin uni to&apos;xtatish yoki qayta
                   boshlash{" "}
@@ -288,7 +283,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
+                <WarningIcon className="w-5 h-5 shrink-0 mt-0.5" />
                 <p>
                   Boshqa tab/ilovaga o&apos;tish qayd etiladi va admin
                   tomonidan ko&apos;riladi.

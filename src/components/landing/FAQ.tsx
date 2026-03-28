@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Send } from "lucide-react";
+import { Plus } from "lucide-react";
+import { SendIcon } from "@/components/ui/Icon3D";
 import { CONTACT_INFO } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -189,7 +190,7 @@ export function FAQ() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors group"
                     >
-                      <Send className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
+                      <SendIcon className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
                       {handle}
                     </a>
                   ))}
@@ -206,7 +207,7 @@ export function FAQ() {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 bg-navy-950 text-white rounded-xl px-6 py-4 font-semibold text-sm hover:bg-navy-800 transition-all duration-300 hover:shadow-lg group"
               >
-                <Send className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
+                <SendIcon className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
                 Telegram orqali yozing
               </motion.a>
             </div>
