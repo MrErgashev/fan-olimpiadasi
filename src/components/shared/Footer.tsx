@@ -1,7 +1,11 @@
 import { Logo } from "./Logo";
 import { CONTACT_INFO, SUBJECTS } from "@/lib/constants";
-import { Send, MapPin, Phone } from "lucide-react";
+import { Send, MapPin, Phone, Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell } from "lucide-react";
 import Link from "next/link";
+
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell,
+};
 
 export function Footer() {
   return (
@@ -60,15 +64,19 @@ export function Footer() {
               Fanlar
             </h4>
             <div className="flex flex-col gap-2.5">
-              {SUBJECTS.map((subject) => (
-                <a
-                  key={subject.slug}
-                  href="#fanlar"
-                  className="text-sm text-white/50 hover:text-white transition-colors duration-200"
-                >
-                  {subject.emoji} {subject.name}
-                </a>
-              ))}
+              {SUBJECTS.map((subject) => {
+                const Icon = ICON_MAP[subject.icon];
+                return (
+                  <a
+                    key={subject.slug}
+                    href="#fanlar"
+                    className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors duration-200 group"
+                  >
+                    {Icon && <Icon className="w-3.5 h-3.5 text-gold-400/50 group-hover:text-gold-400 transition-colors duration-200" />}
+                    {subject.name}
+                  </a>
+                );
+              })}
             </div>
           </div>
 
