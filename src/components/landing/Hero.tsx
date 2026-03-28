@@ -156,7 +156,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-black tracking-tight leading-[0.9]"
+          className="title-shine font-display text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-black tracking-tight leading-[0.9]"
         >
           <span className="text-white text-glow-white">FAN</span>{" "}
           <span className="text-gradient-gold-shimmer">OLIMPIADASI</span>
