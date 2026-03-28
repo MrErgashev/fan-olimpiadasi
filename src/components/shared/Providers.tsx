@@ -2,11 +2,13 @@
 
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
+import { ScrollToTop } from "./ScrollToTop";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       {children}
+      <ScrollToTop />
       <Toaster
         position="top-right"
         toastOptions={{
