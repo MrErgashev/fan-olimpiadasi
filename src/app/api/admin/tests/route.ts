@@ -20,7 +20,7 @@ export async function GET() {
     });
 
     // Har bir test uchun bazadagi aktiv savollar sonini hisoblash
-    const subjectIds = [...new Set(tests.map((t) => t.subjectId))];
+    const subjectIds = Array.from(new Set(tests.map((t) => t.subjectId)));
     const questionCounts = await Promise.all(
       subjectIds.map(async (sid) => ({
         subjectId: sid,
