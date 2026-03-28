@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { getMaxSubjects, setSetting } from "@/lib/settings";
 
 export async function GET() {
   try {
@@ -10,13 +10,11 @@ export async function GET() {
       return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 401 });
     }
 
-    const settings = await db.siteSetting.findMany();
-    const result: Record<string, string> = {};
-    for (const s of settings) {
-      result[s.key] = s.value;
-    }
+    const maxSubjectsPerStudent = await getMaxSubjects();
 
-    return NextResponse.json({ settings: result });
+    return NextResponse.json({
+      settings: { maxSubjectsPerStudent: String(maxSubjectsPerStudent) },
+    });
   } catch {
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }
@@ -41,11 +39,10 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "Noto'g'ri qiymat" }, { status: 400 });
     }
 
-    await db.siteSetting.upsert({
-      where: { key: "maxSubjectsPerStudent" },
-      update: { value: String(num) },
-      create: { key: "maxSubjectsPerStudent", value: String(num) },
-    });
+    const saved = await setSetting("maxSubjectsPerStudent", String(num));
+    if (!saved) {
+      return NextResponse.json({ error: "Sozlamani saqlashda xatolik" }, { status: 500 });
+    }
 
     return NextResponse.json({ message: "Sozlama saqlandi", maxSubjectsPerStudent: num });
   } catch {
