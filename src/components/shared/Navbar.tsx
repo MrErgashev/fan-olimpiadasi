@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+
 const NAV_LINKS = [
   { href: "#fanlar", label: "Fanlar" },
   { href: "#sovgalar", label: "Sovg'alar" },
@@ -16,9 +17,26 @@ const NAV_LINKS = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      // Active section tracking
+      const sections = NAV_LINKS.map(link => link.href.replace("#", ""));
+      let current = "";
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 150) {
+            current = id;
+          }
+        }
+      }
+      setActiveSection(current);
+    };
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -38,10 +56,10 @@ export function Navbar() {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
           scrolled
-            ? "bg-navy-950/95 backdrop-blur-xl shadow-lg shadow-black/10"
-            : "bg-transparent"
+            ? "bg-navy-950/95 backdrop-blur-xl shadow-lg shadow-black/10 border-b border-gold-500/10"
+            : "bg-transparent border-b border-transparent"
         )}
       >
         <div className="max-w-container mx-auto px-4 sm:px-6">
@@ -52,15 +70,32 @@ export function Navbar() {
 
             {/* Desktop */}
             <div className="hidden md:flex items-center gap-8">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="relative text-[15px] font-medium tracking-wide text-white/70 hover:text-gold-400 transition-colors duration-200 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-gold-400 after:transition-all after:duration-300 hover:after:w-full"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {NAV_LINKS.map((link) => {
+                const isActive = activeSection === link.href.replace("#", "");
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "relative text-[15px] font-medium tracking-wide transition-colors duration-200",
+                      isActive
+                        ? "text-gold-400"
+                        : "text-white/70 hover:text-gold-400"
+                    )}
+                  >
+                    {link.label}
+                    {/* Active underline */}
+                    <span className={cn(
+                      "absolute left-0 -bottom-1 h-[2px] bg-gold-400 transition-all duration-300",
+                      isActive ? "w-full" : "w-0 group-hover:w-full"
+                    )} />
+                    {/* Hover underline */}
+                    {!isActive && (
+                      <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-gold-400/50 hover:w-full transition-all duration-300" />
+                    )}
+                  </a>
+                );
+              })}
               <div className="flex items-center gap-3 ml-4">
                 <Link href="/login">
                   <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
@@ -115,7 +150,10 @@ export function Navbar() {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-40 bg-navy-950/98 backdrop-blur-2xl flex flex-col items-center justify-center"
           >
-            <div className="flex flex-col items-center gap-6">
+            {/* Decorative glow */}
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[300px] h-[300px] rounded-full bg-gold-500/[0.04] blur-[100px]" />
+
+            <div className="flex flex-col items-center gap-6 relative">
               {NAV_LINKS.map((link, i) => (
                 <motion.a
                   key={link.href}

@@ -1,6 +1,6 @@
 import { Logo } from "./Logo";
 import { CONTACT_INFO, SUBJECTS } from "@/lib/constants";
-import { Send, MapPin, Phone, Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell } from "lucide-react";
+import { Send, MapPin, Phone, Calculator, Monitor, BookOpen, Globe, Dna, BookText, Dumbbell, ArrowUp } from "lucide-react";
 import Link from "next/link";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -9,7 +9,10 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function Footer() {
   return (
-    <footer className="bg-navy-950 text-white">
+    <footer className="bg-navy-950 text-white relative">
+      {/* Gold gradient top border */}
+      <div className="h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent" />
+
       <div className="max-w-container mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Logo & Info */}
@@ -24,7 +27,7 @@ export function Footer() {
                 href="https://t.me/Dilya0103"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-gold-500/10 text-white/50 hover:text-gold-400 transition-all duration-200"
+                className="p-2.5 rounded-xl bg-white/5 hover:bg-gold-500/10 text-white/50 hover:text-gold-400 transition-all duration-300 hover:shadow-glow-gold"
               >
                 <Send className="w-4 h-4" />
               </a>
@@ -37,24 +40,19 @@ export function Footer() {
               Havolalar
             </h4>
             <div className="flex flex-col gap-2.5">
-              <Link
-                href="/results"
-                className="text-sm text-white/50 hover:text-white transition-colors duration-200"
-              >
-                Natijalar
-              </Link>
-              <Link
-                href="/login"
-                className="text-sm text-white/50 hover:text-white transition-colors duration-200"
-              >
-                Kirish
-              </Link>
-              <Link
-                href="/register"
-                className="text-sm text-white/50 hover:text-white transition-colors duration-200"
-              >
-                Ro&apos;yxatdan o&apos;tish
-              </Link>
+              {[
+                { href: "/results", label: "Natijalar" },
+                { href: "/login", label: "Kirish" },
+                { href: "/register", label: "Ro'yxatdan o'tish" },
+              ].map(link => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm text-white/50 hover:text-gold-400 transition-colors duration-200 hover:translate-x-1 transform inline-block"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -70,9 +68,9 @@ export function Footer() {
                   <a
                     key={subject.slug}
                     href="#fanlar"
-                    className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors duration-200 group"
+                    className="flex items-center gap-2 text-sm text-white/50 hover:text-gold-400 transition-all duration-200 group hover:translate-x-1 transform"
                   >
-                    {Icon && <Icon className="w-3.5 h-3.5 text-gold-400/50 group-hover:text-gold-400 transition-colors duration-200" />}
+                    {Icon && <Icon className="w-3.5 h-3.5 text-gold-400/40 group-hover:text-gold-400 transition-colors duration-200" />}
                     {subject.name}
                   </a>
                 );
@@ -100,9 +98,9 @@ export function Footer() {
                   href={`https://t.me/${tg.replace("@", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-white/50 hover:text-gold-400 transition-colors duration-200 ml-7"
+                  className="flex items-center gap-2 text-sm text-white/50 hover:text-gold-400 transition-all duration-200 ml-7 group"
                 >
-                  <Send className="w-3 h-3" />
+                  <Send className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-200" />
                   {tg}
                 </a>
               ))}
@@ -119,6 +117,18 @@ export function Footer() {
               &copy; {CONTACT_INFO.year} {CONTACT_INFO.university}. Barcha
               huquqlar himoyalangan.
             </p>
+            {/* Back to top */}
+            <a
+              href="#"
+              className="flex items-center gap-2 text-sm text-white/30 hover:text-gold-400 transition-colors duration-200 group"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            >
+              Yuqoriga
+              <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
+            </a>
           </div>
         </div>
       </div>

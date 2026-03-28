@@ -8,13 +8,15 @@ import { useDeviceCapability } from "@/hooks/useDeviceCapability";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useRef } from "react";
+import { ChevronDown } from "lucide-react";
 
 export function Hero() {
   const { isMobile, prefersReducedMotion } = useDeviceCapability();
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
-  const titleY = useTransform(scrollY, [0, 500], [0, -50]);
-  const contentOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const titleY = useTransform(scrollY, [0, 600], [0, -80]);
+  const contentOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const bgScale = useTransform(scrollY, [0, 600], [1, 1.1]);
 
   const skipAnimations = isMobile || prefersReducedMotion;
 
@@ -26,39 +28,52 @@ export function Hero() {
       {/* Particle canvas */}
       <ParticleBackground disabled={skipAnimations} />
 
-      {/* Animated gradient mesh background */}
-      <div className="absolute inset-0">
+      {/* Animated gradient mesh background with parallax */}
+      <motion.div className="absolute inset-0" style={!skipAnimations ? { scale: bgScale } : undefined}>
         <motion.div
-          className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full bg-navy-700/30 blur-[150px]"
+          className="absolute top-[-10%] left-[15%] w-[900px] h-[900px] rounded-full bg-navy-700/30 blur-[180px]"
           animate={
             skipAnimations
               ? undefined
-              : { x: [0, 40, -20, 0], y: [0, -30, 20, 0] }
+              : { x: [0, 50, -30, 0], y: [0, -40, 25, 0] }
           }
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full bg-navy-600/20 blur-[120px]"
+          className="absolute bottom-[-10%] right-[15%] w-[700px] h-[700px] rounded-full bg-navy-600/20 blur-[150px]"
           animate={
             skipAnimations
               ? undefined
-              : { x: [0, -30, 15, 0], y: [0, 25, -15, 0] }
+              : { x: [0, -40, 20, 0], y: [0, 30, -20, 0] }
           }
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute top-1/3 right-1/3 w-[400px] h-[400px] rounded-full bg-gold-500/[0.06] blur-[120px]"
+          className="absolute top-[20%] right-[25%] w-[500px] h-[500px] rounded-full bg-gold-500/[0.07] blur-[150px]"
           animate={
             skipAnimations
               ? undefined
               : {
-                  scale: [1, 1.15, 0.95, 1],
-                  opacity: [0.06, 0.09, 0.05, 0.06],
+                  scale: [1, 1.2, 0.9, 1],
+                  opacity: [0.07, 0.12, 0.05, 0.07],
                 }
           }
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
-      </div>
+        {/* Extra accent glow */}
+        <motion.div
+          className="absolute bottom-[20%] left-[30%] w-[400px] h-[400px] rounded-full bg-gold-500/[0.04] blur-[120px]"
+          animate={
+            skipAnimations
+              ? undefined
+              : {
+                  scale: [1, 1.1, 0.95, 1],
+                  x: [0, 20, -10, 0],
+                }
+          }
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </motion.div>
 
       {/* Subtle grid pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
@@ -71,6 +86,9 @@ export function Hero() {
           }}
         />
       </div>
+
+      {/* Film grain overlay */}
+      <div className="noise-overlay absolute inset-0 pointer-events-none" />
 
       {/* Mouse spotlight (desktop only) */}
       <SpotlightEffect containerRef={sectionRef} disabled={skipAnimations} />
@@ -121,14 +139,27 @@ export function Hero() {
             }}
             style={{ bottom: "35%", right: "10%" }}
           />
+          {/* Extra floating sparkles */}
+          <motion.div
+            className="absolute w-1.5 h-1.5 rounded-full bg-gold-400/30 hidden lg:block"
+            animate={{ y: [0, -20, 0], opacity: [0, 0.5, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            style={{ top: "40%", left: "20%" }}
+          />
+          <motion.div
+            className="absolute w-1 h-1 rounded-full bg-gold-300/25 hidden lg:block"
+            animate={{ y: [0, 15, 0], opacity: [0, 0.4, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
+            style={{ top: "30%", right: "25%" }}
+          />
 
           {/* Corner accents */}
           <div
-            className="absolute hidden lg:block border-t border-l border-gold-500/10 w-10 h-10"
+            className="absolute hidden lg:block border-t border-l border-gold-500/10 w-12 h-12"
             style={{ top: "10%", left: "5%" }}
           />
           <div
-            className="absolute hidden lg:block border-b border-r border-gold-500/10 w-10 h-10"
+            className="absolute hidden lg:block border-b border-r border-gold-500/10 w-12 h-12"
             style={{ bottom: "15%", right: "5%" }}
           />
         </>
@@ -136,50 +167,57 @@ export function Hero() {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 max-w-container mx-auto px-4 sm:px-6 text-center pt-28 pb-24"
+        className="relative z-10 max-w-container-lg mx-auto px-4 sm:px-6 text-center pt-28 pb-32"
         style={
           !skipAnimations ? { y: titleY, opacity: contentOpacity } : undefined
         }
       >
         {/* Pre-title */}
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-sm sm:text-base tracking-[0.25em] uppercase text-gold-400/70 mb-6 font-medium"
+          initial={skipAnimations ? undefined : { opacity: 0, y: 15, filter: "blur(10px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="text-sm sm:text-base tracking-[0.3em] uppercase text-gold-400/70 mb-8 font-medium"
         >
           Oriental Universiteti taqdim etadi
         </motion.p>
 
-        {/* Main title */}
+        {/* Main title — cinematic entrance */}
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-black tracking-tight leading-[0.9]"
+          initial={skipAnimations ? undefined : { opacity: 0, y: 30, filter: "blur(20px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 1, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="font-display text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[11rem] font-black tracking-tight leading-[0.85]"
         >
-          <span className="text-white text-glow-white">FAN</span>{" "}
-          <span className="text-gradient-gold-shimmer">OLIMPIADASI</span>
+          <span className="text-white text-glow-white block sm:inline">FAN</span>{" "}
+          <span className="text-gradient-gold-shimmer block sm:inline">OLIMPIADASI</span>
         </motion.h1>
 
-        {/* Ornamental line */}
+        {/* Animated gold underline */}
         <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
+          initial={skipAnimations ? undefined : { opacity: 0, scaleX: 0 }}
           animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-5 mb-5 flex justify-center"
+          transition={{ duration: 0.8, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mt-6 mb-6 flex justify-center"
         >
-          <div className="ornamental-line w-24" />
+          <div className="relative w-32 h-[3px]">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-500 to-transparent" />
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-300 to-transparent"
+              animate={skipAnimations ? undefined : { opacity: [0, 1, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
         </motion.div>
 
         {/* Year badge */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4, delay: 0.25 }}
-          className="mb-8"
+          initial={skipAnimations ? undefined : { opacity: 0, scale: 0.85, filter: "blur(8px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mb-10"
         >
-          <span className="badge-shimmer inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.06] border border-white/10 text-gold-400 font-mono font-bold text-sm tracking-widest">
+          <span className="badge-shimmer inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-white/[0.06] border border-white/10 text-gold-400 font-mono font-bold text-sm tracking-widest">
             <svg
               width="10"
               height="10"
@@ -202,10 +240,11 @@ export function Hero() {
 
         {/* Subtitle */}
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-lg sm:text-xl md:text-2xl text-white/50 max-w-2xl mx-auto leading-relaxed mb-8"
+          initial={skipAnimations ? undefined : { opacity: 0, y: 20, filter: "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.7, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="text-lg sm:text-xl md:text-2xl lg:text-[1.65rem] text-white/50 max-w-2xl mx-auto leading-relaxed mb-10"
+          style={{ textWrap: "balance" } as React.CSSProperties}
         >
           11-sinf o&apos;quvchilari orasida respublika miqyosidagi bilim bellashuvi.
           O&apos;zingizni sinab ko&apos;ring va kelajagingizni yarating.
@@ -213,18 +252,18 @@ export function Hero() {
 
         {/* CTA Buttons */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={skipAnimations ? undefined : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14 sm:mb-16"
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 sm:mb-20"
         >
           <Link href="/register">
-            <Button variant="premium" size="xl">
+            <Button variant="premium" size="xl" className="animate-breathing-glow">
               HOZIROQ RO&apos;YXATDAN O&apos;TING
             </Button>
           </Link>
           <a href="#fanlar">
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="border-white/20 hover:border-gold-500/40 hover:bg-gold-500/5 transition-all duration-300">
               Batafsil ma&apos;lumot
             </Button>
           </a>
@@ -232,19 +271,37 @@ export function Hero() {
 
         {/* Countdown */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={skipAnimations ? undefined : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
         >
-          <p className="text-xs uppercase tracking-[0.2em] text-white/30 mb-5 font-medium">
+          <p className="text-xs uppercase tracking-[0.25em] text-white/30 mb-6 font-medium">
             Olimpiada boshlanishiga · Toshkent vaqti
           </p>
           <CountdownTimer />
         </motion.div>
       </motion.div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-navy-900/80 to-transparent" />
+      {/* Scroll indicator */}
+      <motion.div
+        initial={skipAnimations ? undefined : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+      >
+        <span className="text-[10px] uppercase tracking-[0.2em] text-white/20 font-medium">
+          Pastga suring
+        </span>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <ChevronDown className="w-5 h-5 text-white/20" />
+        </motion.div>
+      </motion.div>
+
+      {/* Bottom fade — smoother transition */}
+      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-white via-navy-900/40 to-transparent" />
     </section>
   );
 }

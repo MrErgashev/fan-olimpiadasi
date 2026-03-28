@@ -13,7 +13,7 @@ import { Footer } from "@/components/shared/Footer";
 
 export default function Home() {
   return (
-    <main>
+    <main className="overflow-x-hidden">
       <Navbar />
       <Hero />
       <TrustStrip />
@@ -24,6 +24,9 @@ export default function Home() {
       <Schedule />
       <ResultsPreview />
       <FAQ />
+
+      {/* Transition from light to dark for CTA */}
+      <div className="section-fade-light-to-dark" />
       <CTASection />
       <Footer />
     </main>
