@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/Badge";
-import { Plus, Search, Loader2, Trash2 } from "lucide-react";
+import { Plus, Search, Loader2, Trash2, Upload } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -74,9 +74,14 @@ export default function QuestionsPage() {
           <h1 className="font-display text-2xl font-bold text-gold-gradient">Savollar bazasi</h1>
           <p className="text-sm text-white/40 mt-1">Jami: {total} ta savol</p>
         </div>
-        <Link href="/admin/questions/new">
-          <Button><Plus className="w-4 h-4 mr-2" /> Yangi savol</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/admin/questions/import">
+            <Button variant="secondary"><Upload className="w-4 h-4 mr-2" /> Import</Button>
+          </Link>
+          <Link href="/admin/questions/new">
+            <Button><Plus className="w-4 h-4 mr-2" /> Yangi savol</Button>
+          </Link>
+        </div>
       </div>
 
       {/* Search */}
