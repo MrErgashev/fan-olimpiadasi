@@ -26,13 +26,25 @@ export async function GET() {
       db.subject.findMany({
         where: { isOnline: true },
         select: {
+          id: true,
           name: true,
           emoji: true,
-          _count: { select: { questions: true, tests: true } },
+          _count: { select: { tests: true } },
           studentSubjects: { select: { id: true } },
         },
       }),
     ]);
+
+    // Har bir fan uchun faqat aktiv savollar sonini hisoblash
+    const subjectQuestionCounts = await Promise.all(
+      subjectStats.map(async (s) => ({
+        subjectId: s.id,
+        count: await db.question.count({ where: { subjectId: s.id, isActive: true } }),
+      }))
+    );
+    const questionCountMap = Object.fromEntries(
+      subjectQuestionCounts.map((q) => [q.subjectId, q.count])
+    );
 
     const activeTests = await db.test.count({ where: { status: "active" } });
 
@@ -46,7 +58,7 @@ export async function GET() {
       subjectStats: subjectStats.map((s) => ({
         name: s.name,
         emoji: s.emoji,
-        questions: s._count.questions,
+        questions: questionCountMap[s.id] || 0,
         tests: s._count.tests,
         students: s.studentSubjects.length,
       })),

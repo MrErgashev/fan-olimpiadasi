@@ -34,19 +34,29 @@ export default function QuestionsPage() {
   const [selectedSubjectId, setSelectedSubjectId] = useState("");
 
   useEffect(() => {
-    fetchSubjects();
-    fetchQuestions();
-  }, []);
+    const loadInitialData = async () => {
+      setLoading(true);
+      try {
+        const [subjectsRes, questionsRes] = await Promise.all([
+          fetch("/api/subjects"),
+          fetch("/api/admin/questions"),
+        ]);
+        const [subjectsData, questionsData] = await Promise.all([
+          subjectsRes.json(),
+          questionsRes.json(),
+        ]);
+        setSubjects(subjectsData.subjects || []);
+        setQuestions(questionsData.questions || []);
+        setTotal(questionsData.total || 0);
+      } catch {
+        toast.error("Savollarni yuklashda xatolik");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchSubjects = async () => {
-    try {
-      const res = await fetch("/api/subjects");
-      const data = await res.json();
-      setSubjects(data.subjects || []);
-    } catch {
-      // silent
-    }
-  };
+    void loadInitialData();
+  }, []);
 
   const fetchQuestions = async (s?: string, subjectId?: string) => {
     setLoading(true);
