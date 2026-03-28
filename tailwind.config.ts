@@ -59,8 +59,13 @@ const config: Config = {
         "3xl": "24px",
         "4xl": "32px",
       },
+      letterSpacing: {
+        "ultra-wide": "0.3em",
+        "premium": "0.15em",
+      },
       maxWidth: {
         container: "1280px",
+        "container-lg": "1400px",
       },
       backdropBlur: {
         "2xl": "40px",
@@ -111,6 +116,30 @@ const config: Config = {
           "0%, 100%": { transform: "translateY(0px)" },
           "50%": { transform: "translateY(-12px)" },
         },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        "breathing-glow": {
+          "0%, 100%": { boxShadow: "0 0 20px rgba(212,168,67,0.2), 0 0 60px rgba(212,168,67,0.05)" },
+          "50%": { boxShadow: "0 0 30px rgba(212,168,67,0.35), 0 0 80px rgba(212,168,67,0.12)" },
+        },
+        "border-rotate": {
+          "0%": { "--border-angle": "0deg" },
+          "100%": { "--border-angle": "360deg" },
+        },
+        "scroll-bounce": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(8px)" },
+        },
+        "sparkle": {
+          "0%, 100%": { opacity: "0", transform: "scale(0)" },
+          "50%": { opacity: "1", transform: "scale(1)" },
+        },
+        "draw-line": {
+          "0%": { strokeDashoffset: "1" },
+          "100%": { strokeDashoffset: "0" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
@@ -120,6 +149,10 @@ const config: Config = {
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         "float": "float 6s ease-in-out infinite",
+        "float-slow": "float-slow 8s ease-in-out infinite",
+        "breathing-glow": "breathing-glow 3s ease-in-out infinite",
+        "scroll-bounce": "scroll-bounce 2s ease-in-out infinite",
+        "sparkle": "sparkle 2s ease-in-out infinite",
       },
     },
   },
