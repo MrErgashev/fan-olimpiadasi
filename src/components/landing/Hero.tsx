@@ -216,7 +216,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14 sm:mb-16"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 sm:mb-10"
         >
           <Link href="/register">
             <Button variant="premium" size="xl">
