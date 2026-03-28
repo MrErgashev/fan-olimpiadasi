@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/Badge";
-import { KeyRound, Plus, Loader2, Copy } from "lucide-react";
+import { Plus, Loader2, Copy } from "lucide-react";
+import { KeyIcon } from "@/components/ui/Icon3D";
 import toast from "react-hot-toast";
 
 interface Code {
@@ -80,7 +81,7 @@ export default function AccessCodesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {codes.map((c) => (
             <Card key={c.id} variant="light" className="flex items-center gap-3 p-4">
-              <KeyRound className="w-4 h-4 text-primary-600 shrink-0" />
+              <KeyIcon className="w-4 h-4 shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="font-mono text-sm text-primary-600 truncate">{c.code}</p>
                 <p className="text-xs text-slate-400">{c.currentUses}/{c.maxUses} ishlatilgan</p>

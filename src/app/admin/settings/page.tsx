@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
-import { Save, Loader2, Settings } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
+import { GearIcon } from "@/components/ui/Icon3D";
 import toast from "react-hot-toast";
 
 const MAX_SUBJECT_OPTIONS = [
@@ -68,7 +69,7 @@ export default function AdminSettingsPage() {
       <div>
         <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
-            <Settings className="w-5 h-5 text-white" />
+            <GearIcon className="w-5 h-5" />
           </div>
           Sozlamalar
         </h1>

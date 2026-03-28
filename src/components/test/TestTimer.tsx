@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { formatTimer } from "@/lib/utils";
-import { Clock } from "lucide-react";
+import { ClockIcon } from "@/components/ui/Icon3D";
 
 interface TestTimerProps {
   seconds: number;
@@ -22,7 +22,7 @@ export function TestTimer({ seconds, isWarning, isCritical }: TestTimerProps) {
             : "bg-primary-700/30 text-primary-300 border border-primary-500/20"
       )}
     >
-      <Clock className={cn("w-5 h-5", isCritical && "animate-pulse")} />
+      <ClockIcon className={cn("w-5 h-5", isCritical && "animate-pulse")} />
       <span className="tabular-nums text-glow-gold">{formatTimer(seconds)}</span>
     </div>
   );

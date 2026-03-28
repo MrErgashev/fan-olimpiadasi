@@ -2,7 +2,7 @@
 
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
-import { LogOut } from "lucide-react";
+import { LogoutIcon } from "@/components/ui/Icon3D";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
@@ -47,7 +47,7 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
               onClick={() => signOut({ callbackUrl: "/login" })}
               className="text-slate-400 hover:text-red-500 hover:bg-red-50"
             >
-              <LogOut className="w-4 h-4 mr-1" />
+              <LogoutIcon className="w-4 h-4 mr-1" />
               <span className="hidden sm:inline">Chiqish</span>
             </Button>
           </div>

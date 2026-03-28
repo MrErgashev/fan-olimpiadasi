@@ -1,14 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, Laptop, Smartphone, Award, Crown, Sparkles } from "lucide-react";
+import { TrophyIcon, LaptopIcon, SmartphoneIcon, AwardIcon, CrownIcon, SparklesIcon } from "@/components/ui/Icon3D";
 
 const PODIUM = [
   {
     place: 2,
     label: "2-o'rin",
     prize: "Zamonaviy noutbuk",
-    Icon: Laptop,
+    Icon: LaptopIcon,
     height: "h-40 sm:h-52",
     color: "from-gray-400 to-gray-300",
     textColor: "text-gray-300",
@@ -19,7 +19,7 @@ const PODIUM = [
     place: 1,
     label: "1-o'rin",
     prize: "1 yillik ta'lim granti",
-    Icon: Trophy,
+    Icon: TrophyIcon,
     height: "h-56 sm:h-72",
     color: "from-gold-500 to-gold-300",
     textColor: "text-gold-400",
@@ -30,7 +30,7 @@ const PODIUM = [
     place: 3,
     label: "3-o'rin",
     prize: "Smartfon",
-    Icon: Smartphone,
+    Icon: SmartphoneIcon,
     height: "h-32 sm:h-40",
     color: "from-amber-700 to-amber-500",
     textColor: "text-amber-400",
@@ -82,7 +82,7 @@ export function PrizePodium() {
                   transition={{ duration: 3, repeat: Infinity }}
                   className="flex justify-center mb-2"
                 >
-                  <Crown className="w-8 h-8 sm:w-10 sm:h-10 text-gold-400 drop-shadow-lg" />
+                  <CrownIcon className="w-8 h-8 sm:w-10 sm:h-10 drop-shadow-lg" />
                 </motion.div>
               )}
 
@@ -92,7 +92,7 @@ export function PrizePodium() {
                   <div
                     className={`p-4 sm:p-5 rounded-2xl bg-gradient-to-b ${podium.color} shadow-xl`}
                   >
-                    <podium.Icon className="w-8 h-8 sm:w-10 sm:h-10 text-green-900" />
+                    <podium.Icon className="w-8 h-8 sm:w-10 sm:h-10" />
                   </div>
                   {/* Sparkle particles for 1st place */}
                   {podium.place === 1 && (
@@ -102,14 +102,14 @@ export function PrizePodium() {
                         transition={{ duration: 2, repeat: Infinity }}
                         className="absolute -top-2 -right-2"
                       >
-                        <Sparkles className="w-4 h-4 text-gold-400" />
+                        <SparklesIcon className="w-4 h-4" />
                       </motion.div>
                       <motion.div
                         animate={{ opacity: [0.5, 1, 0.5], scale: [1, 0.8, 1] }}
                         transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
                         className="absolute -bottom-1 -left-2"
                       >
-                        <Sparkles className="w-3 h-3 text-gold-300" />
+                        <SparklesIcon className="w-3 h-3" />
                       </motion.div>
                     </>
                   )}
@@ -146,7 +146,7 @@ export function PrizePodium() {
           className="text-center"
         >
           <div className="inline-flex items-center gap-3 glass-gold rounded-full px-8 py-4 shadow-glow-gold">
-            <Award className="w-6 h-6 text-gold-400" />
+            <AwardIcon className="w-6 h-6" />
             <span className="text-gold-300 font-medium text-sm sm:text-base">
               4-10-o&apos;rin — 1 000 000 so&apos;mlik o&apos;qishga kirish
               voucherlari + turli sovg&apos;alar

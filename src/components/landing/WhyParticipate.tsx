@@ -1,39 +1,39 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, Award, GraduationCap, Star } from "lucide-react";
+import { TrophyIcon, AwardIcon, GraduationIcon, StarIcon } from "@/components/ui/Icon3D";
 import { useCallback, useRef } from "react";
 
 const REASONS = [
   {
-    icon: Trophy,
+    icon: TrophyIcon,
     title: "Qimmatbaho sovg'alar",
     description: "Noutbuk, smartfon va boshqa zamonaviy texnologiyalar g'oliblarni kutmoqda.",
-    color: "bg-amber-50 text-amber-600",
+    color: "bg-amber-50",
     glowColor: "rgba(245, 158, 11, 0.15)",
     index: "01",
   },
   {
-    icon: GraduationCap,
+    icon: GraduationIcon,
     title: "Ta'lim granti",
     description: "1-o'rin egalari Oriental Universitetida 1 yillik bepul ta'lim grantiga ega bo'ladi.",
-    color: "bg-blue-50 text-blue-600",
+    color: "bg-blue-50",
     glowColor: "rgba(59, 130, 246, 0.15)",
     index: "02",
   },
   {
-    icon: Award,
+    icon: AwardIcon,
     title: "Rasmiy sertifikat",
     description: "Barcha ishtirokchilar rasmiy sertifikat bilan taqdirlanadi.",
-    color: "bg-emerald-50 text-emerald-600",
+    color: "bg-emerald-50",
     glowColor: "rgba(16, 185, 129, 0.15)",
     index: "03",
   },
   {
-    icon: Star,
+    icon: StarIcon,
     title: "Nufuzli tan olinish",
     description: "Respublika miqyosidagi olimpiada natijalaringiz kelajak uchun muhim qadam.",
-    color: "bg-violet-50 text-violet-600",
+    color: "bg-violet-50",
     glowColor: "rgba(139, 92, 246, 0.15)",
     index: "04",
   },
