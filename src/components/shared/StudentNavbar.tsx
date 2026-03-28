@@ -15,14 +15,14 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
   const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-app-dark/80 backdrop-blur-2xl shadow-xl shadow-black/10">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-2xl shadow-sm">
       {/* Bottom gradient border */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
       <div className="max-w-container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
           <Link href="/dashboard">
-            <Logo size="sm" />
+            <Logo size="sm" variant="light" />
           </Link>
 
           <div className="flex items-center gap-4">
@@ -36,7 +36,7 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
                   {initials}
                 </span>
               </div>
-              <span className="hidden sm:block text-sm text-white/70 font-medium">
+              <span className="hidden sm:block text-sm text-slate-600 font-medium">
                 {firstName} {lastName}
               </span>
             </Link>
@@ -45,7 +45,7 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
               variant="ghost"
               size="sm"
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="text-white/50 hover:text-red-400 hover:bg-red-500/10"
+              className="text-slate-400 hover:text-red-500 hover:bg-red-50"
             >
               <LogOut className="w-4 h-4 mr-1" />
               <span className="hidden sm:inline">Chiqish</span>
