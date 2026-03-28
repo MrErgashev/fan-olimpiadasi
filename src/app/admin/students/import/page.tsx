@@ -1,0 +1,547 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Input } from "@/components/ui/Input";
+import {
+  Upload,
+  FileSpreadsheet,
+  Download,
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  Trash2,
+  AlertTriangle,
+  Edit3,
+  Save,
+  X,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import * as XLSX from "xlsx";
+import { type ParsedStudentRow, validateStudentRow, formatPhone } from "@/lib/student-utils";
+
+type Step = 1 | 2 | 3;
+type FilterType = "all" | "errors" | "valid";
+
+interface ImportResult {
+  created: number;
+  skipped: number;
+  errored: number;
+  passwords: { phone: string; password: string; name: string }[];
+  errors: { row: number; phone: string; reason: string }[];
+  skippedRows: { row: number; phone: string; reason: string }[];
+}
+
+export default function ImportStudentsPage() {
+  const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [step, setStep] = useState<Step>(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [fileName, setFileName] = useState("");
+
+  // Step 2 state
+  const [rows, setRows] = useState<ParsedStudentRow[]>([]);
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editForm, setEditForm] = useState<Partial<ParsedStudentRow>>({});
+
+  // Step 3 state
+  const [saving, setSaving] = useState(false);
+  const [result, setResult] = useState<ImportResult | null>(null);
+
+  // ===== STEP 1: File Upload =====
+
+  const handleFile = (file: File) => {
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    if (!["xlsx", "xls", "csv"].includes(ext || "")) {
+      toast.error("Faqat .xlsx, .xls yoki .csv fayl yuklang");
+      return;
+    }
+    setFileName(file.name);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json<Record<string, string>>(sheet, { defval: "" });
+
+        if (jsonData.length === 0) {
+          toast.error("Fayl bo'sh");
+          return;
+        }
+
+        // Map columns - try common headers
+        const parsed: ParsedStudentRow[] = jsonData.map((row, idx) => {
+          const firstName =
+            row["Ism"] || row["ism"] || row["FirstName"] || row["first_name"] || row["FISH"]?.split(" ")[0] || "";
+          const lastName =
+            row["Familiya"] || row["familiya"] || row["LastName"] || row["last_name"] || row["FISH"]?.split(" ").slice(1).join(" ") || "";
+          const rawPhone = String(row["Telefon"] || row["telefon"] || row["Phone"] || row["phone"] || "");
+          const phone = formatPhone(rawPhone);
+          const schoolName =
+            row["Maktab"] || row["maktab"] || row["School"] || row["school"] || row["Maktab nomi"] || "";
+          const gradeStr = row["Sinf"] || row["sinf"] || row["Grade"] || row["grade"] || "11";
+          const grade = parseInt(String(gradeStr).replace(/\D/g, "")) || 11;
+          const regionName = row["Viloyat"] || row["viloyat"] || row["Region"] || row["region"] || "";
+
+          return validateStudentRow({
+            rowIndex: idx + 1,
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            phone,
+            schoolName: schoolName.trim(),
+            grade,
+            regionName: regionName.trim() || undefined,
+            errors: [],
+            isValid: true,
+          });
+        });
+
+        // Check for duplicate phones within file
+        const phoneCount = new Map<string, number>();
+        parsed.forEach((r) => {
+          if (r.phone && /^\+998\d{9}$/.test(r.phone)) {
+            phoneCount.set(r.phone, (phoneCount.get(r.phone) || 0) + 1);
+          }
+        });
+        parsed.forEach((r) => {
+          if ((phoneCount.get(r.phone) || 0) > 1) {
+            r.errors.push("Faylda takroriy telefon raqam");
+            r.isValid = false;
+          }
+        });
+
+        setRows(parsed);
+        setStep(2);
+      } catch {
+        toast.error("Faylni o'qib bo'lmadi");
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  };
+
+  const downloadTemplate = () => {
+    const ws = XLSX.utils.aoa_to_sheet([
+      ["Ism", "Familiya", "Telefon", "Maktab", "Sinf", "Viloyat"],
+      ["Ali", "Valiyev", "+998901234567", "1-maktab", "11", "Toshkent"],
+      ["Vali", "Aliyev", "+998901234568", "2-maktab", "10", "Samarqand"],
+    ]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "O'quvchilar");
+    // Set column widths
+    ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 8 }, { wch: 15 }];
+    XLSX.writeFile(wb, "oquvchilar_shablon.xlsx");
+  };
+
+  // ===== STEP 2: Validate & Edit =====
+
+  const validCount = rows.filter((r) => r.isValid).length;
+  const errorCount = rows.filter((r) => !r.isValid).length;
+
+  const filteredRows =
+    filter === "all" ? rows : filter === "valid" ? rows.filter((r) => r.isValid) : rows.filter((r) => !r.isValid);
+
+  const startEdit = (idx: number) => {
+    const row = rows[idx];
+    setEditingIndex(idx);
+    setEditForm({ firstName: row.firstName, lastName: row.lastName, phone: row.phone, schoolName: row.schoolName });
+  };
+
+  const saveEdit = (idx: number) => {
+    setRows((prev) => {
+      const next = [...prev];
+      const row = { ...next[idx], ...editForm } as ParsedStudentRow;
+      next[idx] = validateStudentRow(row);
+      return next;
+    });
+    setEditingIndex(null);
+    setEditForm({});
+  };
+
+  const removeRow = (idx: number) => {
+    setRows((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const removeAllErrors = () => {
+    setRows((prev) => prev.filter((r) => r.isValid));
+    setFilter("all");
+  };
+
+  // ===== STEP 3: Save =====
+
+  const handleSave = async () => {
+    const validRows = rows.filter((r) => r.isValid);
+    if (validRows.length === 0) {
+      toast.error("Saqlash uchun to'g'ri qatorlar yo'q");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await fetch("/api/admin/students/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          students: validRows.map((r) => ({
+            firstName: r.firstName,
+            lastName: r.lastName,
+            phone: r.phone,
+            schoolName: r.schoolName,
+            grade: r.grade,
+            regionName: r.regionName,
+          })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Import xatosi");
+        return;
+      }
+      setResult(data);
+      setStep(3);
+      toast.success(`${data.created} ta o'quvchi import qilindi`);
+    } catch {
+      toast.error("Server xatosi");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const downloadPasswords = () => {
+    if (!result) return;
+    const ws = XLSX.utils.aoa_to_sheet([
+      ["Ism", "Telefon", "Parol"],
+      ...result.passwords.map((p) => [p.name, p.phone, p.password]),
+    ]);
+    ws["!cols"] = [{ wch: 25 }, { wch: 18 }, { wch: 12 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Parollar");
+    XLSX.writeFile(wb, "oquvchi_parollar.xlsx");
+  };
+
+  // ===== RENDER =====
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" onClick={() => router.push("/admin/students")}>
+          <ArrowLeft className="w-4 h-4" />
+        </Button>
+        <div>
+          <h1 className="font-display text-2xl font-bold text-slate-800">O&apos;quvchilarni import qilish</h1>
+          <p className="text-sm text-slate-400 mt-1">Excel yoki CSV fayldan ommaviy yuklash</p>
+        </div>
+      </div>
+
+      {/* Steps Indicator */}
+      <div className="flex items-center gap-2">
+        {[
+          { n: 1, label: "Fayl yuklash" },
+          { n: 2, label: "Tekshirish" },
+          { n: 3, label: "Natija" },
+        ].map((s, i) => (
+          <div key={s.n} className="flex items-center gap-2">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
+                step >= s.n
+                  ? "bg-primary-600 text-white"
+                  : "bg-slate-100 text-slate-400"
+              }`}
+            >
+              {step > s.n ? <CheckCircle2 className="w-4 h-4" /> : s.n}
+            </div>
+            <span className={`text-sm hidden sm:block ${step >= s.n ? "text-slate-800 font-medium" : "text-slate-400"}`}>
+              {s.label}
+            </span>
+            {i < 2 && <div className={`w-8 h-0.5 ${step > s.n ? "bg-primary-600" : "bg-slate-200"}`} />}
+          </div>
+        ))}
+      </div>
+
+      {/* STEP 1: File Upload */}
+      {step === 1 && (
+        <div className="space-y-4">
+          <Card
+            variant="light"
+            className={`p-8 border-2 border-dashed transition-all cursor-pointer ${
+              isDragging ? "border-primary-400 bg-primary-50/50" : "border-slate-200 hover:border-slate-300"
+            }`}
+            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center">
+                <Upload className="w-8 h-8 text-primary-500" />
+              </div>
+              <div>
+                <p className="text-slate-700 font-medium">
+                  Faylni bu yerga tashlang yoki bosing
+                </p>
+                <p className="text-sm text-slate-400 mt-1">
+                  .xlsx, .xls yoki .csv formatdagi fayllar qabul qilinadi
+                </p>
+              </div>
+              {fileName && (
+                <Badge variant="info">
+                  <FileSpreadsheet className="w-3.5 h-3.5 mr-1" />
+                  {fileName}
+                </Badge>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleFile(file);
+              }}
+            />
+          </Card>
+
+          <Button variant="outline" onClick={downloadTemplate} icon={<Download className="w-4 h-4" />}>
+            Shablon faylni yuklab olish
+          </Button>
+        </div>
+      )}
+
+      {/* STEP 2: Validate & Preview */}
+      {step === 2 && (
+        <div className="space-y-4">
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-3">
+            <Card variant="light" className="p-4 text-center">
+              <p className="text-2xl font-bold text-slate-800 font-mono">{rows.length}</p>
+              <p className="text-xs text-slate-400">Jami qatorlar</p>
+            </Card>
+            <Card variant="light" className="p-4 text-center">
+              <p className="text-2xl font-bold text-emerald-600 font-mono">{validCount}</p>
+              <p className="text-xs text-slate-400">To&apos;g&apos;ri</p>
+            </Card>
+            <Card variant="light" className="p-4 text-center">
+              <p className="text-2xl font-bold text-red-500 font-mono">{errorCount}</p>
+              <p className="text-xs text-slate-400">Xatoli</p>
+            </Card>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
+              {(["all", "valid", "errors"] as FilterType[]).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                    filter === f ? "bg-white text-primary-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  {f === "all" ? "Barchasi" : f === "valid" ? "To'g'ri" : "Xatolar"}
+                </button>
+              ))}
+            </div>
+            {errorCount > 0 && (
+              <Button variant="outline" size="sm" onClick={removeAllErrors} icon={<Trash2 className="w-3.5 h-3.5" />}>
+                Xatoli qatorlarni olib tashlash
+              </Button>
+            )}
+          </div>
+
+          {/* Rows List */}
+          <div className="space-y-2 max-h-[500px] overflow-y-auto">
+            {filteredRows.map((row, idx) => {
+              const realIdx = rows.indexOf(row);
+              const isEditing = editingIndex === realIdx;
+
+              return (
+                <Card key={realIdx} variant="light" className={`p-3 ${!row.isValid ? "border-red-200 bg-red-50/30" : ""}`}>
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <Input
+                          variant="light"
+                          placeholder="Ism"
+                          value={editForm.firstName || ""}
+                          onChange={(e) => setEditForm((p) => ({ ...p, firstName: e.target.value }))}
+                        />
+                        <Input
+                          variant="light"
+                          placeholder="Familiya"
+                          value={editForm.lastName || ""}
+                          onChange={(e) => setEditForm((p) => ({ ...p, lastName: e.target.value }))}
+                        />
+                        <Input
+                          variant="light"
+                          placeholder="Telefon"
+                          value={editForm.phone || ""}
+                          onChange={(e) => setEditForm((p) => ({ ...p, phone: e.target.value }))}
+                        />
+                        <Input
+                          variant="light"
+                          placeholder="Maktab"
+                          value={editForm.schoolName || ""}
+                          onChange={(e) => setEditForm((p) => ({ ...p, schoolName: e.target.value }))}
+                        />
+                      </div>
+                      <div className="flex gap-2 justify-end">
+                        <Button variant="ghost" size="sm" onClick={() => setEditingIndex(null)} icon={<X className="w-3.5 h-3.5" />}>
+                          Bekor
+                        </Button>
+                        <Button variant="blue" size="sm" onClick={() => saveEdit(realIdx)} icon={<Save className="w-3.5 h-3.5" />}>
+                          Saqlash
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-slate-400 font-mono w-6">{row.rowIndex}</span>
+                      {row.isValid ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                      ) : (
+                        <XCircle className="w-4 h-4 text-red-500 shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm text-slate-800 font-medium">
+                          {row.firstName} {row.lastName}
+                        </span>
+                        <span className="text-xs text-slate-400 ml-2 font-mono">{row.phone}</span>
+                        <span className="text-xs text-slate-400 ml-2">{row.schoolName}</span>
+                        {!row.isValid && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {row.errors.map((err, ei) => (
+                              <Badge key={ei} variant="error" size="sm">{err}</Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <Button variant="ghost" size="sm" onClick={() => startEdit(realIdx)}>
+                          <Edit3 className="w-3.5 h-3.5 text-slate-400" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => removeRow(realIdx)}>
+                          <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-4">
+            <Button variant="ghost" onClick={() => { setStep(1); setRows([]); setFileName(""); }}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Ortga
+            </Button>
+            <Button
+              variant="blue"
+              onClick={handleSave}
+              loading={saving}
+              disabled={validCount === 0}
+              icon={<ArrowRight className="w-4 h-4" />}
+              className="ml-auto"
+            >
+              {validCount} ta o&apos;quvchini import qilish
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 3: Results */}
+      {step === 3 && result && (
+        <div className="space-y-4">
+          <Card variant="light" className="p-6 text-center">
+            <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
+            <h2 className="text-xl font-display font-bold text-slate-800 mb-2">Import yakunlandi</h2>
+            <div className="flex justify-center gap-6 mt-4">
+              <div>
+                <p className="text-2xl font-bold text-emerald-600 font-mono">{result.created}</p>
+                <p className="text-xs text-slate-400">Qo&apos;shildi</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-amber-500 font-mono">{result.skipped}</p>
+                <p className="text-xs text-slate-400">O&apos;tkazildi</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-red-500 font-mono">{result.errored}</p>
+                <p className="text-xs text-slate-400">Xato</p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Errors & Skipped details */}
+          {(result.errors.length > 0 || result.skippedRows.length > 0) && (
+            <Card variant="light" className="p-4">
+              <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-500" />
+                Muammolar
+              </h3>
+              <div className="space-y-1 max-h-48 overflow-y-auto">
+                {result.errors.map((e, i) => (
+                  <div key={`e-${i}`} className="text-sm text-red-600 flex gap-2">
+                    <span className="font-mono text-slate-400">#{e.row}</span>
+                    <span>{e.phone}</span>
+                    <span className="text-slate-400">— {e.reason}</span>
+                  </div>
+                ))}
+                {result.skippedRows.map((e, i) => (
+                  <div key={`s-${i}`} className="text-sm text-amber-600 flex gap-2">
+                    <span className="font-mono text-slate-400">#{e.row}</span>
+                    <span>{e.phone}</span>
+                    <span className="text-slate-400">— {e.reason}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Download passwords */}
+          {result.passwords.length > 0 && (
+            <Card variant="light" className="p-4 border-primary-200 bg-primary-50/30">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-700">Parollar tayyor</p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    O&apos;quvchilarga tarqatish uchun parollar ro&apos;yxatini yuklab oling
+                  </p>
+                </div>
+                <Button variant="blue" onClick={downloadPasswords} icon={<Download className="w-4 h-4" />}>
+                  Yuklab olish
+                </Button>
+              </div>
+            </Card>
+          )}
+
+          <div className="flex gap-3 pt-4">
+            <Button variant="ghost" onClick={() => { setStep(1); setRows([]); setFileName(""); setResult(null); }}>
+              Yana import qilish
+            </Button>
+            <Button variant="blue" onClick={() => router.push("/admin/students")} className="ml-auto">
+              O&apos;quvchilar ro&apos;yxatiga qaytish
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

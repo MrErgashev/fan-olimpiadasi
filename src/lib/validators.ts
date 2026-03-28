@@ -45,5 +45,35 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Parolni kiriting"),
 });
 
+export const adminCreateStudentSchema = z.object({
+  firstName: z.string().min(2, "Ism kamida 2 harf bo'lishi kerak"),
+  lastName: z.string().min(2, "Familiya kamida 2 harf bo'lishi kerak"),
+  phone: z
+    .string()
+    .regex(
+      /^\+998\d{9}$/,
+      "Telefon raqam +998XXXXXXXXX formatda bo'lishi kerak"
+    ),
+  password: z.string().min(6, "Parol kamida 6 belgi bo'lishi kerak"),
+  schoolName: z.string().min(1, "Maktab nomini kiriting"),
+  grade: z.number().min(1).max(11).optional().default(11),
+  regionId: z.string().optional(),
+  districtId: z.string().optional(),
+});
+
+export const blockStudentSchema = z.object({
+  isBlocked: z.boolean(),
+  reason: z.string().optional(),
+});
+
+export const bulkActionSchema = z.object({
+  action: z.enum(["block", "unblock", "delete"]),
+  studentIds: z.array(z.string()).min(1).max(100),
+  reason: z.string().optional(),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type AdminCreateStudentInput = z.infer<typeof adminCreateStudentSchema>;
+export type BlockStudentInput = z.infer<typeof blockStudentSchema>;
+export type BulkActionInput = z.infer<typeof bulkActionSchema>;
