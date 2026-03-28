@@ -99,10 +99,10 @@ export function SubjectsGrid() {
 
                   <div className="flex items-center justify-between">
                     <Badge
-                      variant={subject.isOnline ? "success" : "warning"}
+                      variant={subject.mode === "online+offline" ? "info" : "warning"}
                       size="sm"
                     >
-                      {subject.isOnline ? "Onlayn" : "Offline"}
+                      {subject.mode === "online+offline" ? "Onlayn+Offline" : "Offline"}
                     </Badge>
                     <span className="text-xs text-slate-400 font-medium">
                       30 savol · 90 daq
