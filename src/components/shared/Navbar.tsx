@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { FLUENT_3D } from "@/lib/constants";
-
 const NAV_LINKS = [
-  { href: "#fanlar", label: "Fanlar", icon: `${FLUENT_3D}/Open%20book/3D/open_book_3d.png` },
-  { href: "#sovgalar", label: "Sovg'alar", icon: `${FLUENT_3D}/Wrapped%20gift/3D/wrapped_gift_3d.png` },
-  { href: "#jadval", label: "Jadval", icon: `${FLUENT_3D}/Calendar/3D/calendar_3d.png` },
-  { href: "#faq", label: "Savol-javob", icon: `${FLUENT_3D}/Speech%20balloon/3D/speech_balloon_3d.png` },
+  { href: "#fanlar", label: "Fanlar" },
+  { href: "#sovgalar", label: "Sovg'alar" },
+  { href: "#jadval", label: "Jadval" },
+  { href: "#faq", label: "Savol-javob" },
 ];
 
 export function Navbar() {
@@ -58,9 +56,8 @@ export function Navbar() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-colors duration-200"
+                  className="relative text-[15px] font-medium tracking-wide text-white/70 hover:text-gold-400 transition-colors duration-200 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-gold-400 after:transition-all after:duration-300 hover:after:w-full"
                 >
-                  <img src={link.icon} alt="" className="w-4 h-4 object-contain" loading="lazy" />
                   {link.label}
                 </a>
               ))}
@@ -127,10 +124,9 @@ export function Navbar() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ delay: i * 0.08, duration: 0.3 }}
-                  className="flex items-center gap-2.5 text-2xl text-white/80 hover:text-gold-400 transition-colors duration-200 font-medium"
+                  className="text-2xl text-white/80 hover:text-gold-400 transition-colors duration-200 font-semibold tracking-wide"
                   onClick={() => setIsOpen(false)}
                 >
-                  <img src={link.icon} alt="" className="w-6 h-6 object-contain" loading="lazy" />
                   {link.label}
                 </motion.a>
               ))}
