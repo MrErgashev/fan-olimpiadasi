@@ -115,6 +115,7 @@ export async function POST(req: Request) {
 
     await db.$transaction(
       toCreate.map((item) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { plainPassword, ...data } = item.data;
         return db.student.create({ data });
       })
