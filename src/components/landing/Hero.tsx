@@ -3,14 +3,9 @@
 import { Button } from "@/components/ui/Button";
 import { CountdownTimer } from "./CountdownTimer";
 import { motion } from "framer-motion";
-import { BookOpen, Users, Trophy } from "lucide-react";
+
 import Link from "next/link";
 
-const TRUST_BULLETS = [
-  { icon: BookOpen, text: "7 ta fan bo'yicha" },
-  { icon: Users, text: "1000+ ishtirokchi" },
-  { icon: Trophy, text: "Qimmatbaho sovg'alar" },
-];
 
 export function Hero() {
   return (
@@ -80,26 +75,11 @@ export function Hero() {
           O&apos;zingizni sinab ko&apos;ring va kelajagingizni yarating.
         </motion.p>
 
-        {/* Trust bullets */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 mb-10"
-        >
-          {TRUST_BULLETS.map((bullet) => (
-            <div key={bullet.text} className="flex items-center gap-2 text-white/40">
-              <bullet.icon className="w-4 h-4 text-gold-500/60" />
-              <span className="text-sm font-medium">{bullet.text}</span>
-            </div>
-          ))}
-        </motion.div>
-
         {/* CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14 sm:mb-16"
         >
           <Link href="/register">
@@ -118,7 +98,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
         >
           <p className="text-xs uppercase tracking-[0.2em] text-white/30 mb-5 font-medium">
             Olimpiada boshlanishiga · Toshkent vaqti
