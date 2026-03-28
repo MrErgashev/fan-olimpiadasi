@@ -13,13 +13,26 @@ export async function GET() {
 
     const tests = await db.test.findMany({
       include: {
-        subject: { select: { name: true, emoji: true } },
+        subject: { select: { id: true, name: true, emoji: true } },
         _count: { select: { testAttempts: true } },
       },
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json({ tests });
+    // Har bir test uchun bazadagi aktiv savollar sonini hisoblash
+    const subjectIds = Array.from(new Set(tests.map((t) => t.subjectId)));
+    const questionCounts = await Promise.all(
+      subjectIds.map(async (sid) => ({
+        subjectId: sid,
+        count: await db.question.count({ where: { subjectId: sid, isActive: true } }),
+      }))
+    );
+    const countMap = Object.fromEntries(questionCounts.map((q) => [q.subjectId, q.count]));
+
+    // Savollar yetarli bo'lmagan testlarni chiqarib tashlash
+    const filteredTests = tests.filter((t) => (countMap[t.subjectId] || 0) >= t.totalQuestions);
+
+    return NextResponse.json({ tests: filteredTests });
   } catch {
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }
