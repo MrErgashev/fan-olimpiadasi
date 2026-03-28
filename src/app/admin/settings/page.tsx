@@ -57,7 +57,7 @@ export default function AdminSettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
       </div>
     );
   }
@@ -67,8 +67,8 @@ export default function AdminSettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center">
-            <Settings className="w-5 h-5 text-green-900" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
+            <Settings className="w-5 h-5 text-white" />
           </div>
           Sozlamalar
         </h1>
@@ -78,7 +78,7 @@ export default function AdminSettingsPage() {
       </div>
 
       {/* Ro'yxatdan o'tish sozlamalari */}
-      <Card variant="glass" className="p-6">
+      <Card variant="glass-blue" className="p-6">
         <h2 className="text-lg font-semibold text-white mb-4">
           Ro&apos;yxatdan o&apos;tish sozlamalari
         </h2>
@@ -100,7 +100,7 @@ export default function AdminSettingsPage() {
           <Button
             onClick={handleSave}
             loading={saving}
-            variant="primary"
+            variant="blue"
             icon={<Save className="w-4 h-4" />}
           >
             Saqlash

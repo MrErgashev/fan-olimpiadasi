@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "premium";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "premium" | "blue" | "blue-premium";
   size?: "sm" | "md" | "lg" | "xl";
   loading?: boolean;
   icon?: ReactNode;
@@ -53,6 +53,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             // Danger
             "bg-red-500/10 text-red-600 border border-red-500/30 hover:bg-red-500/20 hover:border-red-500/50":
               variant === "danger",
+            // Blue — gradient CTA (admin/student)
+            "bg-gradient-to-r from-primary-600 to-accent-cyan text-white hover:brightness-110 hover:shadow-lg hover:shadow-primary-500/25 hover:-translate-y-0.5":
+              variant === "blue",
+            // Blue Premium — with animated glow (admin/student)
+            "bg-gradient-to-r from-primary-600 to-accent-cyan text-white font-bold shine-sweep hover:brightness-110 hover:shadow-[0_0_30px_rgba(59,130,246,0.3),0_8px_30px_rgba(59,130,246,0.2)] hover:-translate-y-0.5":
+              variant === "blue-premium",
           },
           {
             "px-4 py-2 text-sm": size === "sm",

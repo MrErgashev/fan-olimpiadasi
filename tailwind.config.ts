@@ -35,6 +35,23 @@ const config: Config = {
           500: "#22996a",
           400: "#2eb87e",
         },
+        // App blue theme (admin/student)
+        app: {
+          dark: "#0a0e1a",
+        },
+        primary: {
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554",
+        },
         accent: {
           blue: "#3b82f6",
           cyan: "#06b6d4",
@@ -76,6 +93,10 @@ const config: Config = {
           "0 0 20px rgba(212, 168, 67, 0.15), 0 0 60px rgba(212, 168, 67, 0.05)",
         "glow-gold-lg":
           "0 0 30px rgba(212, 168, 67, 0.25), 0 0 80px rgba(212, 168, 67, 0.1)",
+        "glow-blue":
+          "0 0 20px rgba(59, 130, 246, 0.2), 0 0 60px rgba(59, 130, 246, 0.08)",
+        "glow-blue-lg":
+          "0 0 30px rgba(59, 130, 246, 0.3), 0 0 80px rgba(59, 130, 246, 0.12)",
         "card": "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06)",
         "card-hover": "0 4px 16px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06)",
         "card-dark": "0 4px 16px rgba(0,0,0,0.3)",

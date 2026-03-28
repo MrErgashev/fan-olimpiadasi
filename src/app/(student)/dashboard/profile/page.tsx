@@ -100,6 +100,20 @@ export default function ProfilePage() {
       const data = await res.json();
       if (res.ok) {
         toast.success("Fanlar muvaffaqiyatli yangilandi!");
+        // Profil holatini yangilash
+        setProfile((prev) =>
+          prev
+            ? {
+                ...prev,
+                subjects: SUBJECTS.filter((s) => selectedSlugs.includes(s.slug)).map((s) => ({
+                  id: s.slug,
+                  slug: s.slug,
+                  name: s.name,
+                  emoji: s.emoji,
+                })),
+              }
+            : prev
+        );
       } else {
         toast.error(data.error || "Xatolik yuz berdi");
       }
@@ -113,7 +127,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-gold-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
       </div>
     );
   }
@@ -135,8 +149,8 @@ export default function ProfilePage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl gradient-gold flex items-center justify-center">
-            <User className="w-5 h-5 text-green-900" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
+            <User className="w-5 h-5 text-white" />
           </div>
           Mening profilim
         </h1>
@@ -146,13 +160,13 @@ export default function ProfilePage() {
       </div>
 
       {/* Shaxsiy ma'lumotlar */}
-      <Card variant="glass" className="p-6">
+      <Card variant="glass-blue" className="p-6">
         <h2 className="text-lg font-semibold text-white mb-4">
           Shaxsiy ma&apos;lumotlar
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <User className="w-4 h-4 text-gold-400" />
+            <User className="w-4 h-4 text-primary-400" />
             <div>
               <p className="text-xs text-white/40">Ism Familiya</p>
               <p className="text-sm text-white font-medium">
@@ -161,14 +175,14 @@ export default function ProfilePage() {
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <Phone className="w-4 h-4 text-gold-400" />
+            <Phone className="w-4 h-4 text-primary-400" />
             <div>
               <p className="text-xs text-white/40">Telefon</p>
               <p className="text-sm text-white font-medium">{profile.phone}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <MapPin className="w-4 h-4 text-gold-400" />
+            <MapPin className="w-4 h-4 text-primary-400" />
             <div>
               <p className="text-xs text-white/40">Viloyat</p>
               <p className="text-sm text-white font-medium">
@@ -177,7 +191,7 @@ export default function ProfilePage() {
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <School className="w-4 h-4 text-gold-400" />
+            <School className="w-4 h-4 text-primary-400" />
             <div>
               <p className="text-xs text-white/40">Maktab</p>
               <p className="text-sm text-white font-medium">{profile.schoolName}</p>
@@ -187,12 +201,12 @@ export default function ProfilePage() {
       </Card>
 
       {/* Fan tanlash */}
-      <Card variant="glass" className="p-6">
+      <Card variant="glass-blue" className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">
             Olimpiada fanlari
           </h2>
-          <Badge variant="gold" size="sm">
+          <Badge variant="info" size="sm">
             {maxSubjects === 0
               ? "Cheksiz"
               : `Maks. ${maxSubjects} ta`}
@@ -245,7 +259,7 @@ export default function ProfilePage() {
             <Button
               onClick={handleSave}
               loading={saving}
-              variant="primary"
+              variant="blue"
               icon={<Save className="w-4 h-4" />}
             >
               O&apos;zgarishlarni saqlash

@@ -71,7 +71,7 @@ export default function QuestionsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-gold-gradient">Savollar bazasi</h1>
+          <h1 className="font-display text-2xl font-bold text-blue-gradient">Savollar bazasi</h1>
           <p className="text-sm text-white/40 mt-1">Jami: {total} ta savol</p>
         </div>
         <div className="flex gap-2">
@@ -101,16 +101,16 @@ export default function QuestionsPage() {
       {/* Questions list */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="w-6 h-6 animate-spin text-gold-400" />
+          <Loader2 className="w-6 h-6 animate-spin text-primary-400" />
         </div>
       ) : questions.length === 0 ? (
-        <Card variant="glass" className="text-center py-12">
+        <Card variant="glass-blue" className="text-center py-12">
           <p className="text-white/50">Savollar topilmadi</p>
         </Card>
       ) : (
         <div className="space-y-3">
           {questions.map((q) => (
-            <Card key={q.id} variant="glass" className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <Card key={q.id} variant="glass-blue" className="flex flex-col sm:flex-row sm:items-center gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span>{q.subject.emoji}</span>
@@ -120,7 +120,7 @@ export default function QuestionsPage() {
                 <p className="text-sm text-white/80 truncate">{q.questionText}</p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs font-mono text-gold-400 bg-gold-500/10 px-2 py-1 rounded">
+                <span className="text-xs font-mono text-primary-400 bg-primary-500/10 px-2 py-1 rounded">
                   {q.correctAnswer}
                 </span>
                 <Button variant="ghost" size="sm" onClick={() => handleDelete(q.id)}>

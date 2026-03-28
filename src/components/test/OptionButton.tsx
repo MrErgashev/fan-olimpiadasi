@@ -24,7 +24,7 @@ export function OptionButton({
       className={cn(
         "w-full text-left p-5 sm:p-6 rounded-2xl border transition-all duration-200 group relative",
         selected
-          ? "border-gold-500/50 bg-gold-500/15 ring-2 ring-gold-500/20 shadow-lg shadow-gold-500/5"
+          ? "border-primary-500/50 bg-primary-500/15 ring-2 ring-primary-500/20 shadow-lg shadow-primary-500/5"
           : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06] hover:-translate-y-0.5"
       )}
     >
@@ -33,8 +33,8 @@ export function OptionButton({
           className={cn(
             "flex items-center justify-center w-10 h-10 rounded-xl text-base font-bold shrink-0 transition-all duration-200",
             selected
-              ? "bg-gold-500 text-green-900 shadow-glow-gold"
-              : "bg-green-700/50 text-white/70 group-hover:bg-green-600/50"
+              ? "bg-gradient-to-r from-primary-500 to-accent-cyan text-white shadow-glow-blue"
+              : "bg-white/10 text-white/70 group-hover:bg-white/15"
           )}
         >
           {label}
@@ -57,8 +57,8 @@ export function OptionButton({
 
         {/* Checkmark */}
         {selected && (
-          <div className="shrink-0 w-6 h-6 rounded-full bg-gold-500 flex items-center justify-center">
-            <Check className="w-3.5 h-3.5 text-green-900" />
+          <div className="shrink-0 w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center">
+            <Check className="w-3.5 h-3.5 text-white" />
           </div>
         )}
       </div>

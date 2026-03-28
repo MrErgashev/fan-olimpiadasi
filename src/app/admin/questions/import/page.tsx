@@ -247,7 +247,7 @@ export default function ImportQuestionsPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="font-display text-2xl font-bold text-gold-gradient">
+          <h1 className="font-display text-2xl font-bold text-blue-gradient">
             Savollarni import qilish
           </h1>
           <p className="text-sm text-white/40 mt-0.5">
@@ -264,7 +264,7 @@ export default function ImportQuestionsPage() {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
                   step === s.num
-                    ? "bg-gold-500 text-green-900"
+                    ? "bg-primary-500 text-white"
                     : step > s.num
                       ? "bg-emerald-500 text-white"
                       : "bg-white/10 text-white/40"
@@ -279,7 +279,7 @@ export default function ImportQuestionsPage() {
               <span
                 className={`text-sm hidden sm:inline ${
                   step === s.num
-                    ? "text-gold-400 font-medium"
+                    ? "text-primary-400 font-medium"
                     : step > s.num
                       ? "text-emerald-400"
                       : "text-white/30"
@@ -308,7 +308,7 @@ export default function ImportQuestionsPage() {
               onClick={() => setInputMode("paste")}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm transition-all ${
                 inputMode === "paste"
-                  ? "bg-gold-500/15 text-gold-400 border border-gold-500/30"
+                  ? "bg-primary-500/15 text-primary-400 border border-primary-500/30"
                   : "bg-white/5 text-white/50 border border-white/10 hover:text-white/70"
               }`}
             >
@@ -319,7 +319,7 @@ export default function ImportQuestionsPage() {
               onClick={() => setInputMode("file")}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm transition-all ${
                 inputMode === "file"
-                  ? "bg-gold-500/15 text-gold-400 border border-gold-500/30"
+                  ? "bg-primary-500/15 text-primary-400 border border-primary-500/30"
                   : "bg-white/5 text-white/50 border border-white/10 hover:text-white/70"
               }`}
             >
@@ -329,7 +329,7 @@ export default function ImportQuestionsPage() {
           </div>
 
           {inputMode === "paste" ? (
-            <Card variant="glass" className="p-4 space-y-3">
+            <Card variant="glass-blue" className="p-4 space-y-3">
               <label className="block text-sm font-medium text-gray-200">
                 Savollar matnini joylashtiring
               </label>
@@ -338,7 +338,7 @@ export default function ImportQuestionsPage() {
                 onChange={(e) => setRawText(e.target.value)}
                 rows={16}
                 spellCheck={false}
-                className="w-full px-4 py-3 bg-green-800/60 border border-white/10 rounded-xl text-white font-mono text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500/40 resize-y leading-relaxed"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-mono text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/40 resize-y leading-relaxed"
                 placeholder={EXAMPLE_FORMAT}
               />
               <p className="text-xs text-white/30">
@@ -347,7 +347,7 @@ export default function ImportQuestionsPage() {
               </p>
             </Card>
           ) : (
-            <Card variant="glass" className="p-4 space-y-3">
+            <Card variant="glass-blue" className="p-4 space-y-3">
               {/* Drag and drop zone */}
               <div
                 onDrop={handleDrop}
@@ -356,16 +356,16 @@ export default function ImportQuestionsPage() {
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
                   isDragging
-                    ? "border-gold-500 bg-gold-500/10"
+                    ? "border-primary-500 bg-primary-500/10"
                     : "border-white/20 hover:border-white/40 hover:bg-white/5"
                 }`}
               >
                 <Upload
-                  className={`w-10 h-10 mx-auto mb-3 ${isDragging ? "text-gold-400" : "text-white/30"}`}
+                  className={`w-10 h-10 mx-auto mb-3 ${isDragging ? "text-primary-400" : "text-white/30"}`}
                 />
                 <p className="text-white/70 text-sm">
                   Faylni shu yerga tashlang yoki{" "}
-                  <span className="text-gold-400 underline">tanlang</span>
+                  <span className="text-primary-400 underline">tanlang</span>
                 </p>
                 <p className="text-white/30 text-xs mt-1">
                   Faqat .txt fayllar, maksimum 5MB
@@ -387,7 +387,7 @@ export default function ImportQuestionsPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-gold-400" />
+                      <FileText className="w-4 h-4 text-primary-400" />
                       <span className="text-sm text-white/70">
                         Fayl yuklandi
                       </span>
@@ -400,7 +400,7 @@ export default function ImportQuestionsPage() {
                       <X className="w-4 h-4 text-white/40" />
                     </Button>
                   </div>
-                  <pre className="px-4 py-3 bg-green-800/60 border border-white/10 rounded-xl text-white/60 font-mono text-xs max-h-40 overflow-auto">
+                  <pre className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white/60 font-mono text-xs max-h-40 overflow-auto">
                     {rawText.slice(0, 500)}
                     {rawText.length > 500 && "..."}
                   </pre>
@@ -410,8 +410,8 @@ export default function ImportQuestionsPage() {
           )}
 
           {/* Format example */}
-          <Card variant="glass-subtle" className="p-4">
-            <p className="text-xs text-gold-400 font-medium mb-2">
+          <Card variant="glass-blue-subtle" className="p-4">
+            <p className="text-xs text-primary-400 font-medium mb-2">
               Format namunasi:
             </p>
             <pre className="text-xs text-white/50 font-mono leading-relaxed whitespace-pre-wrap">
@@ -435,10 +435,10 @@ export default function ImportQuestionsPage() {
       {step === 2 && (
         <div className="space-y-4">
           {/* Stats */}
-          <Card variant="glass" className="p-4">
+          <Card variant="glass-blue" className="p-4">
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-gold-400" />
+                <FileText className="w-5 h-5 text-primary-400" />
                 <span className="text-white font-medium">
                   {questions.length} ta savol
                 </span>
@@ -457,7 +457,7 @@ export default function ImportQuestionsPage() {
           </Card>
 
           {/* Subject & Difficulty */}
-          <Card variant="gold" className="p-4">
+          <Card variant="glass-blue" className="p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Select
                 label="Fan"
@@ -499,7 +499,7 @@ export default function ImportQuestionsPage() {
                   onClick={() => setFilter(f.key)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     filter === f.key
-                      ? "bg-gold-500/20 text-gold-400 border border-gold-500/30"
+                      ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
                       : "bg-white/5 text-white/40 border border-white/10 hover:text-white/60"
                   }`}
                 >
@@ -524,14 +524,14 @@ export default function ImportQuestionsPage() {
             {filteredQuestions.map((q) => (
               <Card
                 key={q.index}
-                variant="glass"
+                variant="glass-blue"
                 className={`p-4 ${!q.isValid ? "border-red-500/30" : ""}`}
               >
                 {editingIndex === q.index && editForm ? (
                   // Edit mode
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono text-gold-400">
+                      <span className="text-xs font-mono text-primary-400">
                         #{q.index}
                       </span>
                       <div className="flex gap-2">
@@ -561,7 +561,7 @@ export default function ImportQuestionsPage() {
                           })
                         }
                         rows={2}
-                        className="w-full px-3 py-2 bg-green-800/60 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/40 resize-y"
+                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/40 resize-y"
                       />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -609,7 +609,7 @@ export default function ImportQuestionsPage() {
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1.5">
-                          <span className="text-xs font-mono text-gold-400 bg-gold-500/10 px-1.5 py-0.5 rounded">
+                          <span className="text-xs font-mono text-primary-400 bg-primary-500/10 px-1.5 py-0.5 rounded">
                             #{q.index}
                           </span>
                           {q.isValid ? (
@@ -638,7 +638,7 @@ export default function ImportQuestionsPage() {
                               key={letter}
                               className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs ${
                                 q.correctAnswer === letter
-                                  ? "bg-gold-500/15 text-gold-300 border border-gold-500/30"
+                                  ? "bg-primary-500/15 text-primary-300 border border-primary-500/30"
                                   : "bg-white/5 text-white/60"
                               }`}
                             >
@@ -710,8 +710,8 @@ export default function ImportQuestionsPage() {
 
       {/* Step 3: Saving */}
       {step === 3 && saving && (
-        <Card variant="glass" className="p-12 text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-gold-400 mx-auto mb-4" />
+        <Card variant="glass-blue" className="p-12 text-center">
+          <Loader2 className="w-10 h-10 animate-spin text-primary-400 mx-auto mb-4" />
           <p className="text-white font-medium text-lg">Saqlanmoqda...</p>
           <p className="text-white/40 text-sm mt-1">
             {validCount} ta savol bazaga yozilmoqda

@@ -44,7 +44,7 @@ export default function StudentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-gold-gradient">O&apos;quvchilar</h1>
+        <h1 className="font-display text-2xl font-bold text-blue-gradient">O&apos;quvchilar</h1>
         <p className="text-sm text-white/40 mt-1">Jami: {total} ta</p>
       </div>
 
@@ -54,11 +54,11 @@ export default function StudentsPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gold-400" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-400" /></div>
       ) : (
         <div className="space-y-3">
           {students.map((s) => (
-            <Card key={s.id} variant="glass">
+            <Card key={s.id} variant="glass-blue">
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">

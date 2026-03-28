@@ -28,12 +28,21 @@
   --slate-600: #475569;
   --slate-700: #334155;
 
-  /* Legacy green for admin/dashboard compat */
+  /* Green for landing/auth */
   --green-900: #062a1e;
   --green-800: #0a3d2a;
   --green-700: #0f5c3a;
   --green-600: #1a7a4e;
   --green-500: #22996a;
+
+  /* App blue theme (admin/student) */
+  --app-dark: #0a0e1a;
+  --primary-600: #2563eb;
+  --primary-500: #3b82f6;
+  --primary-400: #60a5fa;
+  --primary-300: #93c5fd;
+  --cyan-500: #06b6d4;
+  --cyan-400: #22d3ee;
 
   /* Status */
   --success: #22c55e;
@@ -79,7 +88,7 @@ html {
 }
 
 @layer components {
-  /* ===== LEGACY GLASS CLASSES (admin/student pages) ===== */
+  /* ===== GLASS CLASSES (original green-gold — landing/auth) ===== */
   .glass {
     background: rgba(10, 61, 42, 0.4);
     backdrop-filter: blur(16px);
@@ -122,7 +131,52 @@ html {
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Legacy border utilities */
+  /* ===== BLUE GLASS CLASSES (admin/student pages only) ===== */
+  .glass-blue {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-blue-subtle {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-blue-strong {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* Blue gradient mesh background for admin/student */
+  .bg-app-mesh {
+    background-color: #0a0e1a;
+    background-image:
+      radial-gradient(ellipse at 15% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 30%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 90%, rgba(37, 99, 235, 0.08) 0%, transparent 50%);
+  }
+
+  /* Neo-morphism effects (admin/student) */
+  .neo-raised {
+    box-shadow:
+      6px 6px 12px rgba(0, 0, 0, 0.3),
+      -2px -2px 8px rgba(255, 255, 255, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .neo-inset {
+    box-shadow:
+      inset 4px 4px 8px rgba(0, 0, 0, 0.3),
+      inset -2px -2px 6px rgba(255, 255, 255, 0.03);
+  }
+
+  /* Border utilities */
   .gold-border {
     border: 1px solid rgba(212, 168, 67, 0.3);
   }
@@ -131,7 +185,7 @@ html {
     border: 1px solid rgba(212, 168, 67, 0.6);
   }
 
-  /* Legacy gradients (admin/dashboard) */
+  /* ===== GOLD GRADIENTS (landing/auth — original) ===== */
   .gradient-gold {
     background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
   }
@@ -184,6 +238,24 @@ html {
     margin-right: auto;
   }
 
+  /* ===== BLUE GRADIENTS (admin/student only) ===== */
+  .text-blue-gradient {
+    background: linear-gradient(135deg, var(--primary-400), var(--cyan-400));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-divider-blue {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(59, 130, 246, 0.4),
+      transparent
+    );
+  }
+
   /* Legacy spotlight */
   .spotlight {
     background: radial-gradient(
@@ -193,7 +265,7 @@ html {
     );
   }
 
-  /* ===== NEW PREMIUM CLASSES ===== */
+  /* ===== PREMIUM CLASSES (landing) ===== */
 
   /* Section backgrounds */
   .section-dark {
@@ -206,7 +278,7 @@ html {
     color: var(--navy-900);
   }
 
-  /* Premium text gradient */
+  /* Premium text gradient (gold — landing) */
   .text-gradient-gold {
     background: linear-gradient(135deg, var(--gold-500), var(--gold-300));
     -webkit-background-clip: text;
@@ -214,7 +286,7 @@ html {
     background-clip: text;
   }
 
-  /* Gold shimmer — traveling highlight on text */
+  /* Gold shimmer — traveling highlight on text (landing) */
   .text-gradient-gold-shimmer {
     background: linear-gradient(
       110deg,
@@ -234,7 +306,7 @@ html {
     animation: gold-shimmer 4s ease-in-out infinite;
   }
 
-  /* Animated conic border for premium buttons */
+  /* Animated conic border for premium buttons (landing) */
   .btn-premium-border {
     position: relative;
     background: conic-gradient(
@@ -298,7 +370,7 @@ html {
     margin-bottom: -1px;
   }
 
-  /* Gradient border card effect */
+  /* Gradient border card effect (landing) */
   .gradient-border-card {
     position: relative;
     background: white;
@@ -325,12 +397,12 @@ html {
     background-position: 100% 100%;
   }
 
-  /* Counter glow effect */
+  /* Counter glow effect (landing) */
   .counter-glow {
     text-shadow: 0 0 30px rgba(212, 168, 67, 0.4), 0 0 60px rgba(212, 168, 67, 0.1);
   }
 
-  /* Premium section heading */
+  /* Premium section heading (landing) */
   .section-heading {
     position: relative;
     display: inline-block;
@@ -346,7 +418,7 @@ html {
     border-radius: 2px;
   }
 
-  /* Badge shimmer border */
+  /* Badge shimmer border (landing) */
   .badge-shimmer {
     position: relative;
     overflow: hidden;
@@ -370,7 +442,7 @@ html {
   }
 }
 
-/* Legacy glow effects (admin) */
+/* Glow effects — gold (landing/auth) */
 .glow-gold {
   box-shadow: 0 0 20px rgba(212, 168, 67, 0.15),
     0 0 60px rgba(212, 168, 67, 0.05);
@@ -391,7 +463,18 @@ html {
     0 0 40px rgba(34, 153, 106, 0.2);
 }
 
-/* Legacy animation (admin) */
+/* Blue glow effects (admin/student) */
+.glow-blue-shadow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2),
+    0 0 60px rgba(59, 130, 246, 0.08);
+}
+
+.text-glow-blue {
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.5),
+    0 0 40px rgba(59, 130, 246, 0.2);
+}
+
+/* Legacy animation */
 .animate-gradient {
   animation: gradient-shift 3s ease infinite;
   background-size: 200% 100%;
@@ -429,7 +512,7 @@ html {
   100% { transform: translateX(100%); }
 }
 
-/* Legacy noise overlay (keep for admin) */
+/* Noise overlay */
 .noise-overlay {
   position: relative;
 }

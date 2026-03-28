@@ -68,9 +68,9 @@ export default function NewTestPage() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
         <Link href="/admin/tests"><Button variant="ghost" size="sm"><ArrowLeft className="w-4 h-4" /></Button></Link>
-        <h1 className="font-display text-2xl font-bold text-gold-gradient">Yangi test</h1>
+        <h1 className="font-display text-2xl font-bold text-blue-gradient">Yangi test</h1>
       </div>
-      <Card variant="gold">
+      <Card variant="glass-blue">
         <form onSubmit={handleSubmit} className="space-y-4">
           <Select label="Fan" value={form.subjectId} onChange={(e) => set("subjectId", e.target.value)} placeholder="Fanni tanlang" options={subjects.map((s) => ({ value: s.id, label: s.name }))} />
           <Input label="Test nomi" value={form.name} onChange={(e) => set("name", e.target.value)} placeholder='Masalan: "Matematika — I tur"' />
