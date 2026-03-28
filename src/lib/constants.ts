@@ -46,6 +46,7 @@ export const SCHEDULE = [
   },
 ] as const;
 
+// Asia/Tashkent (UTC+5) — O'zbekiston DST ishlatmaydi
 export const OLYMPIAD_DATE = new Date("2026-03-30T10:00:00+05:00");
 
 export const CONTACT_INFO = {

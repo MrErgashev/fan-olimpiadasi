@@ -121,7 +121,7 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.6 }}
         >
           <p className="text-xs uppercase tracking-[0.2em] text-white/30 mb-5 font-medium">
-            Olimpiada boshlanishiga
+            Olimpiada boshlanishiga · Toshkent vaqti
           </p>
           <CountdownTimer />
         </motion.div>
