@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
@@ -102,7 +103,9 @@ export default function AdminLoginPage() {
       >
         {/* Header */}
         <motion.div variants={itemVariants} className="text-center mb-8">
-          <Logo size="lg" className="justify-center" />
+          <Link href="/">
+            <Logo size="lg" className="justify-center" />
+          </Link>
           <div className="ornamental-line mt-5 mx-auto" />
           <div className="mt-5 flex items-center justify-center gap-2.5">
             <Shield className="w-5 h-5 text-gold-400" />
