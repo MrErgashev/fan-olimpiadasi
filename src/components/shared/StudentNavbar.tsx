@@ -2,7 +2,7 @@
 
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
-import { LogOut, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
@@ -12,18 +12,28 @@ interface StudentNavbarProps {
 }
 
 export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
+  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-green-900/90 backdrop-blur-lg border-b border-white/5">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-green-900/80 backdrop-blur-2xl shadow-xl shadow-black/10">
+      {/* Bottom gradient border */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gold-500/20 to-transparent" />
+
       <div className="max-w-container mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           <Link href="/dashboard">
             <Logo size="sm" />
           </Link>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 text-sm text-white/70">
-              <User className="w-4 h-4" />
-              <span>
+            {/* Avatar with initials */}
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl gradient-gold flex items-center justify-center shadow-glow-gold">
+                <span className="text-sm font-bold text-green-900">
+                  {initials}
+                </span>
+              </div>
+              <span className="hidden sm:block text-sm text-white/70 font-medium">
                 {firstName} {lastName}
               </span>
             </div>
@@ -32,7 +42,7 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
               variant="ghost"
               size="sm"
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="text-white/50 hover:text-red-400"
+              className="text-white/50 hover:text-red-400 hover:bg-red-500/10"
             >
               <LogOut className="w-4 h-4 mr-1" />
               <span className="hidden sm:inline">Chiqish</span>
