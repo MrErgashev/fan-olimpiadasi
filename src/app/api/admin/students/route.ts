@@ -19,10 +19,16 @@ export async function GET(req: Request) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = 20;
 
+    const grade = searchParams.get("grade");
+    const sort = searchParams.get("sort"); // "name" | "date" | "tests"
+
     const where: Record<string, unknown> = {};
     if (regionId) where.regionId = regionId;
-    if (status === "active") where.isBlocked = false;
+    if (grade) where.grade = parseInt(grade);
+    if (status === "active") { where.isBlocked = false; where.isArchived = false; }
     if (status === "blocked") where.isBlocked = true;
+    if (status === "archived") where.isArchived = true;
+    if (!status || status === "all") where.isArchived = false;
     if (search) {
       where.OR = [
         { firstName: { contains: search, mode: "insensitive" } },
@@ -30,6 +36,10 @@ export async function GET(req: Request) {
         { phone: { contains: search } },
       ];
     }
+
+    let orderBy: Record<string, string> = { createdAt: "desc" };
+    if (sort === "name") orderBy = { firstName: "asc" };
+    if (sort === "date") orderBy = { createdAt: "desc" };
 
     const [students, total] = await Promise.all([
       db.student.findMany({
@@ -39,7 +49,7 @@ export async function GET(req: Request) {
           subjects: { include: { subject: { select: { name: true, emoji: true } } } },
           _count: { select: { testAttempts: true } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy,
         skip: (page - 1) * limit,
         take: limit,
       }),
@@ -65,6 +75,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Validatsiya xatosi", details: parsed.error.flatten() }, { status: 400 });
     }
 
+    const subjectIds: string[] = body.subjectIds || [];
+    const returnPassword: boolean = body.returnPassword || false;
     const { phone, password, ...rest } = parsed.data;
 
     const existing = await db.student.findUnique({ where: { phone } });
@@ -79,10 +91,15 @@ export async function POST(req: Request) {
         ...rest,
         phone,
         password: hashedPassword,
+        ...(subjectIds.length > 0 && {
+          subjects: {
+            create: subjectIds.map((subjectId: string) => ({ subjectId })),
+          },
+        }),
       },
     });
 
-    return NextResponse.json({ student }, { status: 201 });
+    return NextResponse.json({ student, password: returnPassword ? password : undefined }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }

@@ -28,7 +28,16 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!student) return null;
-        if (student.isBlocked) return null;
+
+        // Check if temporary block has expired
+        if (student.isBlocked && student.blockedUntil && new Date() > student.blockedUntil) {
+          await db.student.update({
+            where: { id: student.id },
+            data: { isBlocked: false, blockedAt: null, blockedReason: null, blockedUntil: null },
+          });
+        } else if (student.isBlocked) {
+          return null;
+        }
 
         const isValid = await compare(credentials.password, student.password);
         if (!isValid) return null;

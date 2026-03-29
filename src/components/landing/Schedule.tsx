@@ -91,6 +91,7 @@ export function Schedule() {
                           className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 cursor-default hover:scale-[1.03] hover:shadow-sm ${colors}`}
                         >
                           {subjectData?.image && (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={subjectData.image}
                               alt={subject}

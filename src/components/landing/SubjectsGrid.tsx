@@ -97,6 +97,7 @@ export function SubjectsGrid() {
                     <div className={`p-3 rounded-xl ${accent.bg} group-hover:shadow-md transition-shadow duration-300`}>
                       {Icon && <Icon className="w-6 h-6" />}
                     </div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={subject.image}
                       alt={subject.name}

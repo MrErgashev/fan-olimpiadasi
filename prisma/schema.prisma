@@ -115,14 +115,18 @@ model Student {
   isBlocked     Boolean   @default(false) @map("is_blocked")
   blockedAt     DateTime? @map("blocked_at")
   blockedReason String?   @map("blocked_reason")
+  blockedUntil  DateTime? @map("blocked_until")
+  isArchived    Boolean   @default(false) @map("is_archived")
+  archivedAt    DateTime? @map("archived_at")
   createdAt     DateTime  @default(now()) @map("created_at")
 
-  region       Region?          @relation(fields: [regionId], references: [id])
-  district     District?        @relation(fields: [districtId], references: [id])
-  accessCode   AccessCode?      @relation(fields: [accessCodeId], references: [id])
-  subjects     StudentSubject[]
-  testAttempts TestAttempt[]
-  securityLogs SecurityLog[]
+  region        Region?          @relation(fields: [regionId], references: [id])
+  district      District?        @relation(fields: [districtId], references: [id])
+  accessCode    AccessCode?      @relation(fields: [accessCodeId], references: [id])
+  subjects      StudentSubject[]
+  testAttempts  TestAttempt[]
+  securityLogs  SecurityLog[]
+  blockHistory  BlockHistory[]
 
   @@map("students")
 }
@@ -292,7 +296,24 @@ enum SecurityEvent {
 }
 
 // ============================================
-// 12. SAYT SOZLAMALARI
+// 12. BLOKLASH TARIXI
+// ============================================
+model BlockHistory {
+  id        String   @id @default(cuid())
+  studentId String   @map("student_id")
+  action    String   // "block" | "unblock"
+  reason    String?
+  duration  String?  // "permanent" | "1d" | "3d" | "1w" | "1m" | custom
+  blockedBy String   @map("blocked_by")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("block_history")
+}
+
+// ============================================
+// 13. SAYT SOZLAMALARI
 // ============================================
 model SiteSetting {
   key       String   @id
@@ -303,7 +324,7 @@ model SiteSetting {
 }
 
 // ============================================
-// 13. TEST UCHUN TANLANGAN SAVOLLAR
+// 14. TEST UCHUN TANLANGAN SAVOLLAR
 // ============================================
 model AttemptQuestion {
   id            String @id @default(cuid())

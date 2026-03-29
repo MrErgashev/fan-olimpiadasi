@@ -61,13 +61,32 @@ export const adminCreateStudentSchema = z.object({
   districtId: z.string().optional(),
 });
 
+export const adminUpdateStudentSchema = z.object({
+  firstName: z.string().min(2, "Ism kamida 2 harf bo'lishi kerak").optional(),
+  lastName: z.string().min(2, "Familiya kamida 2 harf bo'lishi kerak").optional(),
+  phone: z
+    .string()
+    .regex(
+      /^\+998\d{9}$/,
+      "Telefon raqam +998XXXXXXXXX formatda bo'lishi kerak"
+    )
+    .optional(),
+  schoolName: z.string().min(1, "Maktab nomini kiriting").optional(),
+  grade: z.number().min(1).max(11).optional(),
+  regionId: z.string().nullable().optional(),
+  districtId: z.string().nullable().optional(),
+  subjectIds: z.array(z.string()).optional(),
+});
+
 export const blockStudentSchema = z.object({
   isBlocked: z.boolean(),
   reason: z.string().optional(),
+  duration: z.string().optional(), // "permanent" | "1d" | "3d" | "1w" | "1m" | custom date
+  blockedUntil: z.string().optional(), // ISO date string for custom duration
 });
 
 export const bulkActionSchema = z.object({
-  action: z.enum(["block", "unblock", "delete"]),
+  action: z.enum(["block", "unblock", "delete", "archive", "unarchive"]),
   studentIds: z.array(z.string()).min(1).max(100),
   reason: z.string().optional(),
 });
@@ -75,5 +94,6 @@ export const bulkActionSchema = z.object({
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type AdminCreateStudentInput = z.infer<typeof adminCreateStudentSchema>;
+export type AdminUpdateStudentInput = z.infer<typeof adminUpdateStudentSchema>;
 export type BlockStudentInput = z.infer<typeof blockStudentSchema>;
 export type BulkActionInput = z.infer<typeof bulkActionSchema>;
