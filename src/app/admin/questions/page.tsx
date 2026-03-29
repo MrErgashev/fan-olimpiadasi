@@ -224,8 +224,9 @@ export default function QuestionsPage() {
   const handleDeleteBySubject = async (subjectId?: string) => {
     const sid = subjectId || selectedSubjectId;
     if (!sid) return;
-    const all = [...subjectCounts, ...subjects.map((s) => ({ subjectId: s.id, name: s.name }))];
-    const subjectName = all.find((s) => ("subjectId" in s ? s.subjectId : s.id) === sid)?.name || "";
+    const fromCounts = subjectCounts.find((s) => s.subjectId === sid);
+    const fromSubjects = subjects.find((s) => s.id === sid);
+    const subjectName = fromCounts?.name || fromSubjects?.name || "";
     if (!confirm(`"${subjectName}" fanidagi barcha savollarni o'chirishni tasdiqlaysizmi?`)) return;
     try {
       const res = await fetch(`/api/admin/questions?subjectId=${sid}`, { method: "DELETE" });
