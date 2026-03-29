@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
-import { Loader2, Plus } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Loader2, Plus, RefreshCw, Trash2, Clock, Users } from "lucide-react";
 import {
   UsersIcon, QuestionIcon, ClipboardIcon, TrophyIcon,
   ChartIcon, KeyIcon, TrendingIcon,
@@ -25,6 +27,15 @@ interface Stats {
     tests: number;
     students: number;
   }[];
+}
+
+interface ActiveAttempt {
+  studentName: string;
+  phone: string;
+  testName: string;
+  subjectEmoji: string;
+  remainingMinutes: number;
+  durationMinutes: number;
 }
 
 // Subject accent colors for table
@@ -51,6 +62,8 @@ const item = {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeAttempts, setActiveAttempts] = useState<ActiveAttempt[]>([]);
+  const [cleaning, setCleaning] = useState(false);
 
   useEffect(() => {
     fetch("/api/admin/stats")
@@ -61,7 +74,36 @@ export default function AdminDashboard() {
       .then(setStats)
       .catch(() => toast.error("Statistika yuklanmadi"))
       .finally(() => setLoading(false));
+
+    fetchActiveAttempts();
   }, []);
+
+  const fetchActiveAttempts = () => {
+    fetch("/api/admin/active-attempts")
+      .then((r) => r.json())
+      .then((d) => setActiveAttempts(d.activeAttempts || []))
+      .catch(() => {});
+  };
+
+  const handleCleanup = async () => {
+    setCleaning(true);
+    try {
+      const res = await fetch("/api/admin/cleanup", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(data.message);
+        fetchActiveAttempts();
+        // Statistikani yangilash
+        fetch("/api/admin/stats").then((r) => r.json()).then(setStats);
+      } else {
+        toast.error(data.error || "Xatolik");
+      }
+    } catch {
+      toast.error("Tarmoq xatosi");
+    } finally {
+      setCleaning(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -179,6 +221,59 @@ export default function AdminDashboard() {
           </Card>
         </Link>
       </div>
+
+      {/* Active attempts - hozir test ishlayotganlar */}
+      <Card variant="light" className="rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Users className="w-5 h-5 text-amber-500" />
+            <h2 className="text-lg font-semibold text-slate-800">
+              Hozir test ishlayotganlar
+            </h2>
+            {activeAttempts.length > 0 && (
+              <Badge variant="warning">{activeAttempts.length}</Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={fetchActiveAttempts}>
+              <RefreshCw className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCleanup}
+              loading={cleaning}
+              className="text-red-500 hover:bg-red-50"
+              title="Vaqti tugagan testlarni avtomatik baholash"
+            >
+              <Trash2 className="w-4 h-4 mr-1" /> Tozalash
+            </Button>
+          </div>
+        </div>
+        {activeAttempts.length === 0 ? (
+          <p className="text-sm text-slate-400 text-center py-4">
+            Hozir hech kim test ishlamayapti
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {activeAttempts.map((a, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-xl">{a.subjectEmoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-slate-800 truncate">{a.studentName}</p>
+                  <p className="text-xs text-slate-400">{a.testName}</p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <Clock className="w-3.5 h-3.5 text-amber-500" />
+                  <span className={`text-sm font-mono font-bold ${a.remainingMinutes <= 5 ? "text-red-500" : "text-amber-600"}`}>
+                    {a.remainingMinutes} daq
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
 
       {/* Subject statistics */}
       <Card variant="light" className="rounded-2xl p-6">

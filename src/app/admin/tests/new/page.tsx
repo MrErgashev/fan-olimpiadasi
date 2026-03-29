@@ -26,6 +26,7 @@ export default function NewTestPage() {
     isShuffleOptions: true,
     startsAt: "",
     endsAt: "",
+    accessPin: "",
     status: "draft",
   });
 
@@ -90,8 +91,15 @@ export default function NewTestPage() {
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <Input label="Boshlanish vaqti" type="datetime-local" value={form.startsAt} onChange={(e) => set("startsAt", e.target.value)} />
-            <Input label="Tugash vaqti" type="datetime-local" value={form.endsAt} onChange={(e) => set("endsAt", e.target.value)} />
+            <Input label="Ochilish vaqti" type="datetime-local" value={form.startsAt} onChange={(e) => set("startsAt", e.target.value)} />
+            <div>
+              <Input label="Oxirgi boshlash vaqti" type="datetime-local" value={form.endsAt} onChange={(e) => set("endsAt", e.target.value)} />
+              <p className="text-xs text-slate-400 mt-1">Bu vaqtdan keyin yangi o&apos;quvchilar testni boshlay olmaydi, lekin boshlagan o&apos;quvchilar davom etadi</p>
+            </div>
+          </div>
+          <div>
+            <Input label="Kirish kodi (PIN)" value={form.accessPin} onChange={(e) => set("accessPin", e.target.value)} placeholder="Masalan: 1234" maxLength={6} />
+            <p className="text-xs text-slate-400 mt-1">O&apos;quvchilar testni boshlashdan oldin shu kodni kiritishi kerak. Bo&apos;sh qoldirilsa, PIN so&apos;ralmaydi.</p>
           </div>
           <Select label="Holat" value={form.status} onChange={(e) => set("status", e.target.value)} options={[{ value: "draft", label: "Qoralama" }, { value: "active", label: "Faol" }, { value: "closed", label: "Yopilgan" }]} />
           <Button type="submit" disabled={loading} className="w-full" size="lg">

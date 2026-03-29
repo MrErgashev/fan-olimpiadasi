@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { subjectId, name, totalQuestions, durationMinutes, totalScore, isRandomOrder, isShuffleOptions, startsAt, endsAt, status } = body;
+    const { subjectId, name, totalQuestions, durationMinutes, totalScore, isRandomOrder, isShuffleOptions, startsAt, endsAt, accessPin, status } = body;
 
     if (!subjectId || !name || !totalQuestions || !durationMinutes) {
       return NextResponse.json({ error: "Barcha maydonlarni to'ldiring" }, { status: 400 });
@@ -79,6 +79,7 @@ export async function POST(req: Request) {
         isShuffleOptions: isShuffleOptions ?? true,
         startsAt: startsAt ? new Date(startsAt) : null,
         endsAt: endsAt ? new Date(endsAt) : null,
+        accessPin: accessPin || null,
         status: status || "draft",
         createdBy: session.user.id,
       },

@@ -12,9 +12,15 @@ import {
   Check,
   Save,
   Loader2,
+  Trophy,
+  CheckCircle,
+  XCircle,
+  Minus,
+  ArrowRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import Link from "next/link";
 import { SUBJECTS } from "@/lib/constants";
 
 const SUBJECT_ACCENT: Record<string, string> = {
@@ -36,10 +42,22 @@ interface StudentProfile {
   subjects: { id: string; slug: string; name: string; emoji: string }[];
 }
 
+interface TestResult {
+  testName: string;
+  subjectName: string;
+  subjectEmoji: string;
+  totalScore: number;
+  correctCount: number;
+  wrongCount: number;
+  unansweredCount: number;
+  finishedAt: string;
+}
+
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<StudentProfile | null>(null);
+  const [recentResults, setRecentResults] = useState<TestResult[]>([]);
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
   const [maxSubjects, setMaxSubjects] = useState(1);
 
@@ -52,6 +70,9 @@ export default function ProfilePage() {
         if (profileData.student) {
           setProfile(profileData.student);
           setSelectedSlugs(profileData.student.subjects.map((s: { slug: string }) => s.slug));
+        }
+        if (profileData.recentResults) {
+          setRecentResults(profileData.recentResults);
         }
         if (settingsData.maxSubjects !== undefined) {
           setMaxSubjects(settingsData.maxSubjects);
@@ -265,6 +286,59 @@ export default function ProfilePage() {
               O&apos;zgarishlarni saqlash
             </Button>
           </motion.div>
+        )}
+      </Card>
+
+      {/* Test natijalari */}
+      <Card variant="light" className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-amber-500" />
+            Mening natijalarim
+          </h2>
+          {recentResults.length > 0 && (
+            <Link href="/dashboard/results" className="text-sm text-primary-500 hover:text-primary-600 flex items-center gap-1">
+              Barchasi <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          )}
+        </div>
+
+        {recentResults.length === 0 ? (
+          <p className="text-sm text-slate-400 text-center py-8">
+            Hali test natijalari yo&apos;q
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {recentResults.map((r, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100"
+              >
+                <span className="text-2xl">{r.subjectEmoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-slate-800 truncate">{r.testName}</p>
+                  <p className="text-xs text-slate-400">{r.subjectName}</p>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+                    <span className="text-green-600 font-medium">{r.correctCount}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <XCircle className="w-3.5 h-3.5 text-red-400" />
+                    <span className="text-red-500 font-medium">{r.wrongCount}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Minus className="w-3.5 h-3.5 text-slate-300" />
+                    <span className="text-slate-400 font-medium">{r.unansweredCount}</span>
+                  </div>
+                  <span className="font-mono text-lg font-bold text-cyan-600 ml-2">
+                    {r.totalScore.toFixed(1)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </Card>
     </div>
