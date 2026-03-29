@@ -7,14 +7,21 @@ import { headers } from "next/headers";
 
 function buildStartPayload(
   attempt: { id: string; startedAt: Date },
-  test: { totalQuestions: number; durationMinutes: number },
-  resumed: boolean
+  test: {
+    totalQuestions: number;
+    durationMinutes: number;
+    subject: { name: string };
+  },
+  resumed: boolean,
+  studentName: string
 ) {
   return {
     attemptId: attempt.id,
     totalQuestions: test.totalQuestions,
     durationMinutes: test.durationMinutes,
     startedAt: attempt.startedAt.toISOString(),
+    studentName,
+    subjectName: test.subject.name,
     resumed,
   };
 }
@@ -31,6 +38,9 @@ export async function POST(
 
     const studentId = session.user.id;
     const testId = params.id;
+    const studentName =
+      `${session.user.firstName || ""} ${session.user.lastName || ""}`.trim() ||
+      "O'quvchi";
 
     // Test mavjudligini tekshirish
     const test = await db.test.findUnique({
@@ -89,7 +99,7 @@ export async function POST(
       }
 
       return NextResponse.json(
-        buildStartPayload(existingAttempt, test, true)
+        buildStartPayload(existingAttempt, test, true, studentName)
       );
     }
 
@@ -200,7 +210,7 @@ export async function POST(
       return newAttempt;
     });
 
-    return NextResponse.json(buildStartPayload(attempt, test, false));
+    return NextResponse.json(buildStartPayload(attempt, test, false, studentName));
   } catch (error) {
     console.error("Test start error:", error);
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });

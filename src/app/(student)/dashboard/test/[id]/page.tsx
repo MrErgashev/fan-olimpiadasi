@@ -10,14 +10,16 @@ import { Button } from "@/components/ui/Button";
 import { useTimer } from "@/hooks/useTimer";
 import { useSecurity } from "@/hooks/useSecurity";
 import {
+  AlertTriangle,
+  BookOpen,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  Loader2,
-  AlertTriangle,
-  Send,
-  CheckCircle2,
   CircleDotDashed,
+  Loader2,
+  Send,
   ShieldCheck,
+  UserRound,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -52,6 +54,8 @@ interface StartTestResponse {
   totalQuestions: number;
   durationMinutes: number;
   startedAt: string;
+  studentName: string;
+  subjectName: string;
   resumed?: boolean;
 }
 
@@ -93,6 +97,8 @@ export default function TestPage() {
   const [initialSeconds, setInitialSeconds] = useState(0);
   const [timerReady, setTimerReady] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [studentName, setStudentName] = useState("");
+  const [subjectName, setSubjectName] = useState("");
 
   const fetchingRef = useRef(false);
   const submittingRef = useRef(false);
@@ -240,6 +246,8 @@ export default function TestPage() {
         const startData = data as StartTestResponse;
         setAttemptId(startData.attemptId);
         setTotalQuestions(startData.totalQuestions);
+        setStudentName(startData.studentName);
+        setSubjectName(startData.subjectName);
         setInitialSeconds(
           getRemainingSeconds(startData.startedAt, startData.durationMinutes)
         );
@@ -331,6 +339,28 @@ export default function TestPage() {
   const progress = totalQuestions > 0 ? (currentQ / totalQuestions) * 100 : 0;
   const isSavingAnswer = saveStatus === "saving";
   const isSubmitting = submissionMode !== null;
+  const statusContent =
+    saveStatus === "saving" ? (
+      <>
+        <CircleDotDashed className="w-4 h-4 text-amber-500 animate-spin" />
+        <span className="text-amber-700">Saqlanmoqda...</span>
+      </>
+    ) : saveStatus === "saved" ? (
+      <>
+        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+        <span className="text-emerald-700">Saqlandi</span>
+      </>
+    ) : saveStatus === "error" ? (
+      <>
+        <AlertTriangle className="w-4 h-4 text-red-500" />
+        <span className="text-red-600">Saqlanmadi</span>
+      </>
+    ) : (
+      <>
+        <ShieldCheck className="w-4 h-4 text-primary-500" />
+        <span className="text-slate-700">Jarayon nazoratda</span>
+      </>
+    );
 
   if (loading && !questionData) {
     return (
@@ -360,91 +390,91 @@ export default function TestPage() {
       </div>
 
       <header className="relative shrink-0 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto px-4 py-4 sm:py-5 flex flex-col gap-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="w-10 h-10 rounded-2xl bg-primary-50 border border-primary-100 flex items-center justify-center shadow-sm">
-                <span className="font-mono text-sm font-bold text-primary-600">
-                  {currentQ}
+        <div className="max-w-6xl mx-auto px-4 py-4 sm:py-5 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                Test sessiyasi
+              </p>
+              <div className="mt-2 flex items-start gap-3">
+                <span className="hidden sm:flex w-12 h-12 rounded-2xl bg-primary-50 border border-primary-100 items-center justify-center shadow-sm">
+                  <UserRound className="w-5 h-5 text-primary-600" />
                 </span>
-              </span>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                  Savol
-                </p>
-                <p className="text-sm text-slate-700 font-medium">
-                  {currentQ} / {totalQuestions}
-                </p>
+                <div className="min-w-0">
+                  <h1 className="text-xl sm:text-2xl lg:text-[30px] font-semibold tracking-tight text-slate-900 truncate">
+                    {studentName || "O'quvchi"}
+                  </h1>
+                  <div className="mt-3 flex flex-wrap items-center gap-2.5">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-700">
+                      <BookOpen className="w-4 h-4" />
+                      {subjectName || "Fan yuklanmoqda"}
+                    </span>
+                    <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm">
+                      <span className="font-mono text-primary-600">
+                        {currentQ}
+                      </span>
+                      / {totalQuestions} savol
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {timerReady && (
-              <TestTimer
-                seconds={seconds}
-                isWarning={isWarning}
-                isCritical={isCritical}
-                theme="light"
-              />
-            )}
+            <div className="lg:w-[430px] space-y-3">
+              <div className="grid grid-cols-[minmax(0,1fr)_116px] gap-3">
+                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    Vaqt
+                  </p>
+                  <div className="mt-2">
+                    {timerReady && (
+                      <TestTimer
+                        seconds={seconds}
+                        isWarning={isWarning}
+                        isCritical={isCritical}
+                        theme="light"
+                      />
+                    )}
+                  </div>
+                </div>
 
-            <div className="text-right min-w-[92px]">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                Ball
-              </p>
-              <p className="font-mono font-bold text-primary-600 text-xl">
-                {questionData?.score}
-              </p>
-            </div>
-          </div>
+                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    Ball
+                  </p>
+                  <p className="mt-2 font-mono font-bold text-primary-600 text-2xl">
+                    {questionData?.score}
+                  </p>
+                </div>
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                Javob berildi
-              </p>
-              <p className="mt-1 text-lg font-semibold text-slate-800">
-                {answeredCount} / {totalQuestions}
-              </p>
-            </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    Javob berildi
+                  </p>
+                  <p className="mt-1 text-lg font-semibold text-slate-800">
+                    {answeredCount} / {totalQuestions}
+                  </p>
+                </div>
 
-            <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                Qoldi
-              </p>
-              <p className="mt-1 text-lg font-semibold text-slate-800">
-                {remainingCount} ta
-              </p>
-            </div>
+                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    Qoldi
+                  </p>
+                  <p className="mt-1 text-lg font-semibold text-slate-800">
+                    {remainingCount} ta
+                  </p>
+                </div>
 
-            <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                Holat
-              </p>
-              <div className="mt-1 flex items-center gap-2 text-sm font-medium">
-                {saveStatus === "saving" && (
-                  <>
-                    <CircleDotDashed className="w-4 h-4 text-amber-500 animate-spin" />
-                    <span className="text-amber-700">Saqlanmoqda...</span>
-                  </>
-                )}
-                {saveStatus === "saved" && (
-                  <>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span className="text-emerald-700">Saqlandi</span>
-                  </>
-                )}
-                {saveStatus === "error" && (
-                  <>
-                    <AlertTriangle className="w-4 h-4 text-red-500" />
-                    <span className="text-red-600">Saqlanmadi</span>
-                  </>
-                )}
-                {saveStatus === "idle" && (
-                  <>
-                    <ShieldCheck className="w-4 h-4 text-primary-500" />
-                    <span className="text-slate-700">Jarayon nazoratda</span>
-                  </>
-                )}
+                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    Holat
+                  </p>
+                  <div className="mt-1 flex items-center gap-2 text-sm font-medium">
+                    {statusContent}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -452,83 +482,114 @@ export default function TestPage() {
       </header>
 
       <main className="relative flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-4 py-8 sm:py-10">
+        <div className="max-w-6xl mx-auto px-4 py-6 sm:py-8">
           {questionData && (
-            <>
-              <div className="mb-8 sm:mb-10 rounded-[28px] border border-slate-200 bg-white/95 shadow-[0_18px_40px_rgba(15,23,42,0.08)] p-6 sm:p-8">
-                <div className="flex items-start gap-4 mb-5">
-                  <span className="shrink-0 flex items-center justify-center w-11 h-11 rounded-2xl bg-primary-50 text-primary-600 font-mono font-bold text-base border border-primary-100 shadow-sm">
-                    {currentQ}
-                  </span>
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                      Savol matni
-                    </p>
-                    <h2 className="text-lg sm:text-xl text-slate-900 leading-relaxed">
-                      {questionData.question.text}
-                    </h2>
+            <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-6 lg:items-start">
+              <div className="min-w-0">
+                <div className="mb-6 rounded-[26px] border border-slate-200 bg-white/95 shadow-[0_18px_40px_rgba(15,23,42,0.08)] p-5 sm:p-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <span className="shrink-0 flex items-center justify-center w-10 h-10 rounded-2xl bg-primary-50 text-primary-600 font-mono font-bold text-sm border border-primary-100 shadow-sm">
+                      {currentQ}
+                    </span>
+                    <div className="space-y-1.5 min-w-0">
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                        Savol matni
+                      </p>
+                      <h2 className="text-base sm:text-lg text-slate-900 leading-7 sm:leading-8">
+                        {questionData.question.text}
+                      </h2>
+                    </div>
                   </div>
+
+                  {questionData.question.imageUrl && (
+                    <div className="ml-0 sm:ml-[3.5rem] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 inline-block">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={questionData.question.imageUrl}
+                        alt="Savol rasmi"
+                        className="max-h-60 object-contain"
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {questionData.question.imageUrl && (
-                  <div className="ml-0 sm:ml-[3.75rem] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 inline-block">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={questionData.question.imageUrl}
-                      alt="Savol rasmi"
-                      className="max-h-72 object-contain"
-                    />
+                <div className="space-y-2.5">
+                  {(["A", "B", "C", "D"] as const).map((key) => {
+                    const opt = questionData.options[key];
+                    if (!opt) return null;
+
+                    return (
+                      <OptionButton
+                        key={key}
+                        label={key}
+                        text={opt.text}
+                        imageUrl={opt.imageUrl}
+                        selected={selected === key}
+                        onClick={() => handleAnswer(key)}
+                        theme="light"
+                        disabled={isSavingAnswer || isSubmitting}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+
+              <aside className="hidden lg:block">
+                <div className="sticky top-6 rounded-[26px] border border-slate-200 bg-white/95 shadow-[0_18px_40px_rgba(15,23,42,0.08)] p-4">
+                  <div className="mb-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                      Savollar paneli
+                    </p>
+                    <p className="mt-2 text-sm text-slate-600 leading-6">
+                      Ko&apos;k rang joriy savolni, belgi tushganlari javob
+                      berilgan savollarni bildiradi.
+                    </p>
                   </div>
-                )}
-              </div>
 
-              <div className="space-y-3">
-                {(["A", "B", "C", "D"] as const).map((key) => {
-                  const opt = questionData.options[key];
-                  if (!opt) return null;
-
-                  return (
-                    <OptionButton
-                      key={key}
-                      label={key}
-                      text={opt.text}
-                      imageUrl={opt.imageUrl}
-                      selected={selected === key}
-                      onClick={() => handleAnswer(key)}
-                      theme="light"
-                      disabled={isSavingAnswer || isSubmitting}
-                    />
-                  );
-                })}
-              </div>
-            </>
+                  <QuestionNav
+                    total={totalQuestions}
+                    current={currentQ}
+                    answeredQuestions={answeredQuestions}
+                    onNavigate={goToQuestion}
+                    theme="light"
+                    orientation="vertical"
+                    compact
+                    className="max-h-[calc(100vh-19rem)] pr-1"
+                  />
+                </div>
+              </aside>
+            </div>
           )}
         </div>
       </main>
 
       <footer className="relative shrink-0 border-t border-slate-200/80 bg-white/90 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto px-4 py-4 space-y-4">
-          <QuestionNav
-            total={totalQuestions}
-            current={currentQ}
-            answeredQuestions={answeredQuestions}
-            onNavigate={goToQuestion}
-            theme="light"
-          />
+        <div className="max-w-6xl mx-auto px-4 py-4 space-y-4">
+          <div className="lg:hidden">
+            <QuestionNav
+              total={totalQuestions}
+              current={currentQ}
+              answeredQuestions={answeredQuestions}
+              onNavigate={goToQuestion}
+              theme="light"
+              orientation="horizontal"
+              compact
+            />
+          </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-sm font-semibold text-slate-800">
                 Javob berildi: {answeredCount} / {totalQuestions}
               </p>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 leading-6">
                 {canManualSubmit
                   ? "Barcha savollar javoblandi. Testni yakunlashingiz mumkin."
                   : "Barcha savollarga javob berganingizdan keyin testni yakunlashingiz mumkin"}
               </p>
             </div>
 
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center justify-between gap-3 lg:justify-end">
               <Button
                 variant="secondary"
                 size="sm"

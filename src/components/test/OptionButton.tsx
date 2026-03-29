@@ -29,7 +29,7 @@ export function OptionButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "w-full text-left p-5 sm:p-6 rounded-2xl border transition-all duration-200 group relative disabled:cursor-not-allowed disabled:opacity-70",
+        "w-full text-left p-4 sm:p-5 rounded-2xl border transition-all duration-200 group relative disabled:cursor-not-allowed disabled:opacity-70",
         selected
           ? isLight
             ? "border-primary-300 bg-primary-50 ring-2 ring-primary-200 shadow-lg shadow-primary-100/70"
@@ -39,10 +39,10 @@ export function OptionButton({
             : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06] hover:-translate-y-0.5"
       )}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3.5">
         <span
           className={cn(
-            "flex items-center justify-center w-10 h-10 rounded-xl text-base font-bold shrink-0 transition-all duration-200",
+            "flex items-center justify-center w-9 h-9 rounded-xl text-sm font-bold shrink-0 transition-all duration-200",
             selected
               ? "bg-gradient-to-r from-primary-500 to-accent-cyan text-white shadow-glow-blue"
               : isLight
@@ -52,10 +52,10 @@ export function OptionButton({
         >
           {label}
         </span>
-        <div className="flex-1 min-w-0 pt-1.5">
+        <div className="flex-1 min-w-0 pt-1">
           <p
             className={cn(
-              "text-base sm:text-lg break-words leading-relaxed",
+              "text-[15px] sm:text-base break-words leading-7",
               isLight ? "text-slate-800" : "text-white/90"
             )}
           >
@@ -72,7 +72,7 @@ export function OptionButton({
               <img
                 src={imageUrl}
                 alt={`Variant ${label}`}
-                className="max-h-48 object-contain"
+                className="max-h-40 object-contain"
               />
             </div>
           )}
@@ -80,7 +80,7 @@ export function OptionButton({
 
         {/* Checkmark */}
         {selected && (
-          <div className="shrink-0 w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center">
+          <div className="shrink-0 w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center mt-1">
             <Check className="w-3.5 h-3.5 text-white" />
           </div>
         )}
