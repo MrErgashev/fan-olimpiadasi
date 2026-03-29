@@ -9,6 +9,7 @@ import { Select } from "@/components/ui/Select";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { toTashkentISO } from "@/lib/utils";
 
 interface Subject { id: string; name: string; }
 
@@ -50,6 +51,8 @@ export default function NewTestPage() {
           totalQuestions: parseInt(form.totalQuestions),
           durationMinutes: parseInt(form.durationMinutes),
           totalScore: parseInt(form.totalScore),
+          startsAt: toTashkentISO(form.startsAt),
+          endsAt: toTashkentISO(form.endsAt),
         }),
       });
       if (res.ok) {

@@ -11,6 +11,7 @@ import { TrophyIcon, BookIcon, TargetIcon } from "@/components/ui/Icon3D";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { formatTashkentDateTime } from "@/lib/utils";
 
 interface TestInfo {
   id: string;
@@ -36,14 +37,6 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
-function formatDateTime(iso: string) {
-  const d = new Date(iso);
-  const day = d.getDate().toString().padStart(2, "0");
-  const month = (d.getMonth() + 1).toString().padStart(2, "0");
-  const hours = d.getHours().toString().padStart(2, "0");
-  const minutes = d.getMinutes().toString().padStart(2, "0");
-  return `${day}.${month} ${hours}:${minutes}`;
-}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -257,12 +250,12 @@ export default function DashboardPage() {
                 {/* Vaqt oynasi */}
                 {test.status === "waiting" && test.startsAt && (
                   <p className="text-xs text-blue-500 mb-3">
-                    Boshlanadi: {formatDateTime(test.startsAt)}
+                    Boshlanadi: {formatTashkentDateTime(test.startsAt)}
                   </p>
                 )}
                 {test.status === "active" && test.endsAt && (
                   <p className="text-xs text-amber-500 mb-3">
-                    Oxirgi boshlash: {formatDateTime(test.endsAt)}
+                    Oxirgi boshlash: {formatTashkentDateTime(test.endsAt)}
                   </p>
                 )}
 
