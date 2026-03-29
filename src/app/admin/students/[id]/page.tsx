@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
-  ArrowLeft, Edit3, ShieldBan, ShieldCheck, Trash2, KeyRound,
+  ArrowLeft, Edit3, ShieldBan, ShieldCheck, Trash2,
   Loader2, Phone, School, MapPin, Calendar, Trophy, Shield,
   Clock, RefreshCw, Copy, Eye, EyeOff, ArchiveRestore,
 } from "lucide-react";

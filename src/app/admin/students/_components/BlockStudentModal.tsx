@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Select } from "@/components/ui/Select";
 import { ShieldBan, ShieldCheck, Clock, History } from "lucide-react";
 import toast from "react-hot-toast";
 

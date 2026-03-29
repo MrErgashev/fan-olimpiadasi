@@ -10,6 +10,7 @@ interface Icon3DProps {
 
 export const Icon3D = forwardRef<HTMLImageElement, Icon3DProps>(
   ({ name, className, alt }, ref) => (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       ref={ref}
       src={ICON_3D_URLS[name]}
@@ -25,6 +26,7 @@ Icon3D.displayName = "Icon3D";
 function createIcon(name: IconName, defaultAlt: string) {
   const Component = forwardRef<HTMLImageElement, { className?: string }>(
     ({ className }, ref) => (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         ref={ref}
         src={ICON_3D_URLS[name]}

@@ -5,7 +5,6 @@ import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import { Save, RefreshCw, Copy, Eye, EyeOff, KeyRound, X } from "lucide-react";
 import toast from "react-hot-toast";
 
