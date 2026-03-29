@@ -20,8 +20,60 @@ export interface ParsedQuestion {
   isValid: boolean;
 }
 
-const OPTION_REGEX = /^\s*(\*?)\s*([a-dA-D])\)\s*(.+)/;
-const QUESTION_NUM_REGEX = /^\s*(\d+)\.\s+(.*)/;
+// Matches option lines: A) text, * B) text, *C) text, etc.
+// Only matches uppercase A-D at the start of a line (with optional * and spaces)
+const OPTION_REGEX = /^\s*(\*?)\s*([A-D])\)\s*(.+)/;
+
+// Also match lowercase a-d but ONLY when it's a standalone option line
+// (not when multiple a) b) c) d) appear on same line - that's question text)
+const OPTION_REGEX_LOWER = /^\s*(\*?)\s*([a-d])\)\s*(.+)/;
+
+const QUESTION_NUM_REGEX = /^\s*(\d+)\.\s*(.*)/;
+
+/**
+ * Check if a line is a real option line (not embedded question text).
+ * Lines like "a) epigam b) progam c) singam" have multiple letter+) patterns
+ * and should be treated as question text, not as option A.
+ */
+function isRealOptionLine(line: string): boolean {
+  // First check uppercase - these are always real options
+  if (OPTION_REGEX.test(line)) {
+    return true;
+  }
+
+  // For lowercase, check if the line has multiple "letter)" patterns
+  // which indicates it's question text defining variables
+  if (OPTION_REGEX_LOWER.test(line)) {
+    // Count how many x) patterns exist on this line
+    const letterParenMatches = line.match(/[a-z]\)/g);
+    if (letterParenMatches && letterParenMatches.length > 1) {
+      // Multiple letter) patterns = question text, not an option
+      return false;
+    }
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Extract option data from a line. Returns null if not a valid option line.
+ */
+function extractOption(line: string): { isCorrect: boolean; letter: string; text: string } | null {
+  let match = line.match(OPTION_REGEX);
+  if (!match) {
+    // Try lowercase only if it's a real option line
+    if (!isRealOptionLine(line)) return null;
+    match = line.match(OPTION_REGEX_LOWER);
+  }
+  if (!match) return null;
+
+  return {
+    isCorrect: match[1] === "*",
+    letter: match[2].toUpperCase(),
+    text: match[3].trim(),
+  };
+}
 
 export function parseQuestions(rawText: string): ParsedQuestion[] {
   if (!rawText.trim()) return [];
@@ -30,12 +82,13 @@ export function parseQuestions(rawText: string): ParsedQuestion[] {
   let text = rawText.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
   // Normalize Cyrillic look-alike letters to Latin equivalents
-  // А→A, В→B, С→C, Д→D (both uppercase and lowercase)
+  // А→A, В→B, С→C, Д→D (uppercase Cyrillic to uppercase Latin)
   text = text.replace(/А\)/g, "A)").replace(/В\)/g, "B)")
-             .replace(/С\)/g, "C)").replace(/Д\)/g, "D)")
-             .replace(/а\)/g, "a)").replace(/в\)/g, "b)")
+             .replace(/С\)/g, "C)").replace(/Д\)/g, "D)");
+  // Lowercase Cyrillic to lowercase Latin
+  text = text.replace(/а\)/g, "a)").replace(/в\)/g, "b)")
              .replace(/с\)/g, "c)").replace(/д\)/g, "d)");
-  // With * marker
+  // With * marker (handle space between * and letter)
   text = text.replace(/\*\s*А\)/g, "*A)").replace(/\*\s*В\)/g, "*B)")
              .replace(/\*\s*С\)/g, "*C)").replace(/\*\s*Д\)/g, "*D)");
 
@@ -44,11 +97,13 @@ export function parseQuestions(rawText: string): ParsedQuestion[] {
   let currentBlock = "";
 
   for (const line of text.split("\n")) {
-    // A line is a new question only if it matches question number format,
-    // is NOT an option line, and does NOT look like a numbered list item
-    // (e.g. "1.simob 2.naftalin" has multiple "number.text" patterns)
-    const isNewQuestion = QUESTION_NUM_REGEX.test(line) &&
-      !OPTION_REGEX.test(line) &&
+    const qMatch = line.match(QUESTION_NUM_REGEX);
+    // A line is a new question if:
+    // 1) It matches question number format (number + dot)
+    // 2) It's NOT a real option line (like "A) answer text")
+    // 3) It does NOT look like a numbered list (e.g. "1.simob 2.naftalin")
+    const isNewQuestion = qMatch &&
+      !isRealOptionLine(line) &&
       !/^\s*\d+\.\s*\S+.*\d+\.\s*\S+/.test(line);
     if (isNewQuestion && currentBlock.trim()) {
       blocks.push(currentBlock.trim());
@@ -74,7 +129,7 @@ export function parseQuestions(rawText: string): ParsedQuestion[] {
 
     const index = parseInt(firstLineMatch[1], 10);
 
-    // Collect question text lines (everything before the first option)
+    // Collect question text lines (everything before the first real option)
     const questionLines: string[] = [];
     let optionStartIdx = 0;
 
@@ -83,7 +138,7 @@ export function parseQuestions(rawText: string): ParsedQuestion[] {
     }
 
     for (let i = 1; i < lines.length; i++) {
-      if (OPTION_REGEX.test(lines[i])) {
+      if (isRealOptionLine(lines[i])) {
         optionStartIdx = i;
         break;
       }
@@ -100,16 +155,12 @@ export function parseQuestions(rawText: string): ParsedQuestion[] {
     const correctAnswers: string[] = [];
 
     for (let i = optionStartIdx; i < lines.length; i++) {
-      const match = lines[i].match(OPTION_REGEX);
-      if (!match) continue;
+      const opt = extractOption(lines[i]);
+      if (!opt) continue;
 
-      const isCorrect = match[1] === "*";
-      const letter = match[2].toUpperCase();
-      const optionText = match[3].trim();
-
-      options[letter] = optionText;
-      if (isCorrect) {
-        correctAnswers.push(letter);
+      options[opt.letter] = opt.text;
+      if (opt.isCorrect) {
+        correctAnswers.push(opt.letter);
       }
     }
 
