@@ -204,12 +204,21 @@ export default function EditTestPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Testni o'chirishga ishonchingiz komilmi?")) return;
+    const confirmMessage = hasAttempts
+      ? `Bu test va ${testData?._count.testAttempts || 0} ta urinish butunlay o'chiriladi. Davom etasizmi?`
+      : "Testni o'chirishga ishonchingiz komilmi?";
+    if (!confirm(confirmMessage)) return;
     setDeleting(true);
     try {
       const res = await fetch(`/api/admin/tests/${testId}`, { method: "DELETE" });
       if (res.ok) {
-        toast.success("Test o'chirildi!");
+        const data = await res.json();
+        const deletedAttempts = Number(data.deletedAttempts || 0);
+        toast.success(
+          deletedAttempts > 0
+            ? `Test va ${deletedAttempts} ta urinish o'chirildi!`
+            : "Test o'chirildi!"
+        );
         router.push("/admin/tests");
       } else {
         const data = await res.json();
@@ -251,17 +260,15 @@ export default function EditTestPage() {
           </div>
         </div>
 
-        {!hasAttempts && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDelete}
-            loading={deleting}
-            className="text-red-500 hover:bg-red-50 hover:text-red-700"
-          >
-            <Trash2 className="mr-1 h-4 w-4" /> O&apos;chirish
-          </Button>
-        )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleDelete}
+          loading={deleting}
+          className="text-red-500 hover:bg-red-50 hover:text-red-700"
+        >
+          <Trash2 className="mr-1 h-4 w-4" /> O&apos;chirish
+        </Button>
       </div>
 
       {hasAttempts && (
@@ -274,6 +281,9 @@ export default function EditTestPage() {
             <p className="mt-1 text-xs text-amber-700">
               Savollar soni o&apos;zgarmaydi, lekin scoring mode, diapazon va fixed variant savollari yangilansa,
               bu o&apos;zgarishlar faqat keyin boshlanadigan attemptlarga ta&apos;sir qiladi.
+            </p>
+            <p className="mt-1 text-xs font-medium text-amber-800">
+              Istasangiz testni shu sahifadan butunlay o&apos;chirishingiz ham mumkin.
             </p>
           </div>
         </div>

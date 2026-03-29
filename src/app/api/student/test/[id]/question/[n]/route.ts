@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getAttemptProgressMeta } from "@/lib/test-attempt-progress";
 
 // N-chi savolni olish (to'g'ri javob YUBORILMAYDI!)
 export async function GET(
@@ -153,6 +154,11 @@ export async function GET(
       });
     }
 
+    const progressMeta = await getAttemptProgressMeta(
+      attempt.id,
+      attempt.test.totalQuestions
+    );
+
     return NextResponse.json({
       questionNumber: questionNum,
       totalQuestions: attempt.test.totalQuestions,
@@ -170,8 +176,9 @@ export async function GET(
         Math.floor(
           attempt.test.durationMinutes * 60 -
             (Date.now() - attempt.startedAt.getTime()) / 1000
-        )
+          )
       ),
+      ...progressMeta,
     });
   } catch (error) {
     console.error("Question fetch error:", error);

@@ -248,16 +248,13 @@ export async function DELETE(
       return NextResponse.json({ error: "Test topilmadi" }, { status: 404 });
     }
 
-    if (test._count.testAttempts > 0) {
-      return NextResponse.json(
-        { error: `Bu testda ${test._count.testAttempts} ta urinish bor. O'chirib bo'lmaydi.` },
-        { status: 400 }
-      );
-    }
-
     await db.test.delete({ where: { id: params.id } });
 
-    return NextResponse.json({ deleted: true });
+    return NextResponse.json({
+      deleted: true,
+      deletedTestId: test.id,
+      deletedAttempts: test._count.testAttempts,
+    });
   } catch {
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }

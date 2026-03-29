@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getAttemptProgressMeta } from "@/lib/test-attempt-progress";
 
 // Javob saqlash (realtime)
 export async function POST(
@@ -62,7 +63,15 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({ saved: true });
+    const progressMeta = await getAttemptProgressMeta(
+      attempt.id,
+      attempt.test.totalQuestions
+    );
+
+    return NextResponse.json({
+      saved: true,
+      ...progressMeta,
+    });
   } catch (error) {
     console.error("Answer save error:", error);
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });

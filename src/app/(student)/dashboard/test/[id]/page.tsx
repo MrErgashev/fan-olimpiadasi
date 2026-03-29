@@ -15,10 +15,20 @@ import {
   Loader2,
   AlertTriangle,
   Send,
+  CheckCircle2,
+  CircleDotDashed,
+  ShieldCheck,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
-interface QuestionData {
+interface AttemptProgressMeta {
+  answeredCount: number;
+  answeredQuestionNumbers: number[];
+  remainingCount: number;
+  canManualSubmit: boolean;
+}
+
+interface QuestionData extends AttemptProgressMeta {
   questionNumber: number;
   totalQuestions: number;
   score: number;
@@ -33,6 +43,10 @@ interface QuestionData {
   timeRemaining: number;
 }
 
+interface AnswerResponse extends AttemptProgressMeta {
+  saved: boolean;
+}
+
 interface StartTestResponse {
   attemptId: string;
   totalQuestions: number;
@@ -40,6 +54,9 @@ interface StartTestResponse {
   startedAt: string;
   resumed?: boolean;
 }
+
+type SubmissionMode = "manual" | "auto_timeout";
+type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 function getRemainingSeconds(startedAt: string, durationMinutes: number) {
   const startedMs = new Date(startedAt).getTime();
@@ -64,20 +81,104 @@ export default function TestPage() {
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(
     new Set()
   );
+  const [answeredCount, setAnsweredCount] = useState(0);
+  const [remainingCount, setRemainingCount] = useState(0);
+  const [canManualSubmit, setCanManualSubmit] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [submissionMode, setSubmissionMode] = useState<SubmissionMode | null>(
+    null
+  );
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showTimeWarning, setShowTimeWarning] = useState(false);
   const [initialSeconds, setInitialSeconds] = useState(0);
   const [timerReady, setTimerReady] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 
   const fetchingRef = useRef(false);
+  const submittingRef = useRef(false);
+  const saveInFlightRef = useRef(false);
+  const saveStatusTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const syncProgress = useCallback((meta: AttemptProgressMeta) => {
+    setAnsweredCount(meta.answeredCount);
+    setRemainingCount(meta.remainingCount);
+    setCanManualSubmit(meta.canManualSubmit);
+    setAnsweredQuestions(new Set(meta.answeredQuestionNumbers));
+  }, []);
+
+  const setTransientSaveStatus = useCallback((status: SaveStatus) => {
+    if (saveStatusTimerRef.current) {
+      clearTimeout(saveStatusTimerRef.current);
+      saveStatusTimerRef.current = null;
+    }
+
+    setSaveStatus(status);
+
+    if (status === "saved" || status === "error") {
+      saveStatusTimerRef.current = setTimeout(() => {
+        setSaveStatus("idle");
+        saveStatusTimerRef.current = null;
+      }, 1600);
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (saveStatusTimerRef.current) {
+        clearTimeout(saveStatusTimerRef.current);
+      }
+    };
+  }, []);
+
+  const submitTest = useCallback(
+    async (nextSubmissionMode: SubmissionMode) => {
+      if (submittingRef.current) return;
+
+      submittingRef.current = true;
+      setSubmissionMode(nextSubmissionMode);
+
+      if (nextSubmissionMode === "auto_timeout") {
+        setShowTimeWarning(false);
+      }
+
+      try {
+        const res = await fetch(`/api/student/test/${testId}/submit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ submissionMode: nextSubmissionMode }),
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+          }
+
+          toast.success(`Test yakunlandi! Ball: ${data.totalScore}`);
+          router.push("/dashboard/results");
+          return;
+        }
+
+        if (data.answeredCount !== undefined) {
+          syncProgress(data as AttemptProgressMeta);
+        }
+
+        toast.error(data.error || "Topshirishda xatolik");
+      } catch {
+        toast.error("Tarmoq xatosi");
+      } finally {
+        submittingRef.current = false;
+        setSubmissionMode(null);
+        setShowSubmitModal(false);
+      }
+    },
+    [router, syncProgress, testId]
+  );
 
   const handleTimeExpire = useCallback(async () => {
     toast.error("Vaqt tugadi! Test avtomatik topshirilmoqda...");
-    await submitTest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    await submitTest("auto_timeout");
+  }, [submitTest]);
 
   const { seconds, isWarning, isCritical } = useTimer({
     initialSeconds: timerReady ? initialSeconds : 0,
@@ -95,12 +196,40 @@ export default function TestPage() {
     }
   }, [isCritical, showTimeWarning, seconds]);
 
-  useEffect(() => {
-    startTest();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const fetchQuestion = useCallback(
+    async (num: number) => {
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
 
-  const startTest = async () => {
+      try {
+        const res = await fetch(`/api/student/test/${testId}/question/${num}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          setQuestionData(data);
+          setTotalQuestions(data.totalQuestions);
+          setSelected(data.selectedAnswer);
+          setCurrentQ(num);
+          syncProgress(data);
+
+          if (!timerReady && data.timeRemaining > 0) {
+            setInitialSeconds(data.timeRemaining);
+            setTimerReady(true);
+          }
+        } else {
+          toast.error(data.error || "Savolni yuklashda xatolik");
+        }
+      } catch {
+        toast.error("Tarmoq xatosi");
+      } finally {
+        fetchingRef.current = false;
+        setLoading(false);
+      }
+    },
+    [syncProgress, testId, timerReady]
+  );
+
+  const startTest = useCallback(async () => {
     try {
       const res = await fetch(`/api/student/test/${testId}/start`, {
         method: "POST",
@@ -125,59 +254,22 @@ export default function TestPage() {
       toast.error("Tarmoq xatosi");
       router.push("/dashboard");
     }
-  };
+  }, [fetchQuestion, requestFullscreen, router, testId]);
 
-  const fetchQuestion = async (num: number) => {
-    if (fetchingRef.current) return;
-    fetchingRef.current = true;
-
-    try {
-      const res = await fetch(
-        `/api/student/test/${testId}/question/${num}`
-      );
-      const data = await res.json();
-
-      if (res.ok) {
-        setQuestionData(data);
-        setTotalQuestions(data.totalQuestions);
-        setSelected(data.selectedAnswer);
-        setCurrentQ(num);
-
-        if (!timerReady && data.timeRemaining > 0) {
-          setInitialSeconds(data.timeRemaining);
-          setTimerReady(true);
-        }
-
-        if (data.selectedAnswer) {
-          setAnsweredQuestions((prev) => {
-            const next = new Set(Array.from(prev));
-            next.add(num);
-            return next;
-          });
-        }
-      } else {
-        toast.error(data.error || "Savolni yuklashda xatolik");
-      }
-    } catch {
-      toast.error("Tarmoq xatosi");
-    } finally {
-      fetchingRef.current = false;
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    startTest();
+  }, [startTest]);
 
   const handleAnswer = async (answer: string) => {
-    if (!questionData) return;
+    if (!questionData || saveInFlightRef.current || submissionMode) return;
 
+    const previousSelected = questionData.selectedAnswer;
+    saveInFlightRef.current = true;
     setSelected(answer);
-    setAnsweredQuestions((prev) => {
-      const next = new Set(Array.from(prev));
-      next.add(currentQ);
-      return next;
-    });
+    setTransientSaveStatus("saving");
 
     try {
-      await fetch(`/api/student/test/${testId}/answer`, {
+      const res = await fetch(`/api/student/test/${testId}/answer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -185,116 +277,201 @@ export default function TestPage() {
           answer,
         }),
       });
+      const data = (await res.json()) as AnswerResponse & { error?: string };
+
+      if (!res.ok) {
+        setSelected(previousSelected);
+        setTransientSaveStatus("error");
+        toast.error(data.error || "Javob saqlanmadi");
+        return;
+      }
+
+      syncProgress(data);
+      setQuestionData((prev) =>
+        prev ? { ...prev, selectedAnswer: answer, ...data } : prev
+      );
+      setTransientSaveStatus("saved");
     } catch {
+      setSelected(previousSelected);
+      setTransientSaveStatus("error");
       toast.error("Javob saqlanmadi");
+    } finally {
+      saveInFlightRef.current = false;
     }
   };
 
   const goToQuestion = (num: number) => {
-    if (num >= 1 && num <= totalQuestions && num !== currentQ) {
+    if (
+      num >= 1 &&
+      num <= totalQuestions &&
+      num !== currentQ &&
+      !submissionMode
+    ) {
       setLoading(true);
       fetchQuestion(num);
     }
   };
 
-  const submitTest = async () => {
-    setSubmitting(true);
-    try {
-      const res = await fetch(`/api/student/test/${testId}/submit`, {
-        method: "POST",
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        if (document.fullscreenElement) {
-          document.exitFullscreen().catch(() => {});
-        }
-        toast.success(`Test yakunlandi! Ball: ${data.totalScore}`);
-        router.push("/dashboard/results");
-      } else {
-        toast.error(data.error || "Topshirishda xatolik");
-      }
-    } catch {
-      toast.error("Tarmoq xatosi");
-    } finally {
-      setSubmitting(false);
-      setShowSubmitModal(false);
+  const handleOpenSubmitModal = () => {
+    if (saveStatus === "saving") {
+      toast.error("Javob saqlanishini kuting");
+      return;
     }
+
+    if (!canManualSubmit) {
+      toast.error(
+        "Barcha savollarga javob berganingizdan keyin testni yakunlashingiz mumkin"
+      );
+      return;
+    }
+
+    setShowSubmitModal(true);
   };
 
-  // Progress percentage
   const progress = totalQuestions > 0 ? (currentQ / totalQuestions) * 100 : 0;
+  const isSavingAnswer = saveStatus === "saving";
+  const isSubmitting = submissionMode !== null;
 
   if (loading && !questionData) {
     return (
-      <div className="fixed inset-0 bg-app-dark flex items-center justify-center z-50">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-primary-400 mx-auto mb-4" />
-          <p className="text-white/60 text-lg">Test yuklanmoqda...</p>
+      <div className="fixed inset-0 bg-slate-100 flex items-center justify-center z-50">
+        <div className="text-center rounded-3xl bg-white border border-slate-200 shadow-xl px-8 py-10">
+          <Loader2 className="w-12 h-12 animate-spin text-primary-500 mx-auto mb-4" />
+          <p className="text-slate-700 text-lg font-medium">
+            Test yuklanmoqda...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-app-dark z-50 flex flex-col test-content select-none">
-      {/* Top progress bar */}
-      <div className="absolute top-0 left-0 right-0 h-[3px] bg-white/5 z-10">
+    <div className="fixed inset-0 z-50 flex flex-col test-content select-none bg-gradient-to-br from-slate-100 via-white to-primary-50">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-20 -left-10 h-56 w-56 rounded-full bg-primary-200/40 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-cyan-100/70 blur-3xl" />
+      </div>
+
+      <div className="absolute top-0 left-0 right-0 h-1 bg-slate-200/70 z-10">
         <div
           className="h-full bg-gradient-to-r from-primary-500 to-accent-cyan transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      {/* Header */}
-      <header className="shrink-0 border-b border-white/5 bg-app-dark/95 backdrop-blur-xl pt-1">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-9 h-9 rounded-xl bg-primary-500/20 flex items-center justify-center">
-              <span className="font-mono text-sm font-bold text-primary-400">
-                {currentQ}
+      <header className="relative shrink-0 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto px-4 py-4 sm:py-5 flex flex-col gap-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="w-10 h-10 rounded-2xl bg-primary-50 border border-primary-100 flex items-center justify-center shadow-sm">
+                <span className="font-mono text-sm font-bold text-primary-600">
+                  {currentQ}
+                </span>
               </span>
-            </span>
-            <span className="text-sm text-white/40">
-              / {totalQuestions}
-            </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                  Savol
+                </p>
+                <p className="text-sm text-slate-700 font-medium">
+                  {currentQ} / {totalQuestions}
+                </p>
+              </div>
+            </div>
+
+            {timerReady && (
+              <TestTimer
+                seconds={seconds}
+                isWarning={isWarning}
+                isCritical={isCritical}
+                theme="light"
+              />
+            )}
+
+            <div className="text-right min-w-[92px]">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                Ball
+              </p>
+              <p className="font-mono font-bold text-primary-600 text-xl">
+                {questionData?.score}
+              </p>
+            </div>
           </div>
 
-          {timerReady && (
-            <TestTimer
-              seconds={seconds}
-              isWarning={isWarning}
-              isCritical={isCritical}
-            />
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                Javob berildi
+              </p>
+              <p className="mt-1 text-lg font-semibold text-slate-800">
+                {answeredCount} / {totalQuestions}
+              </p>
+            </div>
 
-          <div className="text-sm text-white/40 flex items-center gap-2">
-            <span>Ball:</span>
-            <span className="font-mono font-bold text-primary-400 text-lg">
-              {questionData?.score}
-            </span>
+            <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                Qoldi
+              </p>
+              <p className="mt-1 text-lg font-semibold text-slate-800">
+                {remainingCount} ta
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                Holat
+              </p>
+              <div className="mt-1 flex items-center gap-2 text-sm font-medium">
+                {saveStatus === "saving" && (
+                  <>
+                    <CircleDotDashed className="w-4 h-4 text-amber-500 animate-spin" />
+                    <span className="text-amber-700">Saqlanmoqda...</span>
+                  </>
+                )}
+                {saveStatus === "saved" && (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    <span className="text-emerald-700">Saqlandi</span>
+                  </>
+                )}
+                {saveStatus === "error" && (
+                  <>
+                    <AlertTriangle className="w-4 h-4 text-red-500" />
+                    <span className="text-red-600">Saqlanmadi</span>
+                  </>
+                )}
+                {saveStatus === "idle" && (
+                  <>
+                    <ShieldCheck className="w-4 h-4 text-primary-500" />
+                    <span className="text-slate-700">Jarayon nazoratda</span>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Question Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="relative flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-4 py-8 sm:py-10">
           {questionData && (
             <>
-              {/* Question */}
-              <div className="mb-8 sm:mb-10">
+              <div className="mb-8 sm:mb-10 rounded-[28px] border border-slate-200 bg-white/95 shadow-[0_18px_40px_rgba(15,23,42,0.08)] p-6 sm:p-8">
                 <div className="flex items-start gap-4 mb-5">
-                  <span className="shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-primary-500/20 text-primary-400 font-mono font-bold text-base shadow-glow-blue">
+                  <span className="shrink-0 flex items-center justify-center w-11 h-11 rounded-2xl bg-primary-50 text-primary-600 font-mono font-bold text-base border border-primary-100 shadow-sm">
                     {currentQ}
                   </span>
-                  <h2 className="text-lg sm:text-xl text-white/90 leading-relaxed pt-1.5">
-                    {questionData.question.text}
-                  </h2>
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                      Savol matni
+                    </p>
+                    <h2 className="text-lg sm:text-xl text-slate-900 leading-relaxed">
+                      {questionData.question.text}
+                    </h2>
+                  </div>
                 </div>
 
                 {questionData.question.imageUrl && (
-                  <div className="ml-14 rounded-2xl overflow-hidden bg-white/5 inline-block">
+                  <div className="ml-0 sm:ml-[3.75rem] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 inline-block">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={questionData.question.imageUrl}
@@ -305,11 +482,11 @@ export default function TestPage() {
                 )}
               </div>
 
-              {/* Options */}
               <div className="space-y-3">
                 {(["A", "B", "C", "D"] as const).map((key) => {
                   const opt = questionData.options[key];
                   if (!opt) return null;
+
                   return (
                     <OptionButton
                       key={key}
@@ -318,6 +495,8 @@ export default function TestPage() {
                       imageUrl={opt.imageUrl}
                       selected={selected === key}
                       onClick={() => handleAnswer(key)}
+                      theme="light"
+                      disabled={isSavingAnswer || isSubmitting}
                     />
                   );
                 })}
@@ -327,76 +506,90 @@ export default function TestPage() {
         </div>
       </main>
 
-      {/* Footer Navigation */}
-      <footer className="shrink-0 border-t border-white/5 bg-app-dark/95 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto px-4 py-4 space-y-3">
+      <footer className="relative shrink-0 border-t border-slate-200/80 bg-white/90 backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto px-4 py-4 space-y-4">
           <QuestionNav
             total={totalQuestions}
             current={currentQ}
             answeredQuestions={answeredQuestions}
             onNavigate={goToQuestion}
+            theme="light"
           />
 
-          <div className="flex items-center justify-between gap-3">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => goToQuestion(currentQ - 1)}
-              disabled={currentQ <= 1}
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Oldingi
-            </Button>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-slate-800">
+                Javob berildi: {answeredCount} / {totalQuestions}
+              </p>
+              <p className="text-sm text-slate-500">
+                {canManualSubmit
+                  ? "Barcha savollar javoblandi. Testni yakunlashingiz mumkin."
+                  : "Barcha savollarga javob berganingizdan keyin testni yakunlashingiz mumkin"}
+              </p>
+            </div>
 
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={() => setShowSubmitModal(true)}
-              icon={<Send className="w-4 h-4" />}
-            >
-              Yakunlash
-            </Button>
+            <div className="flex items-center justify-between gap-3">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => goToQuestion(currentQ - 1)}
+                disabled={currentQ <= 1 || isSubmitting || isSavingAnswer}
+                className="bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                Oldingi
+              </Button>
 
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => goToQuestion(currentQ + 1)}
-              disabled={currentQ >= totalQuestions}
-            >
-              Keyingi
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
+              <Button
+                variant="blue-premium"
+                size="sm"
+                onClick={handleOpenSubmitModal}
+                icon={<Send className="w-4 h-4" />}
+                disabled={!canManualSubmit || isSubmitting || isSavingAnswer}
+                className="disabled:bg-slate-200 disabled:text-slate-500 disabled:border disabled:border-slate-300 disabled:shadow-none"
+              >
+                Yakunlash
+              </Button>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => goToQuestion(currentQ + 1)}
+                disabled={
+                  currentQ >= totalQuestions || isSubmitting || isSavingAnswer
+                }
+                className="bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+              >
+                Keyingi
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* Submit Confirmation Modal */}
       <Modal
         isOpen={showSubmitModal}
         onClose={() => setShowSubmitModal(false)}
         title="Testni yakunlash"
         size="sm"
-        theme="blue"
+        theme="light"
       >
         <div className="space-y-5">
-          <p className="text-white/70">
+          <p className="text-slate-700">
             Siz{" "}
-            <span className="text-green-400 font-mono font-bold text-lg">
-              {answeredQuestions.size}
+            <span className="text-primary-600 font-mono font-bold text-lg">
+              {answeredCount}
             </span>{" "}
-            ta savolga javob berdingiz.{" "}
-            <span className="text-yellow-400 font-mono font-bold text-lg">
-              {totalQuestions - answeredQuestions.size}
-            </span>{" "}
-            ta javobsiz qoldi.
+            ta savolga javob berdingiz. Barcha savollar to&apos;liq bajarildi.
           </p>
-          <p className="text-white/50 text-sm">
-            Haqiqatan yakunlaysizmi? Bu amalni qaytarib bo&apos;lmaydi.
+          <p className="text-slate-500 text-sm">
+            Haqiqatan testni yakunlaysizmi? Bu amalni qaytarib bo&apos;lmaydi.
           </p>
           <div className="flex gap-3">
             <Button
               variant="secondary"
-              className="flex-1"
+              className="flex-1 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
               onClick={() => setShowSubmitModal(false)}
             >
               Bekor qilish
@@ -404,28 +597,31 @@ export default function TestPage() {
             <Button
               variant="blue-premium"
               className="flex-1"
-              loading={submitting}
-              onClick={submitTest}
+              loading={submissionMode === "manual"}
+              onClick={() => submitTest("manual")}
             >
-              HA, YAKUNLASH
+              Ha, yakunlash
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Time Warning Modal */}
       <Modal
         isOpen={showTimeWarning}
         onClose={() => setShowTimeWarning(false)}
-        title="Ogohlantirish!"
+        title="Ogohlantirish"
         size="sm"
-        theme="blue"
+        theme="light"
       >
         <div className="space-y-5 text-center">
-          <AlertTriangle className="w-16 h-16 text-red-400 mx-auto" />
-          <p className="text-white/80 text-lg">
+          <AlertTriangle className="w-16 h-16 text-red-500 mx-auto" />
+          <p className="text-slate-800 text-lg">
             Test vaqti tugashiga{" "}
-            <strong className="text-red-400">1 daqiqa</strong> qoldi!
+            <strong className="text-red-500">1 daqiqa</strong> qoldi.
+          </p>
+          <p className="text-sm text-slate-500">
+            Javoblaringiz saqlanib boryapti. Vaqt tugasa test avtomatik
+            yakunlanadi.
           </p>
           <Button
             variant="blue-premium"

@@ -91,9 +91,15 @@ export const bulkActionSchema = z.object({
   reason: z.string().optional(),
 });
 
+export const testBulkActionSchema = z.object({
+  action: z.literal("delete"),
+  testIds: z.array(z.string().min(1)).min(1).max(100),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type AdminCreateStudentInput = z.infer<typeof adminCreateStudentSchema>;
 export type AdminUpdateStudentInput = z.infer<typeof adminUpdateStudentSchema>;
 export type BlockStudentInput = z.infer<typeof blockStudentSchema>;
 export type BulkActionInput = z.infer<typeof bulkActionSchema>;
+export type TestBulkActionInput = z.infer<typeof testBulkActionSchema>;

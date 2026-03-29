@@ -4,9 +4,23 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Plus, Loader2, Pencil, Clock, Users, Lock, Copy } from "lucide-react";
+import {
+  Plus,
+  Loader2,
+  Pencil,
+  Clock,
+  Users,
+  Lock,
+  Copy,
+  Trash2,
+  CheckSquare,
+  Square,
+} from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import { DeleteTestModal } from "./_components/DeleteTestModal";
+import { BulkDeleteTestsModal } from "./_components/BulkDeleteTestsModal";
 
 interface Test {
   id: string;
@@ -32,11 +46,18 @@ function formatDateTime(iso: string | null) {
 }
 
 export default function TestsPage() {
+  const { data: session } = useSession();
   const [tests, setTests] = useState<Test[]>([]);
   const [loading, setLoading] = useState(true);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleteTest, setDeleteTest] = useState<Test | null>(null);
+  const [showBulkDelete, setShowBulkDelete] = useState(false);
+
+  const canManage = ["admin", "superadmin"].includes(session?.user?.role || "");
 
   const fetchTests = () => {
+    setLoading(true);
     fetch("/api/admin/tests")
       .then((r) => r.json())
       .then((d) => setTests(d.tests || []))
@@ -47,6 +68,29 @@ export default function TestsPage() {
   useEffect(() => {
     fetchTests();
   }, []);
+
+  const refresh = () => {
+    setSelectedIds(new Set());
+    fetchTests();
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === tests.length) {
+      setSelectedIds(new Set());
+      return;
+    }
+
+    setSelectedIds(new Set(tests.map((test) => test.id)));
+  };
 
   const toggleStatus = async (test: Test) => {
     const nextStatus = test.status === "active" ? "closed" : "active";
@@ -88,12 +132,18 @@ export default function TestsPage() {
       });
       if (res.ok) {
         toast.success("Test nusxalandi!");
-        fetchTests();
+        refresh();
       }
     } catch {
       toast.error("Xatolik");
     }
   };
+
+  const selectedTests = tests.filter((test) => selectedIds.has(test.id));
+  const selectedAttempts = selectedTests.reduce(
+    (sum, test) => sum + test._count.testAttempts,
+    0
+  );
 
   const statusBadge = (s: string) => {
     switch (s) {
@@ -112,6 +162,20 @@ export default function TestsPage() {
         </Link>
       </div>
 
+      {canManage && selectedIds.size > 0 && (
+        <Card variant="light" className="flex flex-wrap items-center gap-3 p-3">
+          <Badge variant="info">{selectedIds.size} ta test tanlandi</Badge>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => setShowBulkDelete(true)}
+            icon={<Trash2 className="w-3.5 h-3.5" />}
+          >
+            Tanlanganlarni o&apos;chirish
+          </Button>
+        </Card>
+      )}
+
       {loading ? (
         <div className="flex justify-center py-12">
           <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
@@ -122,9 +186,39 @@ export default function TestsPage() {
         </Card>
       ) : (
         <div className="space-y-3">
+          {canManage && (
+            <div className="flex items-center gap-2 px-1">
+              <button
+                onClick={toggleSelectAll}
+                className="text-slate-400 transition-colors hover:text-primary-600"
+                aria-label="Barchasini tanlash"
+              >
+                {selectedIds.size === tests.length ? (
+                  <CheckSquare className="h-5 w-5 text-primary-600" />
+                ) : (
+                  <Square className="h-5 w-5" />
+                )}
+              </button>
+              <span className="text-sm text-slate-400">Barchasini tanlash</span>
+            </div>
+          )}
+
           {tests.map((t) => (
             <Card key={t.id} variant="light" className="p-4">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                {canManage && (
+                  <button
+                    onClick={() => toggleSelect(t.id)}
+                    className="mt-1 text-slate-400 transition-colors hover:text-primary-600"
+                    aria-label={`${t.name} ni tanlash`}
+                  >
+                    {selectedIds.has(t.id) ? (
+                      <CheckSquare className="h-5 w-5 text-primary-600" />
+                    ) : (
+                      <Square className="h-5 w-5" />
+                    )}
+                  </button>
+                )}
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span>{t.subject.emoji}</span>
@@ -182,12 +276,40 @@ export default function TestsPage() {
                   >
                     <Copy className="w-4 h-4" />
                   </Button>
+                  {canManage && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDeleteTest(t)}
+                      title="O'chirish"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </Card>
           ))}
         </div>
       )}
+
+      <DeleteTestModal
+        isOpen={!!deleteTest}
+        onClose={() => setDeleteTest(null)}
+        onDone={refresh}
+        test={deleteTest}
+      />
+      <BulkDeleteTestsModal
+        isOpen={showBulkDelete}
+        onClose={() => setShowBulkDelete(false)}
+        onDone={() => {
+          setShowBulkDelete(false);
+          refresh();
+        }}
+        count={selectedIds.size}
+        totalAttempts={selectedAttempts}
+        testIds={Array.from(selectedIds)}
+      />
     </div>
   );
 }
