@@ -366,6 +366,22 @@ model TestQuestion {
   @@map("test_questions")
 }
 
+// ============================================
+// 16. BILDIRISHNOMALAR
+// ============================================
+model Notification {
+  id            String   @id @default(cuid())
+  recipientId   String   @map("recipient_id")
+  recipientType String   @map("recipient_type") // "student" | "admin"
+  title         String
+  message       String
+  isRead        Boolean  @default(false) @map("is_read")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([recipientId, recipientType])
+  @@map("notifications")
+}
+
 model TestScoreBand {
   id             String @id @default(cuid())
   testId         String @map("test_id")

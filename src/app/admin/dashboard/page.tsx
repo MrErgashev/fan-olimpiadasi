@@ -12,6 +12,10 @@ import {
 import { motion } from "framer-motion";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, LineChart, Line, Cell,
+} from "recharts";
 
 interface Stats {
   totalStudents: number;
@@ -27,6 +31,13 @@ interface Stats {
     tests: number;
     students: number;
   }[];
+}
+
+interface AnalyticsData {
+  scoreDistribution: { range: string; count: number }[];
+  subjectStats: { subject: string; avgScore: number; attempts: number }[];
+  monthlyAttempts: { month: string; count: number }[];
+  topStudents: { name: string; avgScore: number; tests: number }[];
 }
 
 interface ActiveAttempt {
@@ -64,6 +75,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeAttempts, setActiveAttempts] = useState<ActiveAttempt[]>([]);
   const [cleaning, setCleaning] = useState(false);
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/stats")
@@ -76,6 +88,11 @@ export default function AdminDashboard() {
       .finally(() => setLoading(false));
 
     fetchActiveAttempts();
+
+    fetch("/api/admin/analytics")
+      .then((r) => r.json())
+      .then((d) => { if (!d.error) setAnalytics(d); })
+      .catch(() => {});
   }, []);
 
   const fetchActiveAttempts = () => {
@@ -274,6 +291,94 @@ export default function AdminDashboard() {
           </div>
         )}
       </Card>
+
+      {/* Analytics Charts */}
+      {analytics && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Ball taqsimoti */}
+          <Card variant="light" className="rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Ball taqsimoti</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={analytics.scoreDistribution}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="range" fontSize={12} tick={{ fill: "#64748b" }} />
+                <YAxis fontSize={12} tick={{ fill: "#64748b" }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`${value} ta`, "Soni"]}
+                />
+                <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+                  {analytics.scoreDistribution.map((_, i) => (
+                    <Cell key={i} fill={["#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6"][i]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+
+          {/* Oylik faollik */}
+          <Card variant="light" className="rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Oylik test urinishlari</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={analytics.monthlyAttempts}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="month" fontSize={12} tick={{ fill: "#64748b" }} />
+                <YAxis fontSize={12} tick={{ fill: "#64748b" }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`${value} ta`, "Urinishlar"]}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="count"
+                  stroke="#3b82f6"
+                  strokeWidth={2.5}
+                  dot={{ fill: "#3b82f6", r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+
+          {/* Fanlar bo'yicha o'rtacha ball */}
+          <Card variant="light" className="rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Fanlar bo&apos;yicha o&apos;rtacha ball</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={analytics.subjectStats} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis type="number" domain={[0, 100]} fontSize={12} tick={{ fill: "#64748b" }} />
+                <YAxis type="category" dataKey="subject" width={120} fontSize={11} tick={{ fill: "#64748b" }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`${value} ball`, "O'rtacha"]}
+                />
+                <Bar dataKey="avgScore" fill="#22c55e" radius={[0, 6, 6, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+
+          {/* Top 10 o'quvchi */}
+          <Card variant="light" className="rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Top 10 o&apos;quvchi</h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={analytics.topStudents}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="name" fontSize={10} tick={{ fill: "#64748b" }} angle={-20} textAnchor="end" height={50} />
+                <YAxis domain={[0, 100]} fontSize={12} tick={{ fill: "#64748b" }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`${value} ball`, "O'rtacha"]}
+                />
+                <Bar dataKey="avgScore" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        </div>
+      )}
 
       {/* Subject statistics */}
       <Card variant="light" className="rounded-2xl p-6">

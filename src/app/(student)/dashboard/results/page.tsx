@@ -3,16 +3,20 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
   Trophy,
   CheckCircle,
   XCircle,
   MinusCircle,
   Loader2,
+  Eye,
 } from "lucide-react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 
 interface Result {
+  attemptId: string;
   testName: string;
   subjectName: string;
   subjectEmoji: string;
@@ -110,6 +114,12 @@ export default function ResultsPage() {
                       {r.unansweredCount}
                     </Badge>
                   </div>
+
+                  <Link href={`/dashboard/results/${r.attemptId}`}>
+                    <Button variant="ghost" size="sm">
+                      <Eye className="w-4 h-4 mr-1" /> Batafsil
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </Card>

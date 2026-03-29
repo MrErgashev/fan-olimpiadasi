@@ -13,7 +13,6 @@ import {
   Archive, ArchiveRestore, ArrowUpDown,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import * as XLSX from "xlsx";
 import { AddStudentModal } from "./_components/AddStudentModal";
 import { EditStudentModal } from "./_components/EditStudentModal";
 import { BlockStudentModal } from "./_components/BlockStudentModal";
@@ -160,20 +159,19 @@ export default function StudentsPage() {
       if (status !== "all") params.set("status", status);
       if (regionId) params.set("regionId", regionId);
       const res = await fetch(`/api/admin/students/export?${params}`);
-      const data = await res.json();
-      if (!data.students || data.students.length === 0) {
+      if (!res.ok) throw new Error("Export xatosi");
+      const blob = await res.blob();
+      if (blob.size < 100) {
         toast.error("Export uchun ma'lumot yo'q");
         return;
       }
-      const ws = XLSX.utils.json_to_sheet(data.students);
-      ws["!cols"] = [
-        { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 25 }, { wch: 8 },
-        { wch: 15 }, { wch: 15 }, { wch: 30 }, { wch: 12 }, { wch: 8 }, { wch: 12 },
-      ];
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "O'quvchilar");
-      XLSX.writeFile(wb, `oquvchilar_${new Date().toISOString().split("T")[0]}.xlsx`);
-      toast.success(`${data.total} ta o'quvchi eksport qilindi`);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `oquvchilar_${new Date().toISOString().split("T")[0]}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("XLSX yuklab olindi");
     } catch {
       toast.error("Export xatosi");
     } finally {

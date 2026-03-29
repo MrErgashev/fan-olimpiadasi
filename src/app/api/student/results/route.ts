@@ -26,6 +26,7 @@ export async function GET() {
     });
 
     const results = attempts.map((a) => ({
+      attemptId: a.id,
       testName: a.test.name,
       subjectName: a.test.subject.name,
       subjectEmoji: a.test.subject.emoji || "📝",

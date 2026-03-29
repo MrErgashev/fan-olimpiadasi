@@ -6,12 +6,13 @@ import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { Loader2, Search, Download, Users } from "lucide-react";
+import { Loader2, Search, Download, Users, Eye } from "lucide-react";
 import { TrophyIcon, MedalIcon } from "@/components/ui/Icon3D";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
 interface Result {
+  attemptId: string;
   rank: number;
   studentId: string;
   studentName: string;
@@ -84,27 +85,39 @@ export default function ResultsPage() {
     fetchResults();
   }, [fetchResults]);
 
-  const exportCSV = () => {
+  const [exporting, setExporting] = useState(false);
+
+  const exportXLSX = async () => {
     if (results.length === 0) return;
-    const header = "O'rin,Ism,Telefon,Fan,Test,Viloyat,Maktab,Ball,To'g'ri,Noto'g'ri,Javobsiz\n";
-    const rows = results.map((r) =>
-      `${r.rank},"${r.studentName}",${r.phone},"${r.subjectName}","${r.testName}","${r.region}","${r.school}",${r.totalScore},${r.correctCount},${r.wrongCount},${r.unansweredCount}`
-    ).join("\n");
-    const blob = new Blob(["\uFEFF" + header + rows], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "natijalar.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    setExporting(true);
+    try {
+      const params = new URLSearchParams();
+      if (subjectId) params.set("subjectId", subjectId);
+      if (testId) params.set("testId", testId);
+      if (search) params.set("search", search);
+      const res = await fetch(`/api/admin/results/export?${params}`);
+      if (!res.ok) throw new Error("Export xatosi");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `natijalar_${new Date().toISOString().split("T")[0]}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("XLSX yuklab olindi");
+    } catch {
+      toast.error("Export xatosi");
+    } finally {
+      setExporting(false);
+    }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="font-display text-2xl font-bold text-slate-800">Natijalar</h1>
-        <Button variant="ghost" size="sm" onClick={exportCSV} disabled={results.length === 0}>
-          <Download className="w-4 h-4 mr-2" /> CSV export
+        <Button variant="ghost" size="sm" onClick={exportXLSX} disabled={results.length === 0 || exporting} loading={exporting}>
+          <Download className="w-4 h-4 mr-2" /> XLSX export
         </Button>
       </div>
 
@@ -168,6 +181,7 @@ export default function ResultsPage() {
                 <th className="text-center py-3 px-4 text-slate-500">Ball</th>
                 <th className="text-center py-3 px-4 text-slate-500">To&apos;g&apos;ri</th>
                 <th className="text-center py-3 px-4 text-slate-500">Noto&apos;g&apos;ri</th>
+                <th className="text-center py-3 px-4 text-slate-500"></th>
               </tr>
             </thead>
             <tbody>
@@ -198,6 +212,11 @@ export default function ResultsPage() {
                   </td>
                   <td className="py-3 px-4 text-center">
                     <Badge variant="error">{r.wrongCount}</Badge>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <Link href={`/admin/results/${r.attemptId}`}>
+                      <Button variant="ghost" size="sm"><Eye className="w-4 h-4" /></Button>
+                    </Link>
                   </td>
                 </tr>
               ))}

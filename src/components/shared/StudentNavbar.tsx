@@ -1,6 +1,7 @@
 "use client";
 
 import { Logo } from "./Logo";
+import NotificationBell from "./NotificationBell";
 import { Button } from "@/components/ui/Button";
 import { LogoutIcon } from "@/components/ui/Icon3D";
 import { signOut } from "next-auth/react";
@@ -26,6 +27,7 @@ export function StudentNavbar({ firstName, lastName }: StudentNavbarProps) {
           </Link>
 
           <div className="flex items-center gap-4">
+            <NotificationBell />
             {/* Avatar with initials — profile link */}
             <Link
               href="/dashboard/profile"
