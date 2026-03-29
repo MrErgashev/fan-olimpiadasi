@@ -4,14 +4,14 @@ import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Trash2, ShieldBan, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Trash2, ShieldBan, ShieldCheck, AlertTriangle, Archive, ArchiveRestore } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface BulkActionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onDone: () => void;
-  action: "block" | "unblock" | "delete";
+  action: "block" | "unblock" | "delete" | "archive" | "unarchive";
   count: number;
   studentIds: string[];
 }
@@ -24,6 +24,8 @@ export function BulkActionModal({ isOpen, onClose, onDone, action, count, studen
     block: { title: "Ommaviy bloklash", btn: "Bloklash", icon: <ShieldBan className="w-4 h-4" /> },
     unblock: { title: "Ommaviy blokdan chiqarish", btn: "Blokdan chiqarish", icon: <ShieldCheck className="w-4 h-4" /> },
     delete: { title: "Ommaviy o'chirish", btn: "O'chirish", icon: <Trash2 className="w-4 h-4" /> },
+    archive: { title: "Ommaviy arxivlash", btn: "Arxivlash", icon: <Archive className="w-4 h-4" /> },
+    unarchive: { title: "Ommaviy arxivdan chiqarish", btn: "Arxivdan chiqarish", icon: <ArchiveRestore className="w-4 h-4" /> },
   };
 
   const label = labels[action];
@@ -73,6 +75,15 @@ export function BulkActionModal({ isOpen, onClose, onDone, action, count, studen
           </div>
         )}
 
+        {action === "archive" && (
+          <div className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+            <Archive className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+            <p className="text-sm text-blue-700">
+              Tanlangan o&apos;quvchilar arxivlanadi. Ma&apos;lumotlar saqlanadi, lekin ro&apos;yxatdan yashiriladi.
+            </p>
+          </div>
+        )}
+
         {action === "block" && (
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -93,7 +104,7 @@ export function BulkActionModal({ isOpen, onClose, onDone, action, count, studen
             Bekor qilish
           </Button>
           <Button
-            variant={action === "delete" ? "danger" : action === "block" ? "danger" : "blue"}
+            variant={action === "delete" || action === "block" ? "danger" : "blue"}
             onClick={handleSubmit}
             loading={loading}
             icon={label.icon}

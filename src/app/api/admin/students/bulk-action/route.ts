@@ -45,6 +45,29 @@ export async function POST(req: Request) {
           isBlocked: false,
           blockedAt: null,
           blockedReason: null,
+          blockedUntil: null,
+        },
+      });
+      return NextResponse.json({ updated: result.count });
+    }
+
+    if (action === "archive") {
+      const result = await db.student.updateMany({
+        where: { id: { in: studentIds } },
+        data: {
+          isArchived: true,
+          archivedAt: new Date(),
+        },
+      });
+      return NextResponse.json({ updated: result.count });
+    }
+
+    if (action === "unarchive") {
+      const result = await db.student.updateMany({
+        where: { id: { in: studentIds } },
+        data: {
+          isArchived: false,
+          archivedAt: null,
         },
       });
       return NextResponse.json({ updated: result.count });

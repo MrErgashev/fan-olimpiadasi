@@ -7,18 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import {
-  Upload,
-  FileSpreadsheet,
-  Download,
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  XCircle,
-  Trash2,
-  AlertTriangle,
-  Edit3,
-  Save,
-  X,
+  Upload, FileSpreadsheet, Download, ArrowLeft, ArrowRight, CheckCircle2,
+  XCircle, Trash2, AlertTriangle, Edit3, Save, X, Loader2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
@@ -36,6 +26,8 @@ interface ImportResult {
   skippedRows: { row: number; phone: string; reason: string }[];
 }
 
+const BATCH_SIZE = 500;
+
 export default function ImportStudentsPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -52,6 +44,7 @@ export default function ImportStudentsPage() {
   // Step 3 state
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState<ImportResult | null>(null);
+  const [progress, setProgress] = useState({ current: 0, total: 0, label: "" });
 
   // ===== STEP 1: File Upload =====
 
@@ -62,10 +55,12 @@ export default function ImportStudentsPage() {
       return;
     }
     setFileName(file.name);
+    setProgress({ current: 0, total: 0, label: "Fayl o'qilmoqda..." });
 
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
+        setProgress({ current: 30, total: 100, label: "Ma'lumotlar tahlil qilinmoqda..." });
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
@@ -74,8 +69,11 @@ export default function ImportStudentsPage() {
 
         if (jsonData.length === 0) {
           toast.error("Fayl bo'sh");
+          setProgress({ current: 0, total: 0, label: "" });
           return;
         }
+
+        setProgress({ current: 60, total: 100, label: "Validatsiya qilinmoqda..." });
 
         // Map columns - try common headers
         const parsed: ParsedStudentRow[] = jsonData.map((row, idx) => {
@@ -118,10 +116,13 @@ export default function ImportStudentsPage() {
           }
         });
 
+        setProgress({ current: 100, total: 100, label: "Tayyor!" });
         setRows(parsed);
         setStep(2);
+        setTimeout(() => setProgress({ current: 0, total: 0, label: "" }), 500);
       } catch {
         toast.error("Faylni o'qib bo'lmadi");
+        setProgress({ current: 0, total: 0, label: "" });
       }
     };
     reader.readAsArrayBuffer(file);
@@ -142,7 +143,6 @@ export default function ImportStudentsPage() {
     ]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "O'quvchilar");
-    // Set column widths
     ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 8 }, { wch: 15 }];
     XLSX.writeFile(wb, "oquvchilar_shablon.xlsx");
   };
@@ -181,7 +181,28 @@ export default function ImportStudentsPage() {
     setFilter("all");
   };
 
-  // ===== STEP 3: Save =====
+  const downloadErrors = () => {
+    const errorRows = rows.filter((r) => !r.isValid);
+    if (errorRows.length === 0) return;
+    const data = errorRows.map((r) => ({
+      "Qator": r.rowIndex,
+      "Ism": r.firstName,
+      "Familiya": r.lastName,
+      "Telefon": r.phone,
+      "Maktab": r.schoolName,
+      "Sinf": r.grade,
+      "Viloyat": r.regionName || "",
+      "Xatolar": r.errors.join("; "),
+    }));
+    const ws = XLSX.utils.json_to_sheet(data);
+    ws["!cols"] = [{ wch: 6 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 8 }, { wch: 15 }, { wch: 40 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Xatolar");
+    XLSX.writeFile(wb, "import_xatolar.xlsx");
+    toast.success("Xatoli qatorlar yuklab olindi");
+  };
+
+  // ===== STEP 3: Save with batch support =====
 
   const handleSave = async () => {
     const validRows = rows.filter((r) => r.isValid);
@@ -191,33 +212,60 @@ export default function ImportStudentsPage() {
     }
 
     setSaving(true);
+    const totalBatches = Math.ceil(validRows.length / BATCH_SIZE);
+    const combinedResult: ImportResult = {
+      created: 0,
+      skipped: 0,
+      errored: 0,
+      passwords: [],
+      errors: [],
+      skippedRows: [],
+    };
+
     try {
-      const res = await fetch("/api/admin/students/import", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          students: validRows.map((r) => ({
-            firstName: r.firstName,
-            lastName: r.lastName,
-            phone: r.phone,
-            schoolName: r.schoolName,
-            grade: r.grade,
-            regionName: r.regionName,
-          })),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        toast.error(data.error || "Import xatosi");
-        return;
+      for (let i = 0; i < totalBatches; i++) {
+        const batch = validRows.slice(i * BATCH_SIZE, (i + 1) * BATCH_SIZE);
+        setProgress({
+          current: i + 1,
+          total: totalBatches,
+          label: totalBatches > 1 ? `Batch ${i + 1}/${totalBatches} yuborilmoqda...` : "Yuborilmoqda...",
+        });
+
+        const res = await fetch("/api/admin/students/import", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            students: batch.map((r) => ({
+              firstName: r.firstName,
+              lastName: r.lastName,
+              phone: r.phone,
+              schoolName: r.schoolName,
+              grade: r.grade,
+              regionName: r.regionName,
+            })),
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          toast.error(data.error || `Batch ${i + 1} xatosi`);
+          continue;
+        }
+        combinedResult.created += data.created || 0;
+        combinedResult.skipped += data.skipped || 0;
+        combinedResult.errored += data.errored || 0;
+        combinedResult.passwords.push(...(data.passwords || []));
+        combinedResult.errors.push(...(data.errors || []));
+        combinedResult.skippedRows.push(...(data.skippedRows || []));
       }
-      setResult(data);
+
+      setResult(combinedResult);
       setStep(3);
-      toast.success(`${data.created} ta o'quvchi import qilindi`);
+      toast.success(`${combinedResult.created} ta o'quvchi import qilindi`);
     } catch {
       toast.error("Server xatosi");
     } finally {
       setSaving(false);
+      setProgress({ current: 0, total: 0, label: "" });
     }
   };
 
@@ -273,8 +321,28 @@ export default function ImportStudentsPage() {
         ))}
       </div>
 
+      {/* Progress Bar */}
+      {progress.label && (
+        <Card variant="light" className="p-4">
+          <div className="flex items-center gap-3">
+            <Loader2 className="w-4 h-4 animate-spin text-primary-600 shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm text-slate-600">{progress.label}</p>
+              {progress.total > 0 && (
+                <div className="w-full bg-slate-200 rounded-full h-2 mt-2">
+                  <div
+                    className="bg-primary-600 h-2 rounded-full transition-all"
+                    style={{ width: `${progress.total > 1 ? (progress.current / progress.total) * 100 : progress.current}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* STEP 1: File Upload */}
-      {step === 1 && (
+      {step === 1 && !progress.label && (
         <div className="space-y-4">
           <Card
             variant="light"
@@ -342,7 +410,7 @@ export default function ImportStudentsPage() {
             </Card>
           </div>
 
-          {/* Filter Tabs */}
+          {/* Filter Tabs + Actions */}
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
               {(["all", "valid", "errors"] as FilterType[]).map((f) => (
@@ -358,9 +426,14 @@ export default function ImportStudentsPage() {
               ))}
             </div>
             {errorCount > 0 && (
-              <Button variant="outline" size="sm" onClick={removeAllErrors} icon={<Trash2 className="w-3.5 h-3.5" />}>
-                Xatoli qatorlarni olib tashlash
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={downloadErrors} icon={<Download className="w-3.5 h-3.5" />}>
+                  Xatolarni yuklab olish
+                </Button>
+                <Button variant="outline" size="sm" onClick={removeAllErrors} icon={<Trash2 className="w-3.5 h-3.5" />}>
+                  Xatoli qatorlarni olib tashlash
+                </Button>
+              </div>
             )}
           </div>
 
