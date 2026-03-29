@@ -20,21 +20,36 @@ export interface ParsedQuestion {
   isValid: boolean;
 }
 
-const OPTION_REGEX = /^\s*(\*?)([a-dA-D])\)\s*(.+)/;
-const QUESTION_NUM_REGEX = /^\s*(\d+)\.\s*(.*)/;
+const OPTION_REGEX = /^\s*(\*?)\s*([a-dA-D])\)\s*(.+)/;
+const QUESTION_NUM_REGEX = /^\s*(\d+)\.\s+(.*)/;
 
 export function parseQuestions(rawText: string): ParsedQuestion[] {
   if (!rawText.trim()) return [];
 
   // Normalize line endings
-  const text = rawText.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  let text = rawText.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+  // Normalize Cyrillic look-alike letters to Latin equivalents
+  // А→A, В→B, С→C, Д→D (both uppercase and lowercase)
+  text = text.replace(/А\)/g, "A)").replace(/В\)/g, "B)")
+             .replace(/С\)/g, "C)").replace(/Д\)/g, "D)")
+             .replace(/а\)/g, "a)").replace(/в\)/g, "b)")
+             .replace(/с\)/g, "c)").replace(/д\)/g, "d)");
+  // With * marker
+  text = text.replace(/\*\s*А\)/g, "*A)").replace(/\*\s*В\)/g, "*B)")
+             .replace(/\*\s*С\)/g, "*C)").replace(/\*\s*Д\)/g, "*D)");
 
   // Split into question blocks by detecting lines starting with a number + dot
   const blocks: string[] = [];
   let currentBlock = "";
 
   for (const line of text.split("\n")) {
-    const isNewQuestion = QUESTION_NUM_REGEX.test(line) && !OPTION_REGEX.test(line);
+    // A line is a new question only if it matches question number format,
+    // is NOT an option line, and does NOT look like a numbered list item
+    // (e.g. "1.simob 2.naftalin" has multiple "number.text" patterns)
+    const isNewQuestion = QUESTION_NUM_REGEX.test(line) &&
+      !OPTION_REGEX.test(line) &&
+      !/^\s*\d+\.\s*\S+.*\d+\.\s*\S+/.test(line);
     if (isNewQuestion && currentBlock.trim()) {
       blocks.push(currentBlock.trim());
       currentBlock = "";

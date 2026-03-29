@@ -73,7 +73,7 @@ export default function ImportQuestionsPage() {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<ParsedQuestion | null>(null);
   const [subjectId, setSubjectId] = useState("");
-  const [difficulty, setDifficulty] = useState("medium");
+  const [difficulty, setDifficulty] = useState("");
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
   // Step 3 state
@@ -208,7 +208,7 @@ export default function ImportQuestionsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           subjectId,
-          difficulty,
+          ...(difficulty && { difficulty }),
           questions: validQuestions.map((q) => ({
             questionText: q.questionText,
             optionA: q.optionA,
@@ -470,10 +470,11 @@ export default function ImportQuestionsPage() {
                 }))}
               />
               <Select
-                label="Qiyinlik darajasi"
+                label="Qiyinlik darajasi (ixtiyoriy)"
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
                 options={[
+                  { value: "", label: "Tanlanmagan (O'rta)" },
                   { value: "easy", label: "Oson" },
                   { value: "medium", label: "O'rta" },
                   { value: "hard", label: "Qiyin" },
