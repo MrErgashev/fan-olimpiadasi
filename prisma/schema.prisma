@@ -107,6 +107,7 @@ model Student {
   lastName     String   @map("last_name")
   phone        String   @unique
   password     String
+  passwordText String?  @map("password_text")
   regionId     String?  @map("region_id")
   districtId   String?  @map("district_id")
   schoolName   String   @map("school_name")

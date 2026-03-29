@@ -26,7 +26,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     await db.student.update({
       where: { id: params.id },
-      data: { password: hashedPassword },
+      data: { password: hashedPassword, passwordText: newPassword },
     });
 
     return NextResponse.json({
