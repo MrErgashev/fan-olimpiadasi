@@ -344,6 +344,33 @@ export default function ImportStudentsPage() {
       {/* STEP 1: File Upload */}
       {step === 1 && !progress.label && (
         <div className="space-y-4">
+          {/* Shablon namuna */}
+          <Card variant="light" className="p-4 border-blue-200 bg-blue-50/50">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                  <FileSpreadsheet className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-700">Namuna fayl</p>
+                  <p className="text-xs text-slate-400">Excel shablonni yuklab oling va ma&apos;lumotlarni to&apos;ldiring</p>
+                </div>
+              </div>
+              <Button variant="blue" size="sm" onClick={downloadTemplate} icon={<Download className="w-4 h-4" />}>
+                Shablonni yuklab olish
+              </Button>
+            </div>
+            <div className="mt-3 p-3 bg-white rounded-lg border border-slate-100">
+              <p className="text-xs text-slate-500 mb-2">Fayl tarkibi (ustunlar):</p>
+              <div className="flex flex-wrap gap-2">
+                {["Ism", "Familiya", "Telefon", "Maktab", "Sinf", "Viloyat"].map((col) => (
+                  <span key={col} className="px-2 py-1 bg-slate-100 rounded text-xs font-mono text-slate-600">{col}</span>
+                ))}
+              </div>
+            </div>
+          </Card>
+
+          {/* Fayl yuklash */}
           <Card
             variant="light"
             className={`p-8 border-2 border-dashed transition-all cursor-pointer ${
@@ -384,10 +411,6 @@ export default function ImportStudentsPage() {
               }}
             />
           </Card>
-
-          <Button variant="outline" onClick={downloadTemplate} icon={<Download className="w-4 h-4" />}>
-            Shablon faylni yuklab olish
-          </Button>
         </div>
       )}
 
