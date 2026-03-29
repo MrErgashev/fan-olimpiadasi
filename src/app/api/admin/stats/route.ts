@@ -34,15 +34,26 @@ export async function GET() {
       }),
     ]);
 
-    // Har bir fan uchun aktiv savollar soni va arxivlanmagan o'quvchilar sonini hisoblash
+    // Arxivlanmagan o'quvchilar ID larini olish
+    const activeStudentIds = await db.student.findMany({
+      where: { isArchived: false },
+      select: { id: true },
+    });
+    const activeStudentIdSet = new Set(activeStudentIds.map((s) => s.id));
+
+    // Har bir fan uchun aktiv savollar soni va o'quvchilar sonini hisoblash
     const subjectCounts = await Promise.all(
       subjects.map(async (s) => {
-        const [questionCount, studentCount] = await Promise.all([
+        const [questionCount, allStudentSubjects] = await Promise.all([
           db.question.count({ where: { subjectId: s.id, isActive: true } }),
-          db.studentSubject.count({
-            where: { subjectId: s.id, student: { isArchived: false } },
+          db.studentSubject.findMany({
+            where: { subjectId: s.id },
+            select: { studentId: true },
           }),
         ]);
+        const studentCount = allStudentSubjects.filter(
+          (ss) => activeStudentIdSet.has(ss.studentId)
+        ).length;
         return { subjectId: s.id, questionCount, studentCount };
       })
     );
@@ -81,7 +92,8 @@ export async function GET() {
         students: studentCountMap[s.id] || 0,
       })),
     });
-  } catch {
+  } catch (error) {
+    console.error("Admin stats error:", error);
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }
 }
