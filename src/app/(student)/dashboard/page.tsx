@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
-import { Loader2, Clock, FileText, AlertTriangle } from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { Loader2, Clock, FileText, AlertTriangle, Lock, Play } from "lucide-react";
 import { TrophyIcon, BookIcon, TargetIcon } from "@/components/ui/Icon3D";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -18,10 +19,11 @@ interface TestInfo {
   subjectEmoji: string;
   totalQuestions: number;
   durationMinutes: number;
-  status: "waiting" | "active" | "completed" | "closed";
+  status: "waiting" | "active" | "in_progress" | "completed" | "closed";
   score?: number;
   startsAt?: string;
   endsAt?: string;
+  requiresPin?: boolean;
 }
 
 const container = {
@@ -34,12 +36,24 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
+function formatDateTime(iso: string) {
+  const d = new Date(iso);
+  const day = d.getDate().toString().padStart(2, "0");
+  const month = (d.getMonth() + 1).toString().padStart(2, "0");
+  const hours = d.getHours().toString().padStart(2, "0");
+  const minutes = d.getMinutes().toString().padStart(2, "0");
+  return `${day}.${month} ${hours}:${minutes}`;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [tests, setTests] = useState<TestInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [startingTest, setStartingTest] = useState<string | null>(null);
   const [confirmModal, setConfirmModal] = useState<TestInfo | null>(null);
+  const [pinModal, setPinModal] = useState<TestInfo | null>(null);
+  const [pinValue, setPinValue] = useState("");
+  const [pinError, setPinError] = useState("");
 
   useEffect(() => {
     fetchTests();
@@ -59,18 +73,56 @@ export default function DashboardPage() {
     }
   };
 
+  const handleTestAction = (test: TestInfo) => {
+    if (test.requiresPin) {
+      setPinValue("");
+      setPinError("");
+      setPinModal(test);
+    } else {
+      setConfirmModal(test);
+    }
+  };
+
+  const handlePinSubmit = () => {
+    if (!pinValue.trim()) {
+      setPinError("Kirish kodini kiriting");
+      return;
+    }
+    setPinError("");
+    // PIN bilan confirm modalga o'tish
+    setPinModal(null);
+    if (pinModal) {
+      setConfirmModal(pinModal);
+    }
+  };
+
   const handleStartTest = async (test: TestInfo) => {
     setStartingTest(test.id);
     try {
+      const body: Record<string, string> = {};
+      if (test.requiresPin && pinValue) {
+        body.pin = pinValue;
+      }
+
       const res = await fetch(`/api/student/test/${test.id}/start`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
 
       if (res.ok) {
         router.push(`/dashboard/test/${test.id}`);
       } else {
         const data = await res.json();
-        toast.error(data.error || "Testni boshlashda xatolik");
+        if (data.error === "Kirish kodi noto'g'ri") {
+          toast.error("Kirish kodi noto'g'ri. Qaytadan urinib ko'ring.");
+          setConfirmModal(null);
+          setPinValue("");
+          setPinError("Kirish kodi noto'g'ri");
+          setPinModal(test);
+        } else {
+          toast.error(data.error || "Testni boshlashda xatolik");
+        }
       }
     } catch {
       toast.error("Tarmoq xatosi");
@@ -83,29 +135,15 @@ export default function DashboardPage() {
   const getStatusBadge = (status: TestInfo["status"]) => {
     switch (status) {
       case "waiting":
-        return (
-          <Badge variant="info" size="md">
-            Kutilmoqda
-          </Badge>
-        );
+        return <Badge variant="info" size="md">Kutilmoqda</Badge>;
       case "active":
-        return (
-          <Badge variant="success" size="md">
-            Faol
-          </Badge>
-        );
+        return <Badge variant="success" size="md">Faol</Badge>;
+      case "in_progress":
+        return <Badge variant="warning" size="md">Davom etmoqda</Badge>;
       case "completed":
-        return (
-          <Badge variant="gold" size="md">
-            Tugatilgan
-          </Badge>
-        );
+        return <Badge variant="gold" size="md">Tugatilgan</Badge>;
       case "closed":
-        return (
-          <Badge variant="error" size="md">
-            Yopilgan
-          </Badge>
-        );
+        return <Badge variant="error" size="md">Yopilgan</Badge>;
     }
   };
 
@@ -196,18 +234,37 @@ export default function DashboardPage() {
                 className={`relative rounded-2xl ${
                   test.status === "active"
                     ? "border border-primary-500/30 shadow-md shadow-primary-500/10"
+                    : test.status === "in_progress"
+                    ? "border border-amber-400/40 shadow-md shadow-amber-400/10"
                     : ""
                 }`}
               >
                 <div className="flex items-start justify-between mb-5">
                   <span className="text-4xl">{test.subjectEmoji}</span>
-                  {getStatusBadge(test.status)}
+                  <div className="flex items-center gap-2">
+                    {test.requiresPin && test.status === "active" && (
+                      <Lock className="w-4 h-4 text-slate-400" />
+                    )}
+                    {getStatusBadge(test.status)}
+                  </div>
                 </div>
 
                 <h3 className="text-xl font-semibold text-slate-900 mb-1">
                   {test.subjectName}
                 </h3>
-                <p className="text-sm text-slate-500 mb-5">{test.name}</p>
+                <p className="text-sm text-slate-500 mb-3">{test.name}</p>
+
+                {/* Vaqt oynasi */}
+                {test.status === "waiting" && test.startsAt && (
+                  <p className="text-xs text-blue-500 mb-3">
+                    Boshlanadi: {formatDateTime(test.startsAt)}
+                  </p>
+                )}
+                {test.status === "active" && test.endsAt && (
+                  <p className="text-xs text-amber-500 mb-3">
+                    Oxirgi boshlash: {formatDateTime(test.endsAt)}
+                  </p>
+                )}
 
                 <div className="flex items-center gap-4 text-sm text-slate-400 mb-5">
                   <span className="flex items-center gap-1.5">
@@ -234,9 +291,20 @@ export default function DashboardPage() {
                   <Button
                     variant="blue-premium"
                     className="w-full"
-                    onClick={() => setConfirmModal(test)}
+                    onClick={() => handleTestAction(test)}
                   >
                     Testni boshlash
+                  </Button>
+                )}
+
+                {test.status === "in_progress" && (
+                  <Button
+                    variant="blue-premium"
+                    className="w-full"
+                    onClick={() => router.push(`/dashboard/test/${test.id}`)}
+                  >
+                    <Play className="w-4 h-4 mr-2" />
+                    Davom ettirish
                   </Button>
                 )}
 
@@ -260,6 +328,53 @@ export default function DashboardPage() {
           ))}
         </motion.div>
       )}
+
+      {/* PIN Modal */}
+      <Modal
+        isOpen={!!pinModal}
+        onClose={() => setPinModal(null)}
+        title="Kirish kodi"
+        size="sm"
+        theme="light"
+      >
+        {pinModal && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 border border-amber-200">
+              <Lock className="w-5 h-5 text-amber-500 shrink-0" />
+              <p className="text-sm text-amber-700">
+                Bu test uchun kirish kodi talab qilinadi. Kodni imtihon xonasida olishingiz mumkin.
+              </p>
+            </div>
+
+            <Input
+              label="Kirish kodini kiriting"
+              value={pinValue}
+              onChange={(e) => { setPinValue(e.target.value); setPinError(""); }}
+              placeholder="Masalan: 1234"
+              maxLength={6}
+              autoFocus
+            />
+            {pinError && <p className="text-sm text-red-500">{pinError}</p>}
+
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                className="flex-1"
+                onClick={() => setPinModal(null)}
+              >
+                Bekor qilish
+              </Button>
+              <Button
+                variant="blue-premium"
+                className="flex-1"
+                onClick={handlePinSubmit}
+              >
+                Davom etish
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       {/* Confirm Modal */}
       <Modal

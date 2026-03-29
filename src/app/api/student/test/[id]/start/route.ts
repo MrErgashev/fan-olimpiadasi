@@ -42,9 +42,21 @@ export async function POST(
     }
     if (test.endsAt && now > test.endsAt) {
       return NextResponse.json(
-        { error: "Test vaqti tugagan" },
+        { error: "Test vaqti tugagan. Oxirgi boshlash vaqti o'tib ketgan." },
         { status: 400 }
       );
+    }
+
+    // PIN tekshiruvi
+    if (test.accessPin) {
+      const body = await req.json().catch(() => ({}));
+      const pin = body?.pin;
+      if (!pin || pin !== test.accessPin) {
+        return NextResponse.json(
+          { error: "Kirish kodi noto'g'ri" },
+          { status: 403 }
+        );
+      }
     }
 
     // Oldin attempt bormi tekshirish

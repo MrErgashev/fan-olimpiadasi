@@ -27,6 +27,23 @@ export async function GET() {
       return NextResponse.json({ error: "O'quvchi topilmadi" }, { status: 404 });
     }
 
+    // Oxirgi 10 ta test natijasi
+    const recentResults = await db.testAttempt.findMany({
+      where: {
+        studentId: session.user.id,
+        isSubmitted: true,
+      },
+      include: {
+        test: {
+          include: {
+            subject: { select: { name: true, emoji: true } },
+          },
+        },
+      },
+      orderBy: { finishedAt: "desc" },
+      take: 10,
+    });
+
     return NextResponse.json({
       student: {
         firstName: student.firstName,
@@ -41,6 +58,16 @@ export async function GET() {
           emoji: ss.subject.emoji,
         })),
       },
+      recentResults: recentResults.map((r) => ({
+        testName: r.test.name,
+        subjectName: r.test.subject.name,
+        subjectEmoji: r.test.subject.emoji || "📝",
+        totalScore: r.totalScore,
+        correctCount: r.correctCount,
+        wrongCount: r.wrongCount,
+        unansweredCount: r.unansweredCount,
+        finishedAt: r.finishedAt?.toISOString(),
+      })),
     });
   } catch {
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
