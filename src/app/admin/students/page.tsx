@@ -196,10 +196,10 @@ export default function StudentsPage() {
           <p className="text-sm text-slate-400 mt-1">Jami: {total} ta</p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button variant="outline" onClick={handleExport} loading={exporting} icon={<Download className="w-4 h-4" />}>
+          <Button variant="secondary" onClick={handleExport} loading={exporting} icon={<Download className="w-4 h-4" />}>
             Export
           </Button>
-          <Button variant="outline" onClick={() => router.push("/admin/students/import")} icon={<Upload className="w-4 h-4" />}>
+          <Button variant="secondary" onClick={() => router.push("/admin/students/import")} icon={<Upload className="w-4 h-4" />}>
             Import
           </Button>
           <Button variant="blue" onClick={() => setShowAddModal(true)} icon={<UserPlus className="w-4 h-4" />}>
