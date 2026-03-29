@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -93,7 +95,10 @@ export async function GET() {
       })),
     });
   } catch (error) {
-    console.error("Admin stats error:", error);
+    console.error("Admin stats error:", error instanceof Error ? error.message : String(error));
+    if (error instanceof Error && error.stack) {
+      console.error("Stack:", error.stack);
+    }
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }
 }
