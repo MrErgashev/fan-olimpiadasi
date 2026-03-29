@@ -45,7 +45,9 @@ function isRealOptionLine(line: string): boolean {
   // which indicates it's question text defining variables
   if (OPTION_REGEX_LOWER.test(line)) {
     // Count how many x) patterns exist on this line
-    const letterParenMatches = line.match(/[a-z]\)/g);
+    // \b prevents matching inside words like "dollarda)" or "(Mutloq)"
+    // [a-d] limits to valid option letters only (not e-z like "(-m)" or "(-e)")
+    const letterParenMatches = line.match(/\b[a-d]\)/g);
     if (letterParenMatches && letterParenMatches.length > 1) {
       // Multiple letter) patterns = question text, not an option
       return false;
@@ -104,7 +106,8 @@ export function parseQuestions(rawText: string): ParsedQuestion[] {
     // 3) It does NOT look like a numbered list (e.g. "1.simob 2.naftalin")
     const isNewQuestion = qMatch &&
       !isRealOptionLine(line) &&
-      !/^\s*\d+\.\s*\S+.*\d+\.\s*\S+/.test(line);
+      // \S+ right after dot requires no space (catches "1.simob 2.naftalin" but not "12. Text $50. More")
+      !/^\s*\d+\.\S+.*\d+\.\S+/.test(line);
     if (isNewQuestion && currentBlock.trim()) {
       blocks.push(currentBlock.trim());
       currentBlock = "";
