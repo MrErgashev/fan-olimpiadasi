@@ -224,8 +224,8 @@ export function EditStudentModal({ isOpen, onClose, onDone, student }: EditStude
   if (!student) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="O'quvchini tahrirlash" size="lg" theme="light">
-      <div className="space-y-4">
+    <Modal isOpen={isOpen} onClose={onClose} title="O'quvchini tahrirlash" size="md" theme="light">
+      <div className="space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input
             label="Ism"

@@ -66,11 +66,12 @@ export function Modal({
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
+              "max-h-[90vh] overflow-y-auto",
               isLight
-                ? "relative bg-white border border-slate-200 rounded-card p-8 w-full shadow-2xl shadow-black/10"
+                ? "relative bg-white border border-slate-200 rounded-card p-6 w-full shadow-2xl shadow-black/10"
                 : isBlue
-                  ? "relative glass-blue-strong border border-primary-500/20 rounded-card p-8 w-full shadow-2xl shadow-black/40"
-                  : "relative glass-strong gold-border rounded-card p-8 w-full shadow-2xl shadow-black/40",
+                  ? "relative glass-blue-strong border border-primary-500/20 rounded-card p-6 w-full shadow-2xl shadow-black/40"
+                  : "relative glass-strong gold-border rounded-card p-6 w-full shadow-2xl shadow-black/40",
               {
                 "max-w-sm": size === "sm",
                 "max-w-md": size === "md",
