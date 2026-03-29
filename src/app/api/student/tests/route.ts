@@ -32,6 +32,7 @@ export async function GET() {
           select: {
             isSubmitted: true,
             totalScore: true,
+            startedAt: true,
           },
         },
       },
@@ -42,19 +43,27 @@ export async function GET() {
 
     const result = tests.map((test) => {
       const attempt = test.testAttempts[0];
-      let status: "waiting" | "active" | "completed" | "closed" = "waiting";
+      let status: "waiting" | "active" | "in_progress" | "completed" | "closed" = "waiting";
 
       if (attempt?.isSubmitted) {
         status = "completed";
       } else if (test.status === "closed") {
         status = "closed";
       } else if (test.status === "active") {
-        if (test.startsAt && new Date(test.startsAt) > now) {
+        if (attempt && !attempt.isSubmitted) {
+          // O'quvchi testni boshlagan lekin hali tugatmagan
+          const elapsed = (now.getTime() - new Date(attempt.startedAt).getTime()) / 1000 / 60;
+          if (elapsed <= test.durationMinutes + 1) {
+            status = "in_progress";
+          } else {
+            status = "closed"; // Vaqti tugagan, lekin submit bo'lmagan
+          }
+        } else if (test.startsAt && new Date(test.startsAt) > now) {
           status = "waiting";
         } else if (test.endsAt && new Date(test.endsAt) < now) {
           status = "closed";
         } else {
-          status = attempt ? "active" : "active"; // already started or can start
+          status = "active";
         }
       }
 
@@ -69,6 +78,7 @@ export async function GET() {
         score: attempt?.isSubmitted ? attempt.totalScore : undefined,
         startsAt: test.startsAt?.toISOString(),
         endsAt: test.endsAt?.toISOString(),
+        requiresPin: !!test.accessPin,
       };
     });
 

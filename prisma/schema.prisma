@@ -199,6 +199,7 @@ model Test {
   isShuffleOptions    Boolean    @default(true) @map("is_shuffle_options")
   startsAt            DateTime?  @map("starts_at")
   endsAt              DateTime?  @map("ends_at")
+  accessPin           String?    @map("access_pin")
   status              TestStatus @default(draft)
   createdBy           String?    @map("created_by")
   createdAt           DateTime   @default(now()) @map("created_at")
