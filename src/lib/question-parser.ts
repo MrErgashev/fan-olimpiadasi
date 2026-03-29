@@ -22,11 +22,11 @@ export interface ParsedQuestion {
 
 // Matches option lines: A) text, * B) text, *C) text, etc.
 // Only matches uppercase A-D at the start of a line (with optional * and spaces)
-const OPTION_REGEX = /^\s*(\*?)\s*([A-D])\)\s*(.+)/;
+const OPTION_REGEX = /^\s*(\*?)\s*([A-D])\s*\)\s*(.+)/;
 
 // Also match lowercase a-d but ONLY when it's a standalone option line
 // (not when multiple a) b) c) d) appear on same line - that's question text)
-const OPTION_REGEX_LOWER = /^\s*(\*?)\s*([a-d])\)\s*(.+)/;
+const OPTION_REGEX_LOWER = /^\s*(\*?)\s*([a-d])\s*\)\s*(.+)/;
 
 const QUESTION_NUM_REGEX = /^\s*(\d+)\.\s*(.*)/;
 
@@ -47,7 +47,7 @@ function isRealOptionLine(line: string): boolean {
     // Count how many x) patterns exist on this line
     // \b prevents matching inside words like "dollarda)" or "(Mutloq)"
     // [a-d] limits to valid option letters only (not e-z like "(-m)" or "(-e)")
-    const letterParenMatches = line.match(/\b[a-d]\)/g);
+    const letterParenMatches = line.match(/\b[a-d]\s*\)/g);
     if (letterParenMatches && letterParenMatches.length > 1) {
       // Multiple letter) patterns = question text, not an option
       return false;
@@ -85,32 +85,60 @@ export function parseQuestions(rawText: string): ParsedQuestion[] {
 
   // Normalize Cyrillic look-alike letters to Latin equivalents
   // А→A, В→B, С→C, Д→D (uppercase Cyrillic to uppercase Latin)
-  text = text.replace(/А\)/g, "A)").replace(/В\)/g, "B)")
-             .replace(/С\)/g, "C)").replace(/Д\)/g, "D)");
+  text = text.replace(/А\s*\)/g, "A)").replace(/В\s*\)/g, "B)")
+             .replace(/С\s*\)/g, "C)").replace(/Д\s*\)/g, "D)");
   // Lowercase Cyrillic to lowercase Latin
-  text = text.replace(/а\)/g, "a)").replace(/в\)/g, "b)")
-             .replace(/с\)/g, "c)").replace(/д\)/g, "d)");
+  text = text.replace(/а\s*\)/g, "a)").replace(/в\s*\)/g, "b)")
+             .replace(/с\s*\)/g, "c)").replace(/д\s*\)/g, "d)");
   // With * marker (handle space between * and letter)
-  text = text.replace(/\*\s*А\)/g, "*A)").replace(/\*\s*В\)/g, "*B)")
-             .replace(/\*\s*С\)/g, "*C)").replace(/\*\s*Д\)/g, "*D)");
+  text = text.replace(/\*\s*А\s*\)/g, "*A)").replace(/\*\s*В\s*\)/g, "*B)")
+             .replace(/\*\s*С\s*\)/g, "*C)").replace(/\*\s*Д\s*\)/g, "*D)");
+
+  // Split lines that have multiple uppercase options on one line
+  // e.g. "* C) modifikatsion   D) mutatsion" → two separate lines
+  text = text.split("\n").flatMap((line) => {
+    const markerPositions: number[] = [];
+    const markerRegex = /(?:^|\s)(\*?\s*[A-D]\s*\))/g;
+    let m;
+    while ((m = markerRegex.exec(line)) !== null) {
+      const pos = m.index + (m[0].length - m[1].length);
+      markerPositions.push(pos);
+    }
+    if (markerPositions.length >= 2) {
+      const textBefore = line.substring(0, markerPositions[0]).trim();
+      if (textBefore === "" || /^\*?\s*$/.test(textBefore)) {
+        return markerPositions.map((pos, i) => {
+          const end = i + 1 < markerPositions.length ? markerPositions[i + 1] : line.length;
+          return line.substring(pos, end).trim();
+        }).filter(Boolean);
+      }
+    }
+    return [line];
+  }).join("\n");
 
   // Split into question blocks by detecting lines starting with a number + dot
   const blocks: string[] = [];
   let currentBlock = "";
+  let lastQuestionNumber = 0;
 
   for (const line of text.split("\n")) {
     const qMatch = line.match(QUESTION_NUM_REGEX);
+    const questionNum = qMatch ? parseInt(qMatch[1], 10) : 0;
     // A line is a new question if:
     // 1) It matches question number format (number + dot)
     // 2) It's NOT a real option line (like "A) answer text")
     // 3) It does NOT look like a numbered list (e.g. "1.simob 2.naftalin")
+    // 4) Its number is >= the last question number (prevents sub-items like "1. item" after Q171)
     const isNewQuestion = qMatch &&
       !isRealOptionLine(line) &&
-      // \S+ right after dot requires no space (catches "1.simob 2.naftalin" but not "12. Text $50. More")
-      !/^\s*\d+\.\S+.*\d+\.\S+/.test(line);
+      !/^\s*\d+\.\S+.*\d+\.\S+/.test(line) &&
+      (lastQuestionNumber === 0 || questionNum >= lastQuestionNumber);
     if (isNewQuestion && currentBlock.trim()) {
       blocks.push(currentBlock.trim());
       currentBlock = "";
+    }
+    if (isNewQuestion) {
+      lastQuestionNumber = questionNum;
     }
     currentBlock += line + "\n";
   }
