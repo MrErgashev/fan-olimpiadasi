@@ -3,9 +3,15 @@ import { hash } from "bcryptjs";
 import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/validators";
 import { getMaxSubjects } from "@/lib/settings";
+import { checkRateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    // Rate limit: 3 so'rov/daqiqa per IP
+    const ip = getClientIp(req);
+    const { success } = checkRateLimit(`register:${ip}`, 3, 60_000);
+    if (!success) return rateLimitResponse();
+
     const body = await req.json();
     const parsed = registerSchema.safeParse(body);
 
@@ -36,9 +42,23 @@ export async function POST(req: Request) {
       where: { code: data.accessCode },
     });
 
-    if (!accessCode || !accessCode.isActive || accessCode.currentUses >= accessCode.maxUses) {
+    if (!accessCode || !accessCode.isActive) {
       return NextResponse.json(
         { error: "Noto'g'ri yoki ishlatib bo'lingan access kod" },
+        { status: 400 }
+      );
+    }
+
+    if (accessCode.currentUses >= accessCode.maxUses) {
+      return NextResponse.json(
+        { error: "Noto'g'ri yoki ishlatib bo'lingan access kod" },
+        { status: 400 }
+      );
+    }
+
+    if (accessCode.expiresAt && new Date() > accessCode.expiresAt) {
+      return NextResponse.json(
+        { error: "Bu kodning amal qilish muddati tugagan" },
         { status: 400 }
       );
     }
@@ -90,11 +110,23 @@ export async function POST(req: Request) {
       },
     });
 
-    // Access code foydalanish sonini oshirish
-    await db.accessCode.update({
-      where: { id: accessCode.id },
+    // Access code foydalanish sonini atomik oshirish (race condition himoyasi)
+    const updated = await db.accessCode.updateMany({
+      where: {
+        id: accessCode.id,
+        currentUses: { lt: accessCode.maxUses },
+      },
       data: { currentUses: { increment: 1 } },
     });
+
+    if (updated.count === 0) {
+      // Race condition: boshqa so'rov allaqachon limitga yetgan
+      await db.student.delete({ where: { id: student.id } });
+      return NextResponse.json(
+        { error: "Access kod limiti tugagan. Qaytadan urinib ko'ring." },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json(
       { message: "Muvaffaqiyatli ro'yxatdan o'tdingiz!", studentId: student.id },

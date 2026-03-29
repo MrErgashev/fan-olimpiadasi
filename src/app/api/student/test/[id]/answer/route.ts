@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getAttemptProgressMeta } from "@/lib/test-attempt-progress";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 // Javob saqlash (realtime)
 export async function POST(
@@ -16,6 +17,10 @@ export async function POST(
     }
 
     const studentId = session.user.id;
+
+    // Rate limit: 60 so'rov/daqiqa per student
+    const { success } = checkRateLimit(`answer:${studentId}`, 60, 60_000);
+    if (!success) return rateLimitResponse();
     const testId = params.id;
     const { questionId, answer } = await req.json();
 

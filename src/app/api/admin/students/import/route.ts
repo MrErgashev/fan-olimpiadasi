@@ -148,6 +148,6 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Import error:", error);
-    return NextResponse.json({ error: "Server xatosi", details: String(error) }, { status: 500 });
+    return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }
 }
