@@ -18,8 +18,7 @@ export async function GET() {
       totalTests,
       totalAttempts,
       submittedAttempts,
-      subjects,
-      activeTestsList,
+      subjectStats,
     ] = await Promise.all([
       db.student.count({ where: { isArchived: false } }),
       db.question.count({ where: { isActive: true } }),
@@ -28,56 +27,28 @@ export async function GET() {
       db.testAttempt.count({ where: { isSubmitted: true } }),
       db.subject.findMany({
         where: { isOnline: true },
-        select: { id: true, name: true, emoji: true },
-      }),
-      db.test.findMany({
-        where: { status: "active" },
-        select: { id: true, subjectId: true, totalQuestions: true },
+        select: {
+          id: true,
+          name: true,
+          emoji: true,
+          _count: { select: { tests: true } },
+          studentSubjects: { select: { id: true } },
+        },
       }),
     ]);
 
-    // Arxivlanmagan o'quvchilar ID larini olish
-    const activeStudentIds = await db.student.findMany({
-      where: { isArchived: false },
-      select: { id: true },
-    });
-    const activeStudentIdSet = new Set(activeStudentIds.map((s) => s.id));
-
-    // Har bir fan uchun aktiv savollar soni va o'quvchilar sonini hisoblash
-    const subjectCounts = await Promise.all(
-      subjects.map(async (s) => {
-        const [questionCount, allStudentSubjects] = await Promise.all([
-          db.question.count({ where: { subjectId: s.id, isActive: true } }),
-          db.studentSubject.findMany({
-            where: { subjectId: s.id },
-            select: { studentId: true },
-          }),
-        ]);
-        const studentCount = allStudentSubjects.filter(
-          (ss) => activeStudentIdSet.has(ss.studentId)
-        ).length;
-        return { subjectId: s.id, questionCount, studentCount };
-      })
+    // Har bir fan uchun faqat aktiv savollar sonini hisoblash
+    const subjectQuestionCounts = await Promise.all(
+      subjectStats.map(async (s) => ({
+        subjectId: s.id,
+        count: await db.question.count({ where: { subjectId: s.id, isActive: true } }),
+      }))
     );
     const questionCountMap = Object.fromEntries(
-      subjectCounts.map((c) => [c.subjectId, c.questionCount])
-    );
-    const studentCountMap = Object.fromEntries(
-      subjectCounts.map((c) => [c.subjectId, c.studentCount])
+      subjectQuestionCounts.map((q) => [q.subjectId, q.count])
     );
 
-    // Faqat yetarli savollari bor faol testlarni sanash
-    const activeTests = activeTestsList.filter(
-      (t) => (questionCountMap[t.subjectId] || 0) >= t.totalQuestions
-    ).length;
-
-    // Fan bo'yicha faol testlar soni
-    const subjectActiveTests: Record<string, number> = {};
-    for (const t of activeTestsList) {
-      if ((questionCountMap[t.subjectId] || 0) >= t.totalQuestions) {
-        subjectActiveTests[t.subjectId] = (subjectActiveTests[t.subjectId] || 0) + 1;
-      }
-    }
+    const activeTests = await db.test.count({ where: { status: "active" } });
 
     return NextResponse.json({
       totalStudents,
@@ -86,19 +57,16 @@ export async function GET() {
       activeTests,
       totalAttempts,
       submittedAttempts,
-      subjectStats: subjects.map((s) => ({
+      subjectStats: subjectStats.map((s) => ({
         name: s.name,
         emoji: s.emoji,
         questions: questionCountMap[s.id] || 0,
-        tests: subjectActiveTests[s.id] || 0,
-        students: studentCountMap[s.id] || 0,
+        tests: s._count.tests,
+        students: s.studentSubjects.length,
       })),
     });
   } catch (error) {
     console.error("Admin stats error:", error instanceof Error ? error.message : String(error));
-    if (error instanceof Error && error.stack) {
-      console.error("Stack:", error.stack);
-    }
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
   }
 }
