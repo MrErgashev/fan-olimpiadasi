@@ -91,6 +91,7 @@ export async function POST(req: Request) {
         ...rest,
         phone,
         password: hashedPassword,
+        passwordText: password,
         ...(subjectIds.length > 0 && {
           subjects: {
             create: subjectIds.map((subjectId: string) => ({ subjectId })),

@@ -29,6 +29,7 @@ interface Student {
   grade: number;
   regionId: string | null;
   districtId: string | null;
+  passwordText: string | null;
   isBlocked: boolean;
   isArchived?: boolean;
   blockedReason: string | null;

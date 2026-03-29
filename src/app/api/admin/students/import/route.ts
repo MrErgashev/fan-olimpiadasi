@@ -121,6 +121,7 @@ export async function POST(req: Request) {
             lastName: item.data.lastName,
             phone: item.data.phone,
             password: item.data.password,
+            passwordText: item.data.plainPassword,
             schoolName: item.data.schoolName,
             grade: item.data.grade,
             regionId: item.data.regionId,
