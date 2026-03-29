@@ -20,13 +20,12 @@ export interface ParsedQuestion {
   isValid: boolean;
 }
 
-// Matches option lines: A) text, * B) text, *C) text, etc.
-// Only matches uppercase A-D at the start of a line (with optional * and spaces)
-const OPTION_REGEX = /^\s*(\*?)\s*([A-D])\)\s*(.+)/;
+// Matches option lines: A) text, * B) text, *C) text, D ) text, A.) text
+// Allows optional dot and space between letter and paren
+const OPTION_REGEX = /^\s*(\*?)\s*([A-D])\.?\s*\)\s*(.+)/;
 
 // Also match lowercase a-d but ONLY when it's a standalone option line
-// (not when multiple a) b) c) d) appear on same line - that's question text)
-const OPTION_REGEX_LOWER = /^\s*(\*?)\s*([a-d])\)\s*(.+)/;
+const OPTION_REGEX_LOWER = /^\s*(\*?)\s*([a-d])\.?\s*\)\s*(.+)/;
 
 const QUESTION_NUM_REGEX = /^\s*(\d+)\.\s*(.*)/;
 
@@ -68,10 +67,19 @@ function extractOption(line: string): { isCorrect: boolean; letter: string; text
   }
   if (!match) return null;
 
+  let isCorrect = match[1] === "*";
+  let optionText = match[3].trim();
+
+  // Handle trailing * (e.g. "C)1, 2, 4  *")
+  if (!isCorrect && /\*\s*$/.test(optionText)) {
+    isCorrect = true;
+    optionText = optionText.replace(/\s*\*\s*$/, "").trim();
+  }
+
   return {
-    isCorrect: match[1] === "*",
+    isCorrect,
     letter: match[2].toUpperCase(),
-    text: match[3].trim(),
+    text: optionText,
   };
 }
 
@@ -91,6 +99,15 @@ export function parseQuestions(rawText: string): ParsedQuestion[] {
   // With * marker (handle space between * and letter)
   text = text.replace(/\*\s*А\)/g, "*A)").replace(/\*\s*В\)/g, "*B)")
              .replace(/\*\s*С\)/g, "*C)").replace(/\*\s*Д\)/g, "*D)");
+
+  // Split two options on the same line into separate lines
+  // e.g. "* C) modifikatsion        D) mutatsion" -> two lines
+  // e.g. "C)110 D)880" -> two lines
+  // Uses lookahead to find second [A-D]) pattern on same line
+  text = text.replace(
+    /([A-Da-d]\.?\s*\)[^\n]*?)(\s+)(?=\*?\s*[A-Da-d]\.?\s*\))/g,
+    "$1\n"
+  );
 
   // Split into question blocks by detecting lines starting with a number + dot
   const blocks: string[] = [];
