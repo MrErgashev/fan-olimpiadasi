@@ -12,12 +12,38 @@ export async function GET(req: Request) {
     }
 
     const { searchParams } = new URL(req.url);
+    const grouped = searchParams.get("grouped");
     const subjectId = searchParams.get("subjectId");
     const difficulty = searchParams.get("difficulty");
     const search = searchParams.get("search");
     const page = parseInt(searchParams.get("page") || "1");
     const rawLimit = parseInt(searchParams.get("limit") || "20");
     const limit = Number.isNaN(rawLimit) ? 20 : Math.min(200, Math.max(1, rawLimit));
+
+    // Fan bo'yicha guruhlangan savol sonlarini qaytarish
+    if (grouped === "true") {
+      const subjects = await db.subject.findMany({
+        where: { isOnline: true },
+        select: { id: true, name: true, emoji: true, displayOrder: true },
+        orderBy: { displayOrder: "asc" },
+      });
+
+      const searchFilter = search
+        ? { questionText: { contains: search, mode: "insensitive" as const } }
+        : {};
+
+      const counts = await Promise.all(
+        subjects.map(async (s) => {
+          const count = await db.question.count({
+            where: { subjectId: s.id, isActive: true, ...searchFilter },
+          });
+          return { subjectId: s.id, name: s.name, emoji: s.emoji || "", count };
+        })
+      );
+
+      const totalQuestions = counts.reduce((sum, c) => sum + c.count, 0);
+      return NextResponse.json({ subjectCounts: counts, totalQuestions });
+    }
 
     const where: Record<string, unknown> = { isActive: true };
     if (subjectId) where.subjectId = subjectId;
