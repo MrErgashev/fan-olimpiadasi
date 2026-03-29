@@ -27,3 +27,31 @@ export function formatTimer(seconds: number): string {
   const secs = seconds % 60;
   return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 }
+
+// Toshkent (UTC+5) timezone funksiyalari
+const TASHKENT_OFFSET = 5 * 60 * 60 * 1000; // +5 soat millisekund
+
+// datetime-local qiymatni Toshkent vaqti sifatida ISO ga aylantirish
+export function toTashkentISO(datetimeLocal: string): string {
+  if (!datetimeLocal) return "";
+  return datetimeLocal + ":00+05:00";
+}
+
+// UTC ISO → Toshkent datetime-local (input uchun)
+export function toTashkentLocal(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const tashkent = new Date(d.getTime() + TASHKENT_OFFSET);
+  return tashkent.toISOString().slice(0, 16);
+}
+
+// Toshkent vaqtini formatlash (display uchun)
+export function formatTashkentDateTime(iso: string): string {
+  const d = new Date(iso);
+  const tashkent = new Date(d.getTime() + TASHKENT_OFFSET);
+  const day = tashkent.getUTCDate().toString().padStart(2, "0");
+  const month = (tashkent.getUTCMonth() + 1).toString().padStart(2, "0");
+  const hours = tashkent.getUTCHours().toString().padStart(2, "0");
+  const minutes = tashkent.getUTCMinutes().toString().padStart(2, "0");
+  return `${day}.${month} ${hours}:${minutes}`;
+}

@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/Badge";
 import { ArrowLeft, Loader2, Save, Trash2, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { toTashkentLocal, toTashkentISO } from "@/lib/utils";
 
 interface TestData {
   id: string;
@@ -26,14 +27,6 @@ interface TestData {
   status: string;
   subject: { id: string; name: string; emoji: string };
   _count: { testAttempts: number };
-}
-
-function toLocalDatetime(iso: string | null) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  const offset = d.getTimezoneOffset();
-  const local = new Date(d.getTime() - offset * 60000);
-  return local.toISOString().slice(0, 16);
 }
 
 export default function EditTestPage() {
@@ -73,8 +66,8 @@ export default function EditTestPage() {
             totalScore: String(t.totalScore),
             isRandomOrder: t.isRandomOrder,
             isShuffleOptions: t.isShuffleOptions,
-            startsAt: toLocalDatetime(t.startsAt),
-            endsAt: toLocalDatetime(t.endsAt),
+            startsAt: toTashkentLocal(t.startsAt),
+            endsAt: toTashkentLocal(t.endsAt),
             accessPin: t.accessPin || "",
             status: t.status,
           });
@@ -102,6 +95,8 @@ export default function EditTestPage() {
           totalQuestions: parseInt(form.totalQuestions),
           durationMinutes: parseInt(form.durationMinutes),
           totalScore: parseInt(form.totalScore),
+          startsAt: toTashkentISO(form.startsAt),
+          endsAt: toTashkentISO(form.endsAt),
         }),
       });
       if (res.ok) {
