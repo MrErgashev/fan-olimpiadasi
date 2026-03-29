@@ -337,6 +337,8 @@ export default function TestPage() {
   };
 
   const progress = totalQuestions > 0 ? (currentQ / totalQuestions) * 100 : 0;
+  const completionProgress =
+    totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0;
   const isSavingAnswer = saveStatus === "saving";
   const isSubmitting = submissionMode !== null;
   const statusContent =
@@ -376,10 +378,10 @@ export default function TestPage() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col test-content select-none bg-gradient-to-br from-slate-100 via-white to-primary-50">
+    <div className="fixed inset-0 z-50 flex flex-col test-content select-none bg-gradient-to-br from-slate-100 via-slate-50 to-primary-50/60">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-20 -left-10 h-56 w-56 rounded-full bg-primary-200/40 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-cyan-100/70 blur-3xl" />
+        <div className="absolute -top-20 -left-10 h-48 w-48 rounded-full bg-primary-100/60 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-cyan-50 blur-3xl" />
       </div>
 
       <div className="absolute top-0 left-0 right-0 h-1 bg-slate-200/70 z-10">
@@ -390,89 +392,92 @@ export default function TestPage() {
       </div>
 
       <header className="relative shrink-0 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-4 py-4 sm:py-5 flex flex-col gap-4">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
-                Test sessiyasi
-              </p>
-              <div className="mt-2 flex items-start gap-3">
-                <span className="hidden sm:flex w-12 h-12 rounded-2xl bg-primary-50 border border-primary-100 items-center justify-center shadow-sm">
-                  <UserRound className="w-5 h-5 text-primary-600" />
-                </span>
-                <div className="min-w-0">
-                  <h1 className="text-xl sm:text-2xl lg:text-[30px] font-semibold tracking-tight text-slate-900 truncate">
-                    {studentName || "O'quvchi"}
-                  </h1>
-                  <div className="mt-3 flex flex-wrap items-center gap-2.5">
-                    <span className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-700">
-                      <BookOpen className="w-4 h-4" />
-                      {subjectName || "Fan yuklanmoqda"}
-                    </span>
-                    <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm">
-                      <span className="font-mono text-primary-600">
-                        {currentQ}
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:py-5">
+          <div className="rounded-[28px] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:px-5 sm:py-5">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                  Test sessiyasi
+                </p>
+                <div className="mt-2 flex items-start gap-3">
+                  <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 shadow-sm sm:flex">
+                    <UserRound className="h-5 w-5 text-primary-600" />
+                  </span>
+                  <div className="min-w-0">
+                    <h1 className="truncate text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+                      {studentName || "O'quvchi"}
+                    </h1>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-700">
+                        <BookOpen className="h-4 w-4" />
+                        {subjectName || "Fan yuklanmoqda"}
                       </span>
-                      / {totalQuestions} savol
-                    </span>
+                      <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
+                        Test jarayoni faol
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="lg:w-[430px] space-y-3">
-              <div className="grid grid-cols-[minmax(0,1fr)_116px] gap-3">
-                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Vaqt
-                  </p>
-                  <div className="mt-2">
-                    {timerReady && (
+              <div className="flex flex-col gap-3 xl:min-w-[440px] xl:max-w-[520px] xl:items-end">
+                <div className="flex w-full flex-wrap items-center gap-3 xl:justify-end">
+                  {timerReady && (
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-1 shadow-sm">
                       <TestTimer
                         seconds={seconds}
                         isWarning={isWarning}
                         isCritical={isCritical}
                         theme="light"
                       />
-                    )}
+                    </div>
+                  )}
+
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                      Ball
+                    </p>
+                    <p className="mt-1 font-mono text-2xl font-bold text-primary-600">
+                      {questionData?.score}
+                    </p>
                   </div>
                 </div>
 
-                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Ball
-                  </p>
-                  <p className="mt-2 font-mono font-bold text-primary-600 text-2xl">
-                    {questionData?.score}
-                  </p>
-                </div>
-              </div>
+                <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-4">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                      Savol
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-slate-800 sm:text-base">
+                      <span className="font-mono text-primary-600">{currentQ}</span> / {totalQuestions}
+                    </p>
+                  </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Javob berildi
-                  </p>
-                  <p className="mt-1 text-lg font-semibold text-slate-800">
-                    {answeredCount} / {totalQuestions}
-                  </p>
-                </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                      Javob
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-slate-800 sm:text-base">
+                      {answeredCount} / {totalQuestions}
+                    </p>
+                  </div>
 
-                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Qoldi
-                  </p>
-                  <p className="mt-1 text-lg font-semibold text-slate-800">
-                    {remainingCount} ta
-                  </p>
-                </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                      Qoldi
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-slate-800 sm:text-base">
+                      {remainingCount} ta
+                    </p>
+                  </div>
 
-                <div className="rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Holat
-                  </p>
-                  <div className="mt-1 flex items-center gap-2 text-sm font-medium">
-                    {statusContent}
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                      Holat
+                    </p>
+                    <div className="mt-1 flex min-h-6 items-center gap-2 text-sm font-medium">
+                      {statusContent}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -482,68 +487,101 @@ export default function TestPage() {
       </header>
 
       <main className="relative flex-1 overflow-y-auto">
-        <div className="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:py-6">
           {questionData && (
-            <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-6 lg:items-start">
+            <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_290px]">
               <div className="min-w-0">
-                <div className="mb-6 rounded-[26px] border border-slate-200 bg-white/95 shadow-[0_18px_40px_rgba(15,23,42,0.08)] p-5 sm:p-6">
-                  <div className="flex items-start gap-4 mb-4">
-                    <span className="shrink-0 flex items-center justify-center w-10 h-10 rounded-2xl bg-primary-50 text-primary-600 font-mono font-bold text-sm border border-primary-100 shadow-sm">
-                      {currentQ}
-                    </span>
-                    <div className="space-y-1.5 min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                        Savol matni
-                      </p>
-                      <h2 className="text-base sm:text-lg text-slate-900 leading-7 sm:leading-8">
-                        {questionData.question.text}
-                      </h2>
+                <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_36px_rgba(15,23,42,0.06)]">
+                  <div className="border-b border-slate-100 px-5 py-5 sm:px-6 sm:py-6">
+                    <div className="mb-4 flex items-start gap-4">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 font-mono text-sm font-bold text-primary-600 shadow-sm">
+                        {currentQ}
+                      </span>
+                      <div className="min-w-0 space-y-1.5">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                          Savol matni
+                        </p>
+                        <h2 className="break-words whitespace-pre-line text-base leading-7 text-slate-900 sm:text-lg sm:leading-8">
+                          {questionData.question.text}
+                        </h2>
+                      </div>
                     </div>
+
+                    {questionData.question.imageUrl && (
+                      <div className="ml-0 inline-block overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 sm:ml-[3.5rem]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={questionData.question.imageUrl}
+                          alt="Savol rasmi"
+                          className="max-h-60 object-contain"
+                        />
+                      </div>
+                    )}
                   </div>
 
-                  {questionData.question.imageUrl && (
-                    <div className="ml-0 sm:ml-[3.5rem] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 inline-block">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={questionData.question.imageUrl}
-                        alt="Savol rasmi"
-                        className="max-h-60 object-contain"
-                      />
+                  <div className="px-4 py-4 sm:px-5 sm:py-5">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                        Javob variantlari
+                      </p>
+                      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
+                        Bitta javob tanlanadi
+                      </span>
                     </div>
-                  )}
-                </div>
 
-                <div className="space-y-2.5">
-                  {(["A", "B", "C", "D"] as const).map((key) => {
-                    const opt = questionData.options[key];
-                    if (!opt) return null;
+                    <div className="space-y-2.5">
+                      {(["A", "B", "C", "D"] as const).map((key) => {
+                        const opt = questionData.options[key];
+                        if (!opt) return null;
 
-                    return (
-                      <OptionButton
-                        key={key}
-                        label={key}
-                        text={opt.text}
-                        imageUrl={opt.imageUrl}
-                        selected={selected === key}
-                        onClick={() => handleAnswer(key)}
-                        theme="light"
-                        disabled={isSavingAnswer || isSubmitting}
-                      />
-                    );
-                  })}
+                        return (
+                          <OptionButton
+                            key={key}
+                            label={key}
+                            text={opt.text}
+                            imageUrl={opt.imageUrl}
+                            selected={selected === key}
+                            onClick={() => handleAnswer(key)}
+                            theme="light"
+                            disabled={isSavingAnswer || isSubmitting}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <aside className="hidden lg:block">
-                <div className="sticky top-6 rounded-[26px] border border-slate-200 bg-white/95 shadow-[0_18px_40px_rgba(15,23,42,0.08)] p-4">
-                  <div className="mb-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                      Savollar paneli
-                    </p>
-                    <p className="mt-2 text-sm text-slate-600 leading-6">
-                      Ko&apos;k rang joriy savolni, belgi tushganlari javob
-                      berilgan savollarni bildiradi.
-                    </p>
+              <aside className="hidden xl:block">
+                <div className="sticky top-5 space-y-4 rounded-[28px] border border-slate-200 bg-white p-4 shadow-[0_14px_36px_rgba(15,23,42,0.06)]">
+                  <div>
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                          Savollar paneli
+                        </p>
+                        <p className="mt-1 text-sm text-slate-600">
+                          Faol savol ko&apos;k, javob berilgan savollar belgilangan.
+                        </p>
+                      </div>
+                      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-semibold text-slate-700">
+                        {answeredCount}/{totalQuestions}
+                      </span>
+                    </div>
+
+                    <div className="mt-4">
+                      <div className="h-2 rounded-full bg-slate-100">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-primary-500 to-accent-cyan transition-all duration-500"
+                          style={{ width: `${completionProgress}%` }}
+                        />
+                      </div>
+                      <p className="mt-2 text-xs text-slate-500">
+                        {canManualSubmit
+                          ? "Barcha savollar javoblangan, testni yakunlash mumkin."
+                          : `${remainingCount} ta savol hali ochiq.`}
+                      </p>
+                    </div>
                   </div>
 
                   <QuestionNav
@@ -554,8 +592,51 @@ export default function TestPage() {
                     theme="light"
                     orientation="vertical"
                     compact
-                    className="max-h-[calc(100vh-19rem)] pr-1"
+                    className="max-h-[calc(100vh-24rem)] content-start pr-1"
                   />
+
+                  <div className="border-t border-slate-100 pt-4">
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => goToQuestion(currentQ - 1)}
+                        disabled={currentQ <= 1 || isSubmitting || isSavingAnswer}
+                        className="justify-center bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                      >
+                        <ChevronLeft className="mr-1 h-4 w-4" />
+                        Oldingi
+                      </Button>
+
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => goToQuestion(currentQ + 1)}
+                        disabled={
+                          currentQ >= totalQuestions || isSubmitting || isSavingAnswer
+                        }
+                        className="justify-center bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                      >
+                        Keyingi
+                        <ChevronRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <Button
+                      variant="blue-premium"
+                      size="sm"
+                      onClick={handleOpenSubmitModal}
+                      icon={<Send className="h-4 w-4" />}
+                      disabled={!canManualSubmit || isSubmitting || isSavingAnswer}
+                      className="mt-2.5 w-full justify-center disabled:bg-slate-200 disabled:text-slate-500 disabled:border disabled:border-slate-300 disabled:shadow-none"
+                    >
+                      Yakunlash
+                    </Button>
+
+                    <p className="mt-2 text-xs leading-5 text-slate-500">
+                      Yakunlash faqat barcha savollarga javob berilgandan keyin faollashadi.
+                    </p>
+                  </div>
                 </div>
               </aside>
             </div>
@@ -563,9 +644,9 @@ export default function TestPage() {
         </div>
       </main>
 
-      <footer className="relative shrink-0 border-t border-slate-200/80 bg-white/90 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto px-4 py-4 space-y-4">
-          <div className="lg:hidden">
+      <footer className="relative shrink-0 border-t border-slate-200/80 bg-white/90 backdrop-blur-xl xl:hidden">
+        <div className="mx-auto max-w-7xl px-4 py-3">
+          <div className="space-y-3">
             <QuestionNav
               total={totalQuestions}
               current={currentQ}
@@ -575,55 +656,51 @@ export default function TestPage() {
               orientation="horizontal"
               compact
             />
-          </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-slate-800">
-                Javob berildi: {answeredCount} / {totalQuestions}
-              </p>
-              <p className="text-sm text-slate-500 leading-6">
-                {canManualSubmit
-                  ? "Barcha savollar javoblandi. Testni yakunlashingiz mumkin."
-                  : "Barcha savollarga javob berganingizdan keyin testni yakunlashingiz mumkin"}
-              </p>
-            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
+              <div className="mb-3 flex items-center justify-between gap-3 text-sm">
+                <p className="font-semibold text-slate-800">
+                  Javob berildi: {answeredCount} / {totalQuestions}
+                </p>
+                <span className="text-slate-500">{remainingCount} ta qoldi</span>
+              </div>
 
-            <div className="flex items-center justify-between gap-3 lg:justify-end">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => goToQuestion(currentQ - 1)}
-                disabled={currentQ <= 1 || isSubmitting || isSavingAnswer}
-                className="bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
-              >
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                Oldingi
-              </Button>
+              <div className="flex items-center justify-between gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => goToQuestion(currentQ - 1)}
+                  disabled={currentQ <= 1 || isSubmitting || isSavingAnswer}
+                  className="bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                >
+                  <ChevronLeft className="mr-1 h-4 w-4" />
+                  Oldingi
+                </Button>
 
-              <Button
-                variant="blue-premium"
-                size="sm"
-                onClick={handleOpenSubmitModal}
-                icon={<Send className="w-4 h-4" />}
-                disabled={!canManualSubmit || isSubmitting || isSavingAnswer}
-                className="disabled:bg-slate-200 disabled:text-slate-500 disabled:border disabled:border-slate-300 disabled:shadow-none"
-              >
-                Yakunlash
-              </Button>
+                <Button
+                  variant="blue-premium"
+                  size="sm"
+                  onClick={handleOpenSubmitModal}
+                  icon={<Send className="h-4 w-4" />}
+                  disabled={!canManualSubmit || isSubmitting || isSavingAnswer}
+                  className="disabled:bg-slate-200 disabled:text-slate-500 disabled:border disabled:border-slate-300 disabled:shadow-none"
+                >
+                  Yakunlash
+                </Button>
 
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => goToQuestion(currentQ + 1)}
-                disabled={
-                  currentQ >= totalQuestions || isSubmitting || isSavingAnswer
-                }
-                className="bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
-              >
-                Keyingi
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => goToQuestion(currentQ + 1)}
+                  disabled={
+                    currentQ >= totalQuestions || isSubmitting || isSavingAnswer
+                  }
+                  className="bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+                >
+                  Keyingi
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>

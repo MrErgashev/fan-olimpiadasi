@@ -22,21 +22,21 @@ export function TestTimer({
   return (
     <div
       className={cn(
-        "flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-mono text-xl sm:text-2xl font-black transition-all duration-300",
+        "inline-flex items-center gap-2 rounded-2xl border px-3.5 py-2.5 font-mono text-lg font-bold transition-all duration-300 sm:px-4 sm:py-3 sm:text-xl",
         isCritical
           ? isLight
-            ? "bg-red-50 text-red-600 border border-red-200 animate-countdown shadow-sm"
+            ? "bg-red-50 text-red-600 border-red-200 animate-countdown shadow-sm"
             : "bg-red-500/20 text-red-400 border border-red-500/40 animate-countdown shadow-lg shadow-red-500/20"
           : isWarning
             ? isLight
-              ? "bg-amber-50 text-amber-700 border border-amber-200 shadow-sm"
+              ? "bg-amber-50 text-amber-700 border-amber-200 shadow-sm"
               : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 shadow-lg shadow-yellow-500/10"
             : isLight
-              ? "bg-white text-primary-700 border border-primary-200 shadow-sm"
+              ? "bg-white text-primary-700 border-primary-200 shadow-sm"
               : "bg-primary-700/30 text-primary-300 border border-primary-500/20"
       )}
     >
-      <Clock className={cn("w-5 h-5", isCritical && "animate-pulse")} />
+      <Clock className={cn("h-4 w-4 sm:h-5 sm:w-5", isCritical && "animate-pulse")} />
       <span className={cn("tabular-nums", !isLight && "text-glow-gold")}>
         {formatTimer(seconds)}
       </span>
