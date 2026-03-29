@@ -628,7 +628,7 @@ export default function TestPage() {
                       onClick={handleOpenSubmitModal}
                       icon={<Send className="h-4 w-4" />}
                       disabled={!canManualSubmit || isSubmitting || isSavingAnswer}
-                      className="mt-2.5 w-full justify-center disabled:bg-slate-200 disabled:text-slate-500 disabled:border disabled:border-slate-300 disabled:shadow-none"
+                      className="mt-2.5 w-full justify-center text-white [&_svg]:text-white disabled:bg-slate-200 disabled:text-white disabled:[&_svg]:text-white disabled:opacity-100 disabled:border disabled:border-slate-300 disabled:shadow-none"
                     >
                       Yakunlash
                     </Button>
@@ -683,7 +683,7 @@ export default function TestPage() {
                   onClick={handleOpenSubmitModal}
                   icon={<Send className="h-4 w-4" />}
                   disabled={!canManualSubmit || isSubmitting || isSavingAnswer}
-                  className="disabled:bg-slate-200 disabled:text-slate-500 disabled:border disabled:border-slate-300 disabled:shadow-none"
+                  className="text-white [&_svg]:text-white disabled:bg-slate-200 disabled:text-white disabled:[&_svg]:text-white disabled:opacity-100 disabled:border disabled:border-slate-300 disabled:shadow-none"
                 >
                   Yakunlash
                 </Button>
