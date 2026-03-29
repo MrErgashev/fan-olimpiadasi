@@ -2,12 +2,14 @@
 
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/Logo";
+import NotificationBell from "@/components/shared/NotificationBell";
 import { Badge } from "@/components/ui/Badge";
 import { Menu, X } from "lucide-react";
 import {
   DashboardIcon, QuestionIcon, ClipboardIcon, UsersIcon,
   TrophyIcon, KeyIcon, ShieldIcon, GearIcon, LogoutIcon,
 } from "@/components/ui/Icon3D";
+import { Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -44,6 +46,7 @@ const NAV_GROUPS = [
   {
     label: "SOZLAMALAR",
     items: [
+      { href: "/admin/notifications", label: "Bildirishnomalar", icon: Bell },
       { href: "/admin/settings", label: "Sozlamalar", icon: GearIcon },
     ],
   },
@@ -61,11 +64,12 @@ export function Sidebar() {
         <div className="mt-4 border-b border-slate-200" />
       </div>
 
-      {/* Admin badge */}
-      <div className="px-5 mb-3">
+      {/* Admin badge + notifications */}
+      <div className="px-5 mb-3 flex items-center justify-between">
         <Badge variant="info" size="sm">
           ADMIN
         </Badge>
+        <NotificationBell />
       </div>
 
       {/* Nav groups */}

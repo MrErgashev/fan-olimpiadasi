@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
-import { Plus, Search, Loader2, Trash2, Upload } from "lucide-react";
+import { Plus, Search, Loader2, Trash2, Upload, Pencil } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -197,6 +197,11 @@ export default function QuestionsPage() {
                 <span className="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-1 rounded">
                   {q.correctAnswer}
                 </span>
+                <Link href={`/admin/questions/${q.id}/edit`}>
+                  <Button variant="ghost" size="sm">
+                    <Pencil className="w-4 h-4 text-slate-500" />
+                  </Button>
+                </Link>
                 <Button variant="ghost" size="sm" onClick={() => handleDelete(q.id)}>
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </Button>
