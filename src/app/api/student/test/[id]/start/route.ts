@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { calculateScoreDistribution, getQuestionScore } from "@/lib/scoring";
+import { calculateScoreDistribution, getQuestionScore, getCustomQuestionScore, type ScoreRange } from "@/lib/scoring";
 import { headers } from "next/headers";
 
 export async function POST(
@@ -73,9 +73,16 @@ export async function POST(
           { status: 400 }
         );
       }
-      // Davom ettirish mumkin
+      // Davom ettirish — qolgan vaqtni hisoblash
+      const elapsed = (Date.now() - existingAttempt.startedAt.getTime()) / 1000;
+      const remaining = Math.max(0, test.durationMinutes * 60 - elapsed);
+
       return NextResponse.json({
         attemptId: existingAttempt.id,
+        totalQuestions: test.totalQuestions,
+        durationMinutes: test.durationMinutes,
+        startedAt: existingAttempt.startedAt.toISOString(),
+        timeRemaining: Math.floor(remaining),
         message: "Mavjud urinish davom ettirilmoqda",
       });
     }
@@ -88,13 +95,13 @@ export async function POST(
       "unknown";
     const userAgent = headersList.get("user-agent") || "unknown";
 
-    // RANDOM savollar tanlash
+    // Savollarni tanlash
     const allQuestions = await db.question.findMany({
       where: {
         subjectId: test.subjectId,
         isActive: true,
       },
-      select: { id: true },
+      select: { id: true, difficulty: true },
     });
 
     if (allQuestions.length < test.totalQuestions) {
@@ -104,19 +111,34 @@ export async function POST(
       );
     }
 
-    // Fisher-Yates shuffle bilan random tanlash
-    const shuffled = [...allQuestions];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    let selected: typeof allQuestions;
+
+    if (test.scoringMode === "custom" && !test.isRandomOrder) {
+      // Moslashuvchan baholash + tartibda berish: qiyinchilik bo'yicha tartiblash
+      const difficultyOrder: Record<string, number> = { easy: 1, medium: 2, hard: 3 };
+      const sorted = [...allQuestions].sort(
+        (a, b) => (difficultyOrder[a.difficulty] || 2) - (difficultyOrder[b.difficulty] || 2)
+      );
+      selected = sorted.slice(0, test.totalQuestions);
+    } else {
+      // Fisher-Yates shuffle bilan random tanlash
+      const shuffled = [...allQuestions];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      selected = shuffled.slice(0, test.totalQuestions);
     }
-    const selected = shuffled.slice(0, test.totalQuestions);
 
     // Ball taqsimotini hisoblash
-    const scoreDist = calculateScoreDistribution({
-      totalQuestions: test.totalQuestions,
-      totalScore: test.totalScore,
-    });
+    const scoreRanges = test.scoreRanges as ScoreRange[] | null;
+    let scoreDist = null;
+    if (test.scoringMode !== "custom") {
+      scoreDist = calculateScoreDistribution({
+        totalQuestions: test.totalQuestions,
+        totalScore: test.totalScore,
+      });
+    }
 
     // Attempt yaratish + savollarni biriktirish (transaction)
     const attempt = await db.$transaction(async (tx) => {
@@ -130,12 +152,23 @@ export async function POST(
       });
 
       // Har bir savol uchun attempt_questions va attempt_answers yaratish
-      const questionData = selected.map((q, index) => ({
-        attemptId: newAttempt.id,
-        questionId: q.id,
-        displayOrder: index + 1,
-        assignedScore: getQuestionScore(index, scoreDist),
-      }));
+      const questionData = selected.map((q, index) => {
+        const displayOrder = index + 1;
+        let assignedScore: number;
+
+        if (test.scoringMode === "custom" && scoreRanges) {
+          assignedScore = getCustomQuestionScore(displayOrder, scoreRanges);
+        } else {
+          assignedScore = getQuestionScore(index, scoreDist!);
+        }
+
+        return {
+          attemptId: newAttempt.id,
+          questionId: q.id,
+          displayOrder,
+          assignedScore,
+        };
+      });
 
       await tx.attemptQuestion.createMany({ data: questionData });
 
@@ -156,6 +189,7 @@ export async function POST(
       totalQuestions: test.totalQuestions,
       durationMinutes: test.durationMinutes,
       startedAt: attempt.startedAt.toISOString(),
+      timeRemaining: test.durationMinutes * 60,
     });
   } catch (error) {
     console.error("Test start error:", error);

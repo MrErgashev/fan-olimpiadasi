@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { autoSubmitAttempt } from "@/lib/auto-submit";
 
 // N-chi savolni olish (to'g'ri javob YUBORILMAYDI!)
 export async function GET(
@@ -49,9 +50,10 @@ export async function GET(
     const elapsed =
       (Date.now() - attempt.startedAt.getTime()) / 1000 / 60;
     if (elapsed > attempt.test.durationMinutes + 1) {
-      // +1 daqiqa toleransiya
+      // Vaqti tugagan — avtomatik baholash
+      await autoSubmitAttempt(attempt.id);
       return NextResponse.json(
-        { error: "Test vaqti tugagan" },
+        { error: "Test vaqti tugagan. Natijangiz avtomatik saqlandi.", autoSubmitted: true },
         { status: 400 }
       );
     }

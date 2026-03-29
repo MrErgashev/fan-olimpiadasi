@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { calculateScoreDistribution } from "@/lib/scoring";
+import { calculateScoreDistribution, validateScoreRanges, type ScoreRange } from "@/lib/scoring";
 
 export async function GET(
   req: Request,
@@ -43,7 +43,7 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const { name, durationMinutes, totalQuestions, totalScore, startsAt, endsAt, accessPin, status, isRandomOrder, isShuffleOptions } = body;
+    const { name, durationMinutes, totalQuestions, totalScore, startsAt, endsAt, accessPin, scoringMode, scoreRanges, status, isRandomOrder, isShuffleOptions } = body;
 
     const existing = await db.test.findUnique({
       where: { id: params.id },
@@ -69,7 +69,22 @@ export async function PUT(
       // Hali hech kim boshlamagan — to'liq o'zgartirish mumkin
       if (durationMinutes) updateData.durationMinutes = durationMinutes;
       if (totalQuestions) updateData.totalQuestions = totalQuestions;
-      if (totalScore) {
+
+      // Baholash tizimi
+      if (scoringMode !== undefined) updateData.scoringMode = scoringMode;
+      if (scoreRanges !== undefined) updateData.scoreRanges = scoreRanges || null;
+
+      if (scoringMode === "custom" && scoreRanges) {
+        const tq = totalQuestions || existing.totalQuestions;
+        const ts = totalScore || existing.totalScore;
+        const validation = validateScoreRanges(scoreRanges as ScoreRange[], tq, ts);
+        if (!validation.valid) {
+          return NextResponse.json({ error: validation.error }, { status: 400 });
+        }
+        if (totalScore) updateData.totalScore = totalScore;
+        updateData.scorePerQuestion = null;
+        updateData.extraScoreQuestions = null;
+      } else if (totalScore) {
         updateData.totalScore = totalScore;
         const dist = calculateScoreDistribution({
           totalQuestions: totalQuestions || existing.totalQuestions,
@@ -78,6 +93,7 @@ export async function PUT(
         updateData.scorePerQuestion = dist.normalScore;
         updateData.extraScoreQuestions = dist.extraCount;
       }
+
       if (isRandomOrder !== undefined) updateData.isRandomOrder = isRandomOrder;
       if (isShuffleOptions !== undefined) updateData.isShuffleOptions = isShuffleOptions;
     } else if (durationMinutes) {

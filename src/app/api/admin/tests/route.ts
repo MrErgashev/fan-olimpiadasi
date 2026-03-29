@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { calculateScoreDistribution } from "@/lib/scoring";
+import { calculateScoreDistribution, validateScoreRanges, type ScoreRange } from "@/lib/scoring";
 
 export async function GET() {
   try {
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { subjectId, name, totalQuestions, durationMinutes, totalScore, isRandomOrder, isShuffleOptions, startsAt, endsAt, accessPin, status } = body;
+    const { subjectId, name, totalQuestions, durationMinutes, totalScore, isRandomOrder, isShuffleOptions, startsAt, endsAt, accessPin, scoringMode, scoreRanges, status } = body;
 
     if (!subjectId || !name || !totalQuestions || !durationMinutes) {
       return NextResponse.json({ error: "Barcha maydonlarni to'ldiring" }, { status: 400 });
@@ -64,7 +64,27 @@ export async function POST(req: Request) {
     }
 
     const score = totalScore || 100;
-    const dist = calculateScoreDistribution({ totalQuestions, totalScore: score });
+
+    // Baholash tizimi
+    let finalScoringMode = "equal";
+    let finalScoreRanges = null;
+    let scorePerQuestion = null;
+    let extraScoreQuestions = null;
+
+    if (scoringMode === "custom" && scoreRanges) {
+      // Moslashuvchan baholash validatsiyasi
+      const validation = validateScoreRanges(scoreRanges as ScoreRange[], totalQuestions, score);
+      if (!validation.valid) {
+        return NextResponse.json({ error: validation.error }, { status: 400 });
+      }
+      finalScoringMode = "custom";
+      finalScoreRanges = scoreRanges;
+    } else {
+      // Teng taqsimlash
+      const dist = calculateScoreDistribution({ totalQuestions, totalScore: score });
+      scorePerQuestion = dist.normalScore;
+      extraScoreQuestions = dist.extraCount;
+    }
 
     const test = await db.test.create({
       data: {
@@ -73,8 +93,10 @@ export async function POST(req: Request) {
         totalQuestions,
         durationMinutes,
         totalScore: score,
-        scorePerQuestion: dist.normalScore,
-        extraScoreQuestions: dist.extraCount,
+        scorePerQuestion,
+        extraScoreQuestions,
+        scoringMode: finalScoringMode,
+        scoreRanges: finalScoreRanges,
         isRandomOrder: isRandomOrder ?? true,
         isShuffleOptions: isShuffleOptions ?? true,
         startsAt: startsAt ? new Date(startsAt) : null,

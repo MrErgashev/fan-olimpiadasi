@@ -15,6 +15,7 @@ import {
   Loader2,
   AlertTriangle,
   Send,
+  WifiOff,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -31,6 +32,46 @@ interface QuestionData {
   options: Record<string, { text: string; imageUrl: string | null }>;
   selectedAnswer: string | null;
   timeRemaining: number;
+}
+
+// localStorage yordamida javoblarni zaxiralash
+function saveAnswerLocally(testId: string, questionId: string, answer: string) {
+  try {
+    const key = `test_answers_${testId}`;
+    const stored = JSON.parse(localStorage.getItem(key) || "{}");
+    stored[questionId] = { answer, savedToServer: false, timestamp: Date.now() };
+    localStorage.setItem(key, JSON.stringify(stored));
+  } catch { /* localStorage mavjud bo'lmasligi mumkin */ }
+}
+
+function markAnswerSynced(testId: string, questionId: string) {
+  try {
+    const key = `test_answers_${testId}`;
+    const stored = JSON.parse(localStorage.getItem(key) || "{}");
+    if (stored[questionId]) {
+      stored[questionId].savedToServer = true;
+      localStorage.setItem(key, JSON.stringify(stored));
+    }
+  } catch { /* ignore */ }
+}
+
+function getUnsyncedAnswers(testId: string): Record<string, { answer: string }> {
+  try {
+    const key = `test_answers_${testId}`;
+    const stored = JSON.parse(localStorage.getItem(key) || "{}");
+    const unsynced: Record<string, { answer: string }> = {};
+    for (const [qId, data] of Object.entries(stored)) {
+      const d = data as { answer: string; savedToServer: boolean };
+      if (!d.savedToServer) {
+        unsynced[qId] = { answer: d.answer };
+      }
+    }
+    return unsynced;
+  } catch { return {}; }
+}
+
+function clearLocalAnswers(testId: string) {
+  try { localStorage.removeItem(`test_answers_${testId}`); } catch { /* ignore */ }
 }
 
 export default function TestPage() {
@@ -52,8 +93,46 @@ export default function TestPage() {
   const [showTimeWarning, setShowTimeWarning] = useState(false);
   const [initialSeconds, setInitialSeconds] = useState(0);
   const [timerReady, setTimerReady] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
 
   const fetchingRef = useRef(false);
+  const retryQueueRef = useRef<{ questionId: string; answer: string }[]>([]);
+
+  // Online/Offline detection
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOffline(false);
+      // Saqlanmagan javoblarni sync qilish
+      syncUnsavedAnswers();
+    };
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    setIsOffline(!navigator.onLine);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [testId]);
+
+  const syncUnsavedAnswers = useCallback(async () => {
+    const unsynced = getUnsyncedAnswers(testId);
+    for (const [questionId, { answer }] of Object.entries(unsynced)) {
+      try {
+        const res = await fetch(`/api/student/test/${testId}/answer`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionId, answer }),
+        });
+        if (res.ok) {
+          markAnswerSynced(testId, questionId);
+        }
+      } catch { /* retry keyinroq */ }
+    }
+  }, [testId]);
 
   const handleTimeExpire = useCallback(async () => {
     toast.error("Vaqt tugadi! Test avtomatik topshirilmoqda...");
@@ -92,13 +171,25 @@ export default function TestPage() {
       if (res.ok) {
         setAttemptId(data.attemptId);
         setTotalQuestions(data.totalQuestions);
-        setInitialSeconds(data.durationMinutes * 60);
+        // timeRemaining — server tomondan hisoblangan qolgan vaqt
+        if (data.timeRemaining !== undefined) {
+          setInitialSeconds(data.timeRemaining);
+        } else {
+          setInitialSeconds(data.durationMinutes * 60);
+        }
         setTimerReady(true);
         requestFullscreen();
+        // Saqlanmagan javoblarni sync qilish
+        syncUnsavedAnswers();
         await fetchQuestion(1);
       } else {
-        toast.error(data.error || "Testni boshlashda xatolik");
-        router.push("/dashboard");
+        if (data.autoSubmitted) {
+          toast.error("Test vaqti tugagan. Natijangiz saqlandi.");
+          router.push("/dashboard/results");
+        } else {
+          toast.error(data.error || "Testni boshlashda xatolik");
+          router.push("/dashboard");
+        }
       }
     } catch {
       toast.error("Tarmoq xatosi");
@@ -134,10 +225,18 @@ export default function TestPage() {
           });
         }
       } else {
-        toast.error(data.error || "Savolni yuklashda xatolik");
+        if (data.autoSubmitted) {
+          toast.error("Test vaqti tugagan. Natijangiz avtomatik saqlandi.");
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+          }
+          router.push("/dashboard/results");
+        } else {
+          toast.error(data.error || "Savolni yuklashda xatolik");
+        }
       }
     } catch {
-      toast.error("Tarmoq xatosi");
+      toast.error("Tarmoq xatosi — qayta urinib ko'ring");
     } finally {
       fetchingRef.current = false;
       setLoading(false);
@@ -154,17 +253,48 @@ export default function TestPage() {
       return next;
     });
 
-    try {
-      await fetch(`/api/student/test/${testId}/answer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          questionId: questionData.question.id,
-          answer,
-        }),
-      });
-    } catch {
-      toast.error("Javob saqlanmadi");
+    // Avval localStorage ga saqlash (backup)
+    saveAnswerLocally(testId, questionData.question.id, answer);
+
+    // Serverga yuborish (retry bilan)
+    const questionId = questionData.question.id;
+    let saved = false;
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch(`/api/student/test/${testId}/answer`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionId, answer }),
+        });
+        if (res.ok) {
+          markAnswerSynced(testId, questionId);
+          saved = true;
+          break;
+        }
+        const data = await res.json();
+        if (data.autoSubmitted) {
+          toast.error("Test vaqti tugagan. Natijangiz saqlandi.");
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+          }
+          router.push("/dashboard/results");
+          return;
+        }
+      } catch {
+        if (attempt < 2) {
+          await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+        }
+      }
+    }
+
+    if (!saved) {
+      retryQueueRef.current.push({ questionId, answer });
+      if (isOffline) {
+        // Offline — localStorage'da saqlangan
+      } else {
+        toast.error("Javob hozircha saqlanmadi. Internet qaytganda yuboriladi.");
+      }
     }
   };
 
@@ -177,27 +307,43 @@ export default function TestPage() {
 
   const submitTest = async () => {
     setSubmitting(true);
-    try {
-      const res = await fetch(`/api/student/test/${testId}/submit`, {
-        method: "POST",
-      });
-      const data = await res.json();
 
-      if (res.ok) {
-        if (document.fullscreenElement) {
-          document.exitFullscreen().catch(() => {});
+    // Avval saqlanmagan javoblarni sync qilish
+    await syncUnsavedAnswers();
+
+    // 3 marta retry bilan submit
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch(`/api/student/test/${testId}/submit`, {
+          method: "POST",
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+          }
+          clearLocalAnswers(testId);
+          toast.success(`Test yakunlandi! Ball: ${data.totalScore}`);
+          router.push("/dashboard/results");
+          return;
+        } else {
+          if (attempt === 2) {
+            toast.error(data.error || "Topshirishda xatolik");
+          }
         }
-        toast.success(`Test yakunlandi! Ball: ${data.totalScore}`);
-        router.push("/dashboard/results");
-      } else {
-        toast.error(data.error || "Topshirishda xatolik");
+      } catch {
+        if (attempt < 2) {
+          toast.error(`Urinish ${attempt + 1}/3 muvaffaqiyatsiz. Qayta urinilmoqda...`);
+          await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
+        } else {
+          toast.error("Tarmoq xatosi. Iltimos, internetga ulaning va qayta urinib ko'ring.");
+        }
       }
-    } catch {
-      toast.error("Tarmoq xatosi");
-    } finally {
-      setSubmitting(false);
-      setShowSubmitModal(false);
     }
+
+    setSubmitting(false);
+    setShowSubmitModal(false);
   };
 
   // Progress percentage
@@ -216,6 +362,14 @@ export default function TestPage() {
 
   return (
     <div className="fixed inset-0 bg-app-dark z-50 flex flex-col test-content select-none">
+      {/* Offline banner */}
+      {isOffline && (
+        <div className="absolute top-[3px] left-0 right-0 z-20 bg-red-500 text-white text-center py-1.5 text-sm flex items-center justify-center gap-2">
+          <WifiOff className="w-4 h-4" />
+          <span>Internet uzildi. Javoblaringiz mahalliy saqlanmoqda.</span>
+        </div>
+      )}
+
       {/* Top progress bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-white/5 z-10">
         <div
@@ -225,7 +379,7 @@ export default function TestPage() {
       </div>
 
       {/* Header */}
-      <header className="shrink-0 border-b border-white/5 bg-app-dark/95 backdrop-blur-xl pt-1">
+      <header className={`shrink-0 border-b border-white/5 bg-app-dark/95 backdrop-blur-xl ${isOffline ? "pt-8" : "pt-1"}`}>
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-xl bg-primary-500/20 flex items-center justify-center">

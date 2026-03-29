@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { autoSubmitAttempt } from "@/lib/auto-submit";
 
 // Javob saqlash (realtime)
 export async function POST(
@@ -42,8 +43,10 @@ export async function POST(
     const elapsed =
       (Date.now() - attempt.startedAt.getTime()) / 1000 / 60;
     if (elapsed > attempt.test.durationMinutes + 1) {
+      // Vaqti tugagan — avtomatik baholash
+      await autoSubmitAttempt(attempt.id);
       return NextResponse.json(
-        { error: "Test vaqti tugagan" },
+        { error: "Test vaqti tugagan. Natijangiz avtomatik saqlandi.", autoSubmitted: true },
         { status: 400 }
       );
     }

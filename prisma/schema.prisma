@@ -200,6 +200,8 @@ model Test {
   startsAt            DateTime?  @map("starts_at")
   endsAt              DateTime?  @map("ends_at")
   accessPin           String?    @map("access_pin")
+  scoringMode         String     @default("equal") @map("scoring_mode")
+  scoreRanges         Json?      @map("score_ranges")
   status              TestStatus @default(draft)
   createdBy           String?    @map("created_by")
   createdAt           DateTime   @default(now()) @map("created_at")
