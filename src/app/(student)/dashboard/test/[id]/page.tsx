@@ -553,14 +553,14 @@ export default function TestPage() {
                         size="lg"
                         onClick={() => goToQuestion(currentQ - 1)}
                         disabled={currentQ <= 1 || isSubmitting || isSavingAnswer}
-                        className="min-w-[220px] justify-start rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-800 shadow-[0_12px_30px_rgba(15,23,42,0.08)] hover:-translate-y-1 hover:bg-white hover:shadow-[0_16px_36px_rgba(37,99,235,0.14)] disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100"
-                        icon={
+                        className="min-w-[220px] rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-800 shadow-[0_12px_30px_rgba(15,23,42,0.08)] hover:-translate-y-1 hover:bg-white hover:shadow-[0_16px_36px_rgba(37,99,235,0.14)] disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100"
+                      >
+                        <span className="flex w-full items-center justify-center gap-3">
                           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-primary-600 shadow-sm">
                             <ChevronLeft className="h-5 w-5" />
                           </span>
-                        }
-                      >
-                        Oldingi
+                          <span>Oldingi</span>
+                        </span>
                       </Button>
 
                       <Button
@@ -570,14 +570,14 @@ export default function TestPage() {
                         disabled={
                           currentQ >= totalQuestions || isSubmitting || isSavingAnswer
                         }
-                        className="min-w-[220px] justify-end rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-800 shadow-[0_12px_30px_rgba(15,23,42,0.08)] hover:-translate-y-1 hover:bg-white hover:shadow-[0_16px_36px_rgba(37,99,235,0.14)] disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100"
-                        icon={
-                          <span className="order-2 flex h-9 w-9 items-center justify-center rounded-xl bg-white text-primary-600 shadow-sm">
+                        className="min-w-[220px] rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-800 shadow-[0_12px_30px_rgba(15,23,42,0.08)] hover:-translate-y-1 hover:bg-white hover:shadow-[0_16px_36px_rgba(37,99,235,0.14)] disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100"
+                      >
+                        <span className="flex w-full items-center justify-center gap-3">
+                          <span>Keyingi</span>
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-primary-600 shadow-sm">
                             <ChevronRight className="h-5 w-5" />
                           </span>
-                        }
-                      >
-                        Keyingi
+                        </span>
                       </Button>
                     </div>
                   </div>
