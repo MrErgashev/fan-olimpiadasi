@@ -152,6 +152,7 @@ export default function ImportQuestionsPage() {
       return;
     }
     setQuestions(parsed);
+    setFilter("all");
     setStep(2);
     toast.success(`${parsed.length} ta savol topildi`);
   };
@@ -688,6 +689,7 @@ export default function ImportQuestionsPage() {
                 setStep(1);
                 setEditingIndex(null);
                 setEditForm(null);
+                setFilter("all");
               }}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
