@@ -305,7 +305,8 @@ export default function AdminDashboard() {
                 <YAxis fontSize={12} tick={{ fill: "#64748b" }} />
                 <Tooltip
                   contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
-                  formatter={(value: number) => [`${value} ta`, "Soni"]}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`${value} ta`, "Soni"]}
                 />
                 <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                   {analytics.scoreDistribution.map((_, i) => (
@@ -326,7 +327,8 @@ export default function AdminDashboard() {
                 <YAxis fontSize={12} tick={{ fill: "#64748b" }} />
                 <Tooltip
                   contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
-                  formatter={(value: number) => [`${value} ta`, "Urinishlar"]}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`${value} ta`, "Urinishlar"]}
                 />
                 <Line
                   type="monotone"
@@ -350,7 +352,8 @@ export default function AdminDashboard() {
                 <YAxis type="category" dataKey="subject" width={120} fontSize={11} tick={{ fill: "#64748b" }} />
                 <Tooltip
                   contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
-                  formatter={(value: number) => [`${value} ball`, "O'rtacha"]}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`${value} ball`, "O'rtacha"]}
                 />
                 <Bar dataKey="avgScore" fill="#22c55e" radius={[0, 6, 6, 0]} />
               </BarChart>
@@ -367,10 +370,8 @@ export default function AdminDashboard() {
                 <YAxis domain={[0, 100]} fontSize={12} tick={{ fill: "#64748b" }} />
                 <Tooltip
                   contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
-                  formatter={(value: number, name: string) => {
-                    if (name === "avgScore") return [`${value} ball`, "O'rtacha"];
-                    return [value, name];
-                  }}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`${value} ball`, "O'rtacha"]}
                 />
                 <Bar dataKey="avgScore" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
               </BarChart>
