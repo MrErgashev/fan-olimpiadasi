@@ -33,6 +33,24 @@ interface QuestionData {
   timeRemaining: number;
 }
 
+interface StartTestResponse {
+  attemptId: string;
+  totalQuestions: number;
+  durationMinutes: number;
+  startedAt: string;
+  resumed?: boolean;
+}
+
+function getRemainingSeconds(startedAt: string, durationMinutes: number) {
+  const startedMs = new Date(startedAt).getTime();
+  if (Number.isNaN(startedMs)) {
+    return durationMinutes * 60;
+  }
+
+  const elapsedSeconds = Math.floor((Date.now() - startedMs) / 1000);
+  return Math.max(0, durationMinutes * 60 - elapsedSeconds);
+}
+
 export default function TestPage() {
   const router = useRouter();
   const params = useParams();
@@ -90,9 +108,12 @@ export default function TestPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setAttemptId(data.attemptId);
-        setTotalQuestions(data.totalQuestions);
-        setInitialSeconds(data.durationMinutes * 60);
+        const startData = data as StartTestResponse;
+        setAttemptId(startData.attemptId);
+        setTotalQuestions(startData.totalQuestions);
+        setInitialSeconds(
+          getRemainingSeconds(startData.startedAt, startData.durationMinutes)
+        );
         setTimerReady(true);
         requestFullscreen();
         await fetchQuestion(1);
@@ -118,6 +139,7 @@ export default function TestPage() {
 
       if (res.ok) {
         setQuestionData(data);
+        setTotalQuestions(data.totalQuestions);
         setSelected(data.selectedAnswer);
         setCurrentQ(num);
 

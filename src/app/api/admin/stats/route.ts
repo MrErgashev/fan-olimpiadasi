@@ -30,7 +30,13 @@ export async function GET() {
       }),
       db.test.findMany({
         where: { status: "active" },
-        select: { id: true, subjectId: true, totalQuestions: true },
+        select: {
+          id: true,
+          subjectId: true,
+          totalQuestions: true,
+          scoringMode: true,
+          _count: { select: { testQuestions: true } },
+        },
       }),
     ]);
 
@@ -66,13 +72,20 @@ export async function GET() {
 
     // Faqat yetarli savollari bor faol testlarni sanash
     const activeTests = activeTestsList.filter(
-      (t) => (questionCountMap[t.subjectId] || 0) >= t.totalQuestions
+      (t) =>
+        t.scoringMode === "banded_fixed_variant"
+          ? t._count.testQuestions === t.totalQuestions
+          : (questionCountMap[t.subjectId] || 0) >= t.totalQuestions
     ).length;
 
     // Fan bo'yicha faol testlar soni
     const subjectActiveTests: Record<string, number> = {};
     for (const t of activeTestsList) {
-      if ((questionCountMap[t.subjectId] || 0) >= t.totalQuestions) {
+      if (
+        t.scoringMode === "banded_fixed_variant"
+          ? t._count.testQuestions === t.totalQuestions
+          : (questionCountMap[t.subjectId] || 0) >= t.totalQuestions
+      ) {
         subjectActiveTests[t.subjectId] = (subjectActiveTests[t.subjectId] || 0) + 1;
       }
     }

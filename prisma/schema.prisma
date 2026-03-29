@@ -174,6 +174,7 @@ model Question {
   admin            Admin?            @relation(fields: [createdBy], references: [id])
   attemptQuestions AttemptQuestion[]
   attemptAnswers   AttemptAnswer[]
+  testQuestions    TestQuestion[]
 
   @@map("questions")
 }
@@ -194,6 +195,7 @@ model Test {
   totalQuestions       Int        @map("total_questions")
   durationMinutes     Int        @map("duration_minutes")
   totalScore          Float      @default(100) @map("total_score")
+  scoringMode         TestScoringMode @default(distributed) @map("scoring_mode")
   scorePerQuestion    Float?     @map("score_per_question")
   extraScoreQuestions Int?       @map("extra_score_questions")
   isRandomOrder       Boolean    @default(true) @map("is_random_order")
@@ -208,6 +210,8 @@ model Test {
   subject      Subject       @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   admin        Admin?        @relation(fields: [createdBy], references: [id])
   testAttempts TestAttempt[]
+  testQuestions TestQuestion[]
+  scoreBands   TestScoreBand[]
 
   @@map("tests")
 }
@@ -216,6 +220,11 @@ enum TestStatus {
   draft
   active
   closed
+}
+
+enum TestScoringMode {
+  distributed
+  banded_fixed_variant
 }
 
 // ============================================
@@ -340,4 +349,33 @@ model AttemptQuestion {
 
   @@unique([attemptId, questionId])
   @@map("attempt_questions")
+}
+
+model TestQuestion {
+  id            String @id @default(cuid())
+  testId        String @map("test_id")
+  questionId    String @map("question_id")
+  displayOrder  Int    @map("display_order")
+  assignedScore Float  @map("assigned_score")
+
+  test     Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@unique([testId, questionId])
+  @@unique([testId, displayOrder])
+  @@map("test_questions")
+}
+
+model TestScoreBand {
+  id             String @id @default(cuid())
+  testId         String @map("test_id")
+  displayOrder   Int    @map("display_order")
+  fromQuestion   Int    @map("from_question")
+  toQuestion     Int    @map("to_question")
+  scorePerQuestion Float @map("score_per_question")
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@unique([testId, displayOrder])
+  @@map("test_score_bands")
 }

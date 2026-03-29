@@ -5,6 +5,20 @@ import { db } from "@/lib/db";
 import { calculateScoreDistribution, getQuestionScore } from "@/lib/scoring";
 import { headers } from "next/headers";
 
+function buildStartPayload(
+  attempt: { id: string; startedAt: Date },
+  test: { totalQuestions: number; durationMinutes: number },
+  resumed: boolean
+) {
+  return {
+    attemptId: attempt.id,
+    totalQuestions: test.totalQuestions,
+    durationMinutes: test.durationMinutes,
+    startedAt: attempt.startedAt.toISOString(),
+    resumed,
+  };
+}
+
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
@@ -21,7 +35,10 @@ export async function POST(
     // Test mavjudligini tekshirish
     const test = await db.test.findUnique({
       where: { id: testId },
-      include: { subject: true },
+      include: {
+        subject: true,
+        testQuestions: { orderBy: { displayOrder: "asc" } },
+      },
     });
 
     if (!test) {
@@ -47,18 +64,6 @@ export async function POST(
       );
     }
 
-    // PIN tekshiruvi
-    if (test.accessPin) {
-      const body = await req.json().catch(() => ({}));
-      const pin = body?.pin;
-      if (!pin || pin !== test.accessPin) {
-        return NextResponse.json(
-          { error: "Kirish kodi noto'g'ri" },
-          { status: 403 }
-        );
-      }
-    }
-
     // Oldin attempt bormi tekshirish
     const existingAttempt = await db.testAttempt.findUnique({
       where: {
@@ -73,11 +78,31 @@ export async function POST(
           { status: 400 }
         );
       }
-      // Davom ettirish mumkin
-      return NextResponse.json({
-        attemptId: existingAttempt.id,
-        message: "Mavjud urinish davom ettirilmoqda",
-      });
+
+      const elapsedMinutes =
+        (now.getTime() - existingAttempt.startedAt.getTime()) / 1000 / 60;
+      if (elapsedMinutes > test.durationMinutes + 1) {
+        return NextResponse.json(
+          { error: "Test vaqti tugagan" },
+          { status: 400 }
+        );
+      }
+
+      return NextResponse.json(
+        buildStartPayload(existingAttempt, test, true)
+      );
+    }
+
+    // PIN tekshiruvi faqat birinchi boshlash uchun talab qilinadi
+    if (test.accessPin) {
+      const body = await req.json().catch(() => ({}));
+      const pin = body?.pin;
+      if (!pin || pin !== test.accessPin) {
+        return NextResponse.json(
+          { error: "Kirish kodi noto'g'ri" },
+          { status: 403 }
+        );
+      }
     }
 
     // IP va User-Agent olish
@@ -88,35 +113,59 @@ export async function POST(
       "unknown";
     const userAgent = headersList.get("user-agent") || "unknown";
 
-    // RANDOM savollar tanlash
-    const allQuestions = await db.question.findMany({
-      where: {
-        subjectId: test.subjectId,
-        isActive: true,
-      },
-      select: { id: true },
-    });
+    const selected =
+      test.scoringMode === "banded_fixed_variant"
+        ? test.testQuestions.map((item) => ({
+            id: item.questionId,
+            assignedScore: item.assignedScore,
+          }))
+        : null;
 
-    if (allQuestions.length < test.totalQuestions) {
-      return NextResponse.json(
-        { error: "Bazada yetarli savol yo'q" },
-        { status: 400 }
-      );
+    if (test.scoringMode === "banded_fixed_variant") {
+      if (test.testQuestions.length !== test.totalQuestions) {
+        return NextResponse.json(
+          { error: "Bu test konfiguratsiyasi to'liq emas" },
+          { status: 400 }
+        );
+      }
     }
 
-    // Fisher-Yates shuffle bilan random tanlash
-    const shuffled = [...allQuestions];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    const selected = shuffled.slice(0, test.totalQuestions);
+    let randomizedQuestions:
+      | { id: string; assignedScore: number }[]
+      | null = selected;
 
-    // Ball taqsimotini hisoblash
-    const scoreDist = calculateScoreDistribution({
-      totalQuestions: test.totalQuestions,
-      totalScore: test.totalScore,
-    });
+    if (!randomizedQuestions) {
+      const allQuestions = await db.question.findMany({
+        where: {
+          subjectId: test.subjectId,
+          isActive: true,
+        },
+        select: { id: true },
+      });
+
+      if (allQuestions.length < test.totalQuestions) {
+        return NextResponse.json(
+          { error: "Bazada yetarli savol yo'q" },
+          { status: 400 }
+        );
+      }
+
+      const shuffled = [...allQuestions];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      const scoreDist = calculateScoreDistribution({
+        totalQuestions: test.totalQuestions,
+        totalScore: test.totalScore,
+      });
+
+      randomizedQuestions = shuffled.slice(0, test.totalQuestions).map((question, index) => ({
+        id: question.id,
+        assignedScore: getQuestionScore(index, scoreDist),
+      }));
+    }
 
     // Attempt yaratish + savollarni biriktirish (transaction)
     const attempt = await db.$transaction(async (tx) => {
@@ -130,17 +179,17 @@ export async function POST(
       });
 
       // Har bir savol uchun attempt_questions va attempt_answers yaratish
-      const questionData = selected.map((q, index) => ({
+      const questionData = randomizedQuestions.map((q, index) => ({
         attemptId: newAttempt.id,
         questionId: q.id,
         displayOrder: index + 1,
-        assignedScore: getQuestionScore(index, scoreDist),
+        assignedScore: q.assignedScore,
       }));
 
       await tx.attemptQuestion.createMany({ data: questionData });
 
       // Bo'sh javoblar yaratish (keyinchalik to'ldiriladi)
-      const answerData = selected.map((q, index) => ({
+      const answerData = randomizedQuestions.map((q, index) => ({
         attemptId: newAttempt.id,
         questionId: q.id,
         displayOrder: index + 1,
@@ -151,12 +200,7 @@ export async function POST(
       return newAttempt;
     });
 
-    return NextResponse.json({
-      attemptId: attempt.id,
-      totalQuestions: test.totalQuestions,
-      durationMinutes: test.durationMinutes,
-      startedAt: attempt.startedAt.toISOString(),
-    });
+    return NextResponse.json(buildStartPayload(attempt, test, false));
   } catch (error) {
     console.error("Test start error:", error);
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });

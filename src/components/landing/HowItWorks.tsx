@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { PersonIcon, KeyIcon, DocumentIcon, ChartIcon, AwardIcon } from "@/components/ui/Icon3D";
+import { cn } from "@/lib/utils";
 import { useRef } from "react";
 
 const STEPS = [
@@ -9,6 +10,9 @@ const STEPS = [
     icon: PersonIcon,
     title: "Ro'yxatdan o'ting",
     description: "Access kod orqali platformaga ro'yxatdan o'ting",
+    badgeClassName:
+      "bg-gradient-to-br from-white via-slate-50 to-gold-50 border border-gold-200/80 shadow-[0_10px_28px_rgba(148,163,184,0.22)] group-hover:shadow-[0_18px_36px_rgba(245,158,11,0.22)]",
+    ringClassName: "border-gold-300/40 group-hover:border-gold-400/80",
   },
   {
     icon: KeyIcon,
@@ -80,9 +84,19 @@ export function HowItWorks() {
                 className="flex md:flex-col items-start md:items-center gap-4 md:gap-0 text-left md:text-center group"
               >
                 {/* Number circle with glow */}
-                <div className="relative z-10 w-14 h-14 md:w-16 md:h-16 rounded-full bg-navy-950 text-white flex items-center justify-center shrink-0 md:mb-5 group-hover:shadow-glow-gold transition-shadow duration-500">
+                <div
+                  className={cn(
+                    "relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full md:mb-5 md:h-16 md:w-16 transition-all duration-500",
+                    step.badgeClassName ?? "bg-navy-950 text-white group-hover:shadow-glow-gold"
+                  )}
+                >
                   {/* Gold ring on hover */}
-                  <div className="absolute inset-0 rounded-full border-2 border-gold-500/0 group-hover:border-gold-500/30 transition-all duration-500" />
+                  <div
+                    className={cn(
+                      "absolute inset-0 rounded-full border-2 transition-all duration-500",
+                      step.ringClassName ?? "border-gold-500/0 group-hover:border-gold-500/30"
+                    )}
+                  />
                   <step.icon className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300" />
                 </div>
 

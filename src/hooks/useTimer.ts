@@ -14,6 +14,11 @@ export function useTimer({ initialSeconds, onExpire }: UseTimerProps) {
   onExpireRef.current = onExpire;
 
   useEffect(() => {
+    setSeconds(initialSeconds);
+    setIsRunning(initialSeconds > 0);
+  }, [initialSeconds]);
+
+  useEffect(() => {
     if (!isRunning || seconds <= 0) return;
 
     const interval = setInterval(() => {

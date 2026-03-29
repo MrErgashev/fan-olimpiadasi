@@ -108,7 +108,6 @@ export default function DashboardPage() {
       } else {
         const data = await res.json();
         if (data.error === "Kirish kodi noto'g'ri") {
-          toast.error("Kirish kodi noto'g'ri. Qaytadan urinib ko'ring.");
           setConfirmModal(null);
           setPinValue("");
           setPinError("Kirish kodi noto'g'ri");

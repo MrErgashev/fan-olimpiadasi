@@ -16,7 +16,8 @@ export async function GET(req: Request) {
     const difficulty = searchParams.get("difficulty");
     const search = searchParams.get("search");
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = 20;
+    const rawLimit = parseInt(searchParams.get("limit") || "20");
+    const limit = Number.isNaN(rawLimit) ? 20 : Math.min(200, Math.max(1, rawLimit));
 
     const where: Record<string, unknown> = { isActive: true };
     if (subjectId) where.subjectId = subjectId;
