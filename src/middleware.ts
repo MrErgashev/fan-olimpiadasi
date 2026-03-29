@@ -13,10 +13,24 @@ export default withAuth(
       }
     }
 
+    // Admin API larini himoyalash
+    if (pathname.startsWith("/api/admin")) {
+      if (!token || (token.role !== "admin" && token.role !== "superadmin" && token.role !== "moderator")) {
+        return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 401 });
+      }
+    }
+
     // Student sahifalarini himoyalash
     if (pathname.startsWith("/dashboard")) {
       if (!token || token.role !== "student") {
         return NextResponse.redirect(new URL("/login", req.url));
+      }
+    }
+
+    // Student API larini himoyalash
+    if (pathname.startsWith("/api/student")) {
+      if (!token || token.role !== "student") {
+        return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 401 });
       }
     }
 
@@ -45,5 +59,10 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/admin/:path*",
+    "/api/admin/:path*",
+    "/api/student/:path*",
+  ],
 };

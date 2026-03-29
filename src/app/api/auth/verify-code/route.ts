@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { checkRateLimit, getClientIp, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    // Rate limit: 5 so'rov/daqiqa per IP
+    const ip = getClientIp(req);
+    const { success } = checkRateLimit(`verify-code:${ip}`, 5, 60_000);
+    if (!success) return rateLimitResponse();
+
     const { code } = await req.json();
 
     if (!code) {
@@ -44,7 +50,7 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({ valid: true, codeId: accessCode.id });
+    return NextResponse.json({ valid: true });
   } catch {
     return NextResponse.json(
       { error: "Server xatosi" },

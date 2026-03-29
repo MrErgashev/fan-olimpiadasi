@@ -20,6 +20,15 @@ export async function POST(req: Request) {
       );
     }
 
+    // attemptId shu o'quvchiniki ekanligini tekshirish
+    const attempt = await db.testAttempt.findFirst({
+      where: { id: attemptId, studentId: session.user.id },
+      select: { id: true },
+    });
+    if (!attempt) {
+      return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 403 });
+    }
+
     const validEvents: SecurityEvent[] = [
       "TAB_SWITCH", "FULLSCREEN_EXIT", "COPY_ATTEMPT", "DEVTOOLS_OPEN",
       "RIGHT_CLICK", "KEYBOARD_SHORTCUT", "WINDOW_BLUR", "MULTIPLE_DEVICE", "SUSPICIOUS_SPEED",
