@@ -54,7 +54,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetch("/api/admin/stats")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("API xato qaytardi");
+        return r.json();
+      })
       .then(setStats)
       .catch(() => toast.error("Statistika yuklanmadi"))
       .finally(() => setLoading(false));
