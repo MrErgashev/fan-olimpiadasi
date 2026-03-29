@@ -393,41 +393,17 @@ export default function TestPage() {
 
       <header className="relative shrink-0 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:py-5">
-          <div className="rounded-[28px] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:px-5 sm:py-[18px]">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-3 border-b border-slate-100 pb-3 lg:flex-row lg:items-start lg:justify-between">
-                <div className="min-w-0">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
-                    Test sessiyasi
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2.5 lg:justify-end">
-                  {timerReady && (
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-1 shadow-sm">
-                      <TestTimer
-                        seconds={seconds}
-                        isWarning={isWarning}
-                        isCritical={isCritical}
-                        theme="light"
-                      />
-                    </div>
-                  )}
-
-                  <div className="min-w-[92px] rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 shadow-sm">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                      Ball
-                    </p>
-                    <p className="mt-1 font-mono text-2xl font-bold text-primary-600">
-                      {questionData?.score}
-                    </p>
-                  </div>
-                </div>
+          <div className="rounded-[28px] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:px-5 sm:py-4">
+            <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:gap-4">
+              <div className="shrink-0 2xl:min-w-[150px]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                  Test sessiyasi
+                </p>
               </div>
 
-              <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-                <div className="min-w-0 xl:flex-1">
-                  <div className="flex items-start gap-3">
+              <div className="flex min-w-0 flex-col gap-3 2xl:flex-1 2xl:flex-row 2xl:items-center 2xl:gap-4">
+                <div className="min-w-0 2xl:flex-1">
+                  <div className="flex items-center gap-3">
                     <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 shadow-sm sm:flex">
                       <UserRound className="h-5 w-5 text-primary-600" />
                     </span>
@@ -448,8 +424,8 @@ export default function TestPage() {
                   </div>
                 </div>
 
-                <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-4 xl:w-auto xl:min-w-[620px]">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 shadow-sm">
+                <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-4 2xl:w-auto 2xl:min-w-[560px] 2xl:flex-none">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Savol
                     </p>
@@ -458,7 +434,7 @@ export default function TestPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Javob
                     </p>
@@ -467,7 +443,7 @@ export default function TestPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Qoldi
                     </p>
@@ -476,13 +452,35 @@ export default function TestPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Holat
                     </p>
                     <div className="mt-1 flex min-h-6 items-center gap-2 text-sm font-medium">
                       {statusContent}
                     </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2.5 2xl:flex-none 2xl:justify-end">
+                  {timerReady && (
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-1 shadow-sm">
+                      <TestTimer
+                        seconds={seconds}
+                        isWarning={isWarning}
+                        isCritical={isCritical}
+                        theme="light"
+                      />
+                    </div>
+                  )}
+
+                  <div className="min-w-[92px] rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                      Ball
+                    </p>
+                    <p className="mt-1 font-mono text-2xl font-bold text-primary-600">
+                      {questionData?.score}
+                    </p>
                   </div>
                 </div>
               </div>
