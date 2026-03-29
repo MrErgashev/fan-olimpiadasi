@@ -546,6 +546,40 @@ export default function TestPage() {
                         );
                       })}
                     </div>
+
+                    <div className="hidden xl:flex items-center justify-between gap-4 pt-5">
+                      <Button
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => goToQuestion(currentQ - 1)}
+                        disabled={currentQ <= 1 || isSubmitting || isSavingAnswer}
+                        className="min-w-[220px] justify-start rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-800 shadow-[0_12px_30px_rgba(15,23,42,0.08)] hover:-translate-y-1 hover:bg-white hover:shadow-[0_16px_36px_rgba(37,99,235,0.14)] disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100"
+                        icon={
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-primary-600 shadow-sm">
+                            <ChevronLeft className="h-5 w-5" />
+                          </span>
+                        }
+                      >
+                        Oldingi
+                      </Button>
+
+                      <Button
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => goToQuestion(currentQ + 1)}
+                        disabled={
+                          currentQ >= totalQuestions || isSubmitting || isSavingAnswer
+                        }
+                        className="min-w-[220px] justify-end rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-800 shadow-[0_12px_30px_rgba(15,23,42,0.08)] hover:-translate-y-1 hover:bg-white hover:shadow-[0_16px_36px_rgba(37,99,235,0.14)] disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100"
+                        icon={
+                          <span className="order-2 flex h-9 w-9 items-center justify-center rounded-xl bg-white text-primary-600 shadow-sm">
+                            <ChevronRight className="h-5 w-5" />
+                          </span>
+                        }
+                      >
+                        Keyingi
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -594,32 +628,6 @@ export default function TestPage() {
                   />
 
                   <div className="border-t border-slate-100 pt-4">
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => goToQuestion(currentQ - 1)}
-                        disabled={currentQ <= 1 || isSubmitting || isSavingAnswer}
-                        className="justify-center bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
-                      >
-                        <ChevronLeft className="mr-1 h-4 w-4" />
-                        Oldingi
-                      </Button>
-
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => goToQuestion(currentQ + 1)}
-                        disabled={
-                          currentQ >= totalQuestions || isSubmitting || isSavingAnswer
-                        }
-                        className="justify-center bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
-                      >
-                        Keyingi
-                        <ChevronRight className="ml-1 h-4 w-4" />
-                      </Button>
-                    </div>
-
                     <Button
                       variant="blue-premium"
                       size="sm"
