@@ -393,35 +393,16 @@ export default function TestPage() {
 
       <header className="relative shrink-0 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:py-5">
-          <div className="rounded-[28px] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:px-5 sm:py-5">
-            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-              <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
-                  Test sessiyasi
-                </p>
-                <div className="mt-2 flex items-start gap-3">
-                  <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 shadow-sm sm:flex">
-                    <UserRound className="h-5 w-5 text-primary-600" />
-                  </span>
-                  <div className="min-w-0">
-                    <h1 className="truncate text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
-                      {studentName || "O'quvchi"}
-                    </h1>
-                    <div className="mt-3 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-700">
-                        <BookOpen className="h-4 w-4" />
-                        {subjectName || "Fan yuklanmoqda"}
-                      </span>
-                      <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
-                        Test jarayoni faol
-                      </span>
-                    </div>
-                  </div>
+          <div className="rounded-[28px] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:px-5 sm:py-[18px]">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 border-b border-slate-100 pb-3 lg:flex-row lg:items-start lg:justify-between">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+                    Test sessiyasi
+                  </p>
                 </div>
-              </div>
 
-              <div className="flex flex-col gap-3 xl:min-w-[440px] xl:max-w-[520px] xl:items-end">
-                <div className="flex w-full flex-wrap items-center gap-3 xl:justify-end">
+                <div className="flex flex-wrap items-center gap-2.5 lg:justify-end">
                   {timerReady && (
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-1 shadow-sm">
                       <TestTimer
@@ -433,7 +414,7 @@ export default function TestPage() {
                     </div>
                   )}
 
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm">
+                  <div className="min-w-[92px] rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Ball
                     </p>
@@ -442,9 +423,33 @@ export default function TestPage() {
                     </p>
                   </div>
                 </div>
+              </div>
 
-                <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-4">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3 shadow-sm">
+              <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+                <div className="min-w-0 xl:flex-1">
+                  <div className="flex items-start gap-3">
+                    <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 shadow-sm sm:flex">
+                      <UserRound className="h-5 w-5 text-primary-600" />
+                    </span>
+                    <div className="min-w-0">
+                      <h1 className="truncate text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+                        {studentName || "O'quvchi"}
+                      </h1>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-700">
+                          <BookOpen className="h-4 w-4" />
+                          {subjectName || "Fan yuklanmoqda"}
+                        </span>
+                        <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700">
+                          Test jarayoni faol
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-4 xl:w-auto xl:min-w-[620px]">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Savol
                     </p>
@@ -453,7 +458,7 @@ export default function TestPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Javob
                     </p>
@@ -462,7 +467,7 @@ export default function TestPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Qoldi
                     </p>
@@ -471,7 +476,7 @@ export default function TestPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-3 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 shadow-sm">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                       Holat
                     </p>
