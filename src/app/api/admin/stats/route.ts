@@ -18,7 +18,7 @@ export async function GET() {
       submittedAttempts,
       subjectStats,
     ] = await Promise.all([
-      db.student.count(),
+      db.student.count({ where: { isArchived: false } }),
       db.question.count({ where: { isActive: true } }),
       db.test.count(),
       db.testAttempt.count(),
@@ -29,8 +29,14 @@ export async function GET() {
           id: true,
           name: true,
           emoji: true,
-          _count: { select: { tests: true } },
-          studentSubjects: { select: { id: true } },
+          tests: {
+            where: { status: "active" },
+            select: { id: true, subjectId: true, totalQuestions: true },
+          },
+          studentSubjects: {
+            where: { student: { isArchived: false } },
+            select: { id: true },
+          },
         },
       }),
     ]);
@@ -46,7 +52,11 @@ export async function GET() {
       subjectQuestionCounts.map((q) => [q.subjectId, q.count])
     );
 
-    const activeTests = await db.test.count({ where: { status: "active" } });
+    // Faqat yetarli savollari bor faol testlarni sanash
+    const allActiveTests = subjectStats.flatMap((s) => s.tests);
+    const activeTests = allActiveTests.filter(
+      (t) => (questionCountMap[t.subjectId] || 0) >= t.totalQuestions
+    ).length;
 
     return NextResponse.json({
       totalStudents,
@@ -55,13 +65,19 @@ export async function GET() {
       activeTests,
       totalAttempts,
       submittedAttempts,
-      subjectStats: subjectStats.map((s) => ({
-        name: s.name,
-        emoji: s.emoji,
-        questions: questionCountMap[s.id] || 0,
-        tests: s._count.tests,
-        students: s.studentSubjects.length,
-      })),
+      subjectStats: subjectStats.map((s) => {
+        // Fan uchun faqat yetarli savollari bor testlarni sanash
+        const validTests = s.tests.filter(
+          (t) => (questionCountMap[t.subjectId] || 0) >= t.totalQuestions
+        ).length;
+        return {
+          name: s.name,
+          emoji: s.emoji,
+          questions: questionCountMap[s.id] || 0,
+          tests: validTests,
+          students: s.studentSubjects.length,
+        };
+      }),
     });
   } catch {
     return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
