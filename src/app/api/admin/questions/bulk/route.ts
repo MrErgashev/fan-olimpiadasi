@@ -6,7 +6,7 @@ import { z } from "zod";
 
 const bulkQuestionSchema = z.object({
   subjectId: z.string().min(1),
-  difficulty: z.enum(["easy", "medium", "hard"]),
+  difficulty: z.enum(["easy", "medium", "hard"]).optional().default("medium"),
   questions: z
     .array(
       z.object({
