@@ -88,6 +88,7 @@ export default function ImportStudentsPage() {
           const gradeStr = row["Sinf"] || row["sinf"] || row["Grade"] || row["grade"] || "11";
           const grade = parseInt(String(gradeStr).replace(/\D/g, "")) || 11;
           const regionName = row["Viloyat"] || row["viloyat"] || row["Region"] || row["region"] || "";
+          const subjectName = row["Fan"] || row["fan"] || row["Subject"] || row["subject"] || row["Fan nomi"] || "";
 
           return validateStudentRow({
             rowIndex: idx + 1,
@@ -97,6 +98,7 @@ export default function ImportStudentsPage() {
             schoolName: schoolName.trim(),
             grade,
             regionName: regionName.trim() || undefined,
+            subjectName: subjectName.trim() || undefined,
             errors: [],
             isValid: true,
           });
@@ -137,13 +139,13 @@ export default function ImportStudentsPage() {
 
   const downloadTemplate = () => {
     const ws = XLSX.utils.aoa_to_sheet([
-      ["Ism", "Familiya", "Telefon", "Maktab", "Sinf", "Viloyat"],
-      ["Ali", "Valiyev", "+998901234567", "1-maktab", "11", "Toshkent"],
-      ["Vali", "Aliyev", "+998901234568", "2-maktab", "10", "Samarqand"],
+      ["Ism", "Familiya", "Telefon", "Maktab", "Sinf", "Viloyat", "Fan"],
+      ["Ali", "Valiyev", "+998901234567", "1-maktab", "11", "Toshkent", "Matematika"],
+      ["Vali", "Aliyev", "+998901234568", "2-maktab", "10", "Samarqand", "Fizika"],
     ]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "O'quvchilar");
-    ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 8 }, { wch: 15 }];
+    ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 8 }, { wch: 15 }, { wch: 18 }];
     XLSX.writeFile(wb, "oquvchilar_shablon.xlsx");
   };
 
@@ -192,10 +194,11 @@ export default function ImportStudentsPage() {
       "Maktab": r.schoolName,
       "Sinf": r.grade,
       "Viloyat": r.regionName || "",
+      "Fan": r.subjectName || "",
       "Xatolar": r.errors.join("; "),
     }));
     const ws = XLSX.utils.json_to_sheet(data);
-    ws["!cols"] = [{ wch: 6 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 8 }, { wch: 15 }, { wch: 40 }];
+    ws["!cols"] = [{ wch: 6 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 8 }, { wch: 15 }, { wch: 18 }, { wch: 40 }];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Xatolar");
     XLSX.writeFile(wb, "import_xatolar.xlsx");
@@ -242,6 +245,7 @@ export default function ImportStudentsPage() {
               schoolName: r.schoolName,
               grade: r.grade,
               regionName: r.regionName,
+              subjectName: r.subjectName,
             })),
           }),
         });
@@ -363,7 +367,7 @@ export default function ImportStudentsPage() {
             <div className="mt-3 p-3 bg-white rounded-lg border border-slate-100">
               <p className="text-xs text-slate-500 mb-2">Fayl tarkibi (ustunlar):</p>
               <div className="flex flex-wrap gap-2">
-                {["Ism", "Familiya", "Telefon", "Maktab", "Sinf", "Viloyat"].map((col) => (
+                {["Ism", "Familiya", "Telefon", "Maktab", "Sinf", "Viloyat", "Fan"].map((col) => (
                   <span key={col} className="px-2 py-1 bg-slate-100 rounded text-xs font-mono text-slate-600">{col}</span>
                 ))}
               </div>
@@ -519,6 +523,9 @@ export default function ImportStudentsPage() {
                         </span>
                         <span className="text-xs text-slate-400 ml-2 font-mono">{row.phone}</span>
                         <span className="text-xs text-slate-400 ml-2">{row.schoolName}</span>
+                        {row.subjectName && (
+                          <Badge variant="info" size="sm" className="ml-2">{row.subjectName}</Badge>
+                        )}
                         {!row.isValid && (
                           <div className="flex flex-wrap gap-1 mt-1">
                             {row.errors.map((err, ei) => (

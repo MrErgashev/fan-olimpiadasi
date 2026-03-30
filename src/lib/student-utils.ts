@@ -29,6 +29,7 @@ export interface ParsedStudentRow {
   schoolName: string;
   grade: number;
   regionName?: string;
+  subjectName?: string;
   errors: string[];
   isValid: boolean;
 }

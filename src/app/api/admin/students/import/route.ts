@@ -12,6 +12,7 @@ interface ImportRow {
   schoolName: string;
   grade?: number;
   regionName?: string;
+  subjectName?: string;
 }
 
 export async function POST(req: Request) {
@@ -43,6 +44,10 @@ export async function POST(req: Request) {
     const regions = await db.region.findMany({ select: { id: true, name: true } });
     const regionMap = new Map(regions.map((r) => [r.name.toLowerCase(), r.id]));
 
+    // Load subjects for name-based matching
+    const subjects = await db.subject.findMany({ select: { id: true, name: true } });
+    const subjectMap = new Map(subjects.map((s) => [s.name.toLowerCase(), s.id]));
+
     const created: { phone: string; password: string; name: string }[] = [];
     const errors: { row: number; phone: string; reason: string }[] = [];
     const skipped: { row: number; phone: string; reason: string }[] = [];
@@ -62,6 +67,7 @@ export async function POST(req: Request) {
         schoolName: string;
         grade: number;
         regionId?: string;
+        subjectId?: string;
       };
     }[] = [];
 
@@ -92,6 +98,7 @@ export async function POST(req: Request) {
       batchPhones.add(phone);
       const plainPassword = generatePassword();
       const regionId = row.regionName ? regionMap.get(row.regionName.toLowerCase()) : undefined;
+      const subjectId = row.subjectName ? subjectMap.get(row.subjectName.toLowerCase()) : undefined;
 
       toCreate.push({
         rowIndex: i + 1,
@@ -104,6 +111,7 @@ export async function POST(req: Request) {
           schoolName: row.schoolName.trim(),
           grade: row.grade || 11,
           regionId,
+          subjectId,
         },
       });
     }
@@ -125,6 +133,11 @@ export async function POST(req: Request) {
             schoolName: item.data.schoolName,
             grade: item.data.grade,
             regionId: item.data.regionId,
+            ...(item.data.subjectId && {
+              subjects: {
+                create: [{ subjectId: item.data.subjectId }],
+              },
+            }),
           },
         });
       })
