@@ -223,16 +223,18 @@ export default function DashboardPage() {
               <Card
                 variant="light"
                 hover
-                className={`relative rounded-2xl ${
+                className={`relative rounded-2xl p-5 sm:p-6 ${
                   test.status === "active"
-                    ? "border border-primary-500/30 shadow-md shadow-primary-500/10"
+                    ? "border-2 border-primary-500/30 shadow-lg shadow-primary-500/10"
                     : test.status === "in_progress"
-                    ? "border border-amber-400/40 shadow-md shadow-amber-400/10"
+                    ? "border-2 border-amber-400/40 shadow-lg shadow-amber-400/10"
                     : ""
                 }`}
               >
-                <div className="flex items-start justify-between mb-5">
-                  <span className="text-4xl">{test.subjectEmoji}</span>
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-2xl">
+                    {test.subjectEmoji}
+                  </div>
                   <div className="flex items-center gap-2">
                     {test.requiresPin && test.status === "active" && (
                       <Lock className="w-4 h-4 text-slate-400" />
@@ -258,7 +260,7 @@ export default function DashboardPage() {
                   </p>
                 )}
 
-                <div className="flex items-center gap-4 text-sm text-slate-400 mb-5">
+                <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
                   <span className="flex items-center gap-1.5">
                     <FileText className="w-4 h-4" />
                     {test.totalQuestions} savol
@@ -270,7 +272,7 @@ export default function DashboardPage() {
                 </div>
 
                 {test.status === "completed" && test.score !== undefined && (
-                  <div className="flex items-center gap-3 mb-5 p-4 rounded-xl bg-blue-50 border border-blue-200">
+                  <div className="flex items-center gap-3 mb-4 p-4 rounded-xl bg-blue-50 border border-blue-200">
                     <TrophyIcon className="w-6 h-6" />
                     <span className="font-mono text-2xl font-bold text-cyan-600">
                       {test.score.toFixed(1)}
