@@ -392,19 +392,43 @@ export default function TestPage() {
       </div>
 
       <header className="relative shrink-0 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:py-5">
-          <div className="rounded-[28px] border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:px-5 sm:py-4">
-            <div className="flex flex-col gap-3 xl:grid xl:grid-cols-[minmax(320px,1.25fr)_minmax(480px,0.95fr)_auto] xl:items-center xl:gap-4">
-              <div className="min-w-0 xl:min-w-[340px]">
+        {/* Mobile compact header */}
+        <div className="flex items-center justify-between gap-2 px-3 py-2 xl:hidden">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary-100 bg-primary-50 px-2.5 py-1 text-xs font-medium text-primary-700">
+            <BookOpen className="h-3.5 w-3.5" />
+            {subjectName || "Fan"}
+          </span>
+
+          <div className="flex items-center gap-2">
+            {timerReady && (
+              <TestTimer
+                seconds={seconds}
+                isWarning={isWarning}
+                isCritical={isCritical}
+                theme="light"
+              />
+            )}
+
+            <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-sm font-bold text-primary-600">
+              {questionData?.score}
+            </span>
+          </div>
+        </div>
+
+        {/* Desktop full header */}
+        <div className="mx-auto hidden max-w-7xl flex-col gap-4 px-4 py-5 xl:flex">
+          <div className="rounded-[28px] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+            <div className="grid grid-cols-[minmax(320px,1.25fr)_minmax(480px,0.95fr)_auto] items-center gap-4">
+              <div className="min-w-[340px]">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">
                   Test sessiyasi
                 </p>
                 <div className="mt-3 flex items-center gap-3">
-                  <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 shadow-sm sm:flex">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 shadow-sm">
                     <UserRound className="h-5 w-5 text-primary-600" />
                   </span>
                   <div className="min-w-0">
-                    <h1 className="truncate text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+                    <h1 className="truncate text-2xl font-semibold tracking-tight text-slate-900">
                       {studentName || "O'quvchi"}
                     </h1>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -420,12 +444,12 @@ export default function TestPage() {
                 </div>
               </div>
 
-              <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-4 xl:min-w-[480px] xl:grid-cols-4">
+              <div className="grid w-full min-w-[480px] grid-cols-4 gap-2.5">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 shadow-sm">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                     Savol
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-800 sm:text-base">
+                  <p className="mt-1 text-base font-semibold text-slate-800">
                     <span className="font-mono text-primary-600">{currentQ}</span> / {totalQuestions}
                   </p>
                 </div>
@@ -434,7 +458,7 @@ export default function TestPage() {
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                     Javob
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-800 sm:text-base">
+                  <p className="mt-1 text-base font-semibold text-slate-800">
                     {answeredCount} / {totalQuestions}
                   </p>
                 </div>
@@ -443,7 +467,7 @@ export default function TestPage() {
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                     Qoldi
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-800 sm:text-base">
+                  <p className="mt-1 text-base font-semibold text-slate-800">
                     {remainingCount} ta
                   </p>
                 </div>
@@ -458,7 +482,7 @@ export default function TestPage() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2.5 xl:flex-nowrap xl:justify-end">
+              <div className="flex flex-nowrap items-center justify-end gap-2.5">
                 {timerReady && (
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-1 shadow-sm">
                     <TestTimer
