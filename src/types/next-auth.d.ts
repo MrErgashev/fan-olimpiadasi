@@ -7,6 +7,7 @@ declare module "next-auth" {
     firstName?: string;
     lastName?: string;
     role?: "student" | "admin" | "superadmin" | "moderator";
+    sessionToken?: string;
   }
 
   interface Session {
@@ -16,6 +17,7 @@ declare module "next-auth" {
       firstName?: string;
       lastName?: string;
       role?: "student" | "admin" | "superadmin" | "moderator";
+      sessionToken?: string;
     };
   }
 }
@@ -27,5 +29,6 @@ declare module "next-auth/jwt" {
     firstName?: string;
     lastName?: string;
     role?: "student" | "admin" | "superadmin" | "moderator";
+    sessionToken?: string;
   }
 }
