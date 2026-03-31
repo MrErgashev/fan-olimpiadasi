@@ -57,20 +57,52 @@ export async function GET(
       return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 403 });
     }
 
-    const answers = attempt.attemptAnswers.map((a, i) => ({
-      order: i + 1,
-      questionText: a.question.questionText,
-      questionImageUrl: a.question.questionImageUrl,
-      optionA: a.question.optionA,
-      optionB: a.question.optionB,
-      optionC: a.question.optionC,
-      optionD: a.question.optionD,
-      correctAnswer: a.question.correctAnswer,
-      selectedAnswer: a.selectedAnswer,
-      isCorrect: a.isCorrect,
-      score: a.score,
-      explanation: a.question.explanation,
-    }));
+    const answers = attempt.attemptAnswers.map((a) => {
+      const shuffleMap = a.shuffledOptions as Record<string, string> | null;
+
+      // Agar shuffle bo'lgan bo'lsa — variantlarni imtihondagi tartibda ko'rsatish
+      let optionA = a.question.optionA;
+      let optionB = a.question.optionB;
+      let optionC = a.question.optionC;
+      let optionD = a.question.optionD;
+      let correctAnswer = a.question.correctAnswer;
+
+      if (shuffleMap) {
+        const origOptions: Record<string, string | null> = {
+          A: a.question.optionA,
+          B: a.question.optionB,
+          C: a.question.optionC,
+          D: a.question.optionD,
+        };
+        // Variantlarni shuffled tartibga joylashtirish (imtihondagi ko'rinish)
+        optionA = origOptions[shuffleMap["A"]] || optionA;
+        optionB = origOptions[shuffleMap["B"]] || optionB;
+        optionC = origOptions[shuffleMap["C"]] || optionC;
+        optionD = origOptions[shuffleMap["D"]] || optionD;
+
+        // correctAnswer ni shuffled koordinataga aylantirish
+        const reverseMap: Record<string, string> = {};
+        for (const [shuffledKey, origKey] of Object.entries(shuffleMap)) {
+          reverseMap[origKey] = shuffledKey;
+        }
+        correctAnswer = reverseMap[a.question.correctAnswer] || correctAnswer;
+      }
+
+      return {
+        order: a.displayOrder,
+        questionText: a.question.questionText,
+        questionImageUrl: a.question.questionImageUrl,
+        optionA,
+        optionB,
+        optionC,
+        optionD,
+        correctAnswer,
+        selectedAnswer: a.selectedAnswer,
+        isCorrect: a.isCorrect,
+        score: a.score,
+        explanation: a.question.explanation,
+      };
+    });
 
     return NextResponse.json({
       attempt: {
