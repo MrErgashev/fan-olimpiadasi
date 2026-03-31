@@ -46,7 +46,7 @@ export async function GET(req: Request) {
         where,
         include: {
           region: { select: { name: true } },
-          subjects: { include: { subject: { select: { name: true, emoji: true } } } },
+          subjects: { include: { subject: { select: { id: true, name: true, emoji: true } } } },
           _count: { select: { testAttempts: true } },
         },
         orderBy,
