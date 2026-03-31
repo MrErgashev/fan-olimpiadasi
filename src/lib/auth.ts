@@ -114,14 +114,18 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // Student sessiyalarini bazadan validatsiya qilish
       if (token.role === "student" && token.sessionToken) {
-        const activeSession = await db.activeSession.findUnique({
-          where: { sessionToken: token.sessionToken },
-        });
-        if (!activeSession) {
-          // Sessiya bekor qilingan (boshqa qurilmada login qilingan)
-          session.user.id = "";
-          session.user.role = undefined;
-          return session;
+        try {
+          const activeSession = await db.activeSession.findUnique({
+            where: { sessionToken: token.sessionToken },
+          });
+          if (!activeSession) {
+            // Sessiya bekor qilingan (boshqa qurilmada login qilingan)
+            session.user.id = "";
+            session.user.role = undefined;
+            return session;
+          }
+        } catch {
+          // DB xatolik (Neon cold start, timeout) — JWT ga ishonish
         }
       }
 
