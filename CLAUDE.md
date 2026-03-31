@@ -8,7 +8,7 @@ Oriental Universiteti "Fan Olimpiadasi" platformasi.
 - Next.js 14 App Router + TypeScript
 - Tailwind CSS (custom green-gold theme)
 - Neon Postgres + Prisma ORM (database, `prisma db push` — migration'siz)
-- NextAuth.js (auth - telefon + parol)
+- NextAuth.js (auth - telefon + parol, JWT strategy, 24 soat maxAge)
 - Vercel deploy (`build: "prisma db push && next build"`)
 - xlsx kutubxonasi (Excel import/export)
 
@@ -31,6 +31,14 @@ Oriental Universiteti "Fan Olimpiadasi" platformasi.
 9. Prisma schema o'zgartirilganda `prisma db push` build skriptida avtomatik ishlaydi — alohida migration kerak emas
 10. ESLint: unused imports yo'q bo'lishi kerak, `<img>` o'rniga `next/image` yoki `eslint-disable` comment
 
+## Autentifikatsiya (muhim!)
+- **Strategiya**: JWT (DB sessiya tekshiruvi YO'Q — session callback da DB query qilish MUMKIN EMAS)
+- **Session callback**: Faqat JWT token dan ma'lumot o'qiydi, DB ga murojaat qilmaydi
+- **ActiveSession modeli**: Schemada bor lekin ishlatilmaydi (olib tashlangan — Neon cold start muammosi)
+- **Login sahifa**: Agar sessiya mavjud → dashboardga redirect (signOut chaqirish MUMKIN EMAS — race condition)
+- **SessionProvider**: `refetchInterval={5*60}` va `refetchOnWindowFocus={true}` bilan sozlangan
+- **Neon cold start**: Login da faqat 1-2 DB query (findUnique + compare), ortiqcha query qo'shish MUMKIN EMAS
+
 ## Test boshlash jarayoni (muhim!)
 1. O'quvchi "Testni boshlash" bosadi
 2. Server: bazadan random N ta savol tanlaydi
@@ -41,6 +49,28 @@ Oriental Universiteti "Fan Olimpiadasi" platformasi.
 7. Fullscreen yoqiladi
 8. Timer boshlanadi
 
+## Option Shuffle tizimi (JUDA MUHIM!)
+
+### Shuffle mexanizmi
+- `isShuffleOptions=true` bo'lganda variantlar (A,B,C,D) aralashtiriladi
+- `shuffleMap` yaratiladi va `AttemptAnswer.shuffledOptions` ga JSON sifatida saqlanadi
+- Format: `{A: "C", B: "A", C: "D", D: "B"}` — display pozitsiya → original pozitsiya
+- `selectedAnswer` SHUFFLED koordinatada saqlanadi (display pozitsiyasi)
+- `correctAnswer` ORIGINAL koordinatada saqlanadi (Question modelda)
+
+### Ball hisoblash (submit)
+- `selectedAnswer` → `shuffleMap[selectedAnswer]` → `actualAnswer` (original koordinata)
+- `actualAnswer === correctAnswer` → ball beriladi
+- Ball bazada TO'G'RI saqlanadi
+
+### Natija ko'rsatish (KRITIK!)
+- Natija sahifasida variantlar **IMTIHONDAGI TARTIBDA** ko'rsatilishi KERAK
+- `shuffleMap` orqali variantlar qayta aralashtiriladi (original → shuffled)
+- `correctAnswer` ham shuffled koordinataga aylantiriladi (reverseMap)
+- `selectedAnswer` shu holda qoladi (allaqachon shuffled)
+- Agar `shuffleMap = null` → hech narsa o'zgarmaydi (shuffle bo'lmagan)
+- **HECH QACHON** variantlarni original tartibda ko'rsatib, selectedAnswer ni shuffled qoldirish MUMKIN EMAS
+
 ## Admin o'quvchilar boshqaruvi
 
 ### Sahifalar
@@ -50,12 +80,17 @@ Oriental Universiteti "Fan Olimpiadasi" platformasi.
 
 ### O'quvchi CRUD
 - **Qo'shish**: AddStudentModal — fan tanlash, parol generatsiya + nusxalash, muvaffaqiyat ekrani, telefon dublikat check
-- **Tahrirlash**: EditStudentModal — barcha maydonlar + fanlar + parol reset
+- **Tahrirlash**: EditStudentModal — barcha maydonlar + fanlar + parol reset, tanlangan fanlar `bg-primary-600 text-white` + Check ikonka
 - **Bloklash**: BlockStudentModal — muddatli (1kun/3kun/1hafta/1oy/doimiy), sabab kategoriyalari, bloklash tarixi (BlockHistory)
 - **O'chirish**: DeleteStudentModal — ism yozib tasdiqlash, statistika, arxivlash varianti
 - **Arxivlash**: soft delete — `isArchived=true`, ro'yxatdan yashiriladi, qayta tiklanadi
 - **Bulk**: block/unblock/delete/archive/unarchive (100 tagacha)
 - **Export**: filtrlangan ro'yxatni .xlsx ga yuklab olish
+
+### Import (muhim!)
+- Fan nomi topilmasa **xatolik qaytariladi** (`"Biologiya" fan topilmadi`) — jimgina o'tkazib yuborilmaydi
+- `subjectName.trim().toLowerCase()` bilan solishtiriladi
+- Fansiz o'quvchi yaratilmaydi (continue)
 
 ### API endpointlar
 - `GET/POST /api/admin/students` — ro'yxat (filter, sort, pagination) + yaratish (subjectIds, returnPassword)
@@ -65,7 +100,7 @@ Oriental Universiteti "Fan Olimpiadasi" platformasi.
 - `GET /api/admin/students/[id]/block-history` — bloklash tarixi
 - `PATCH /api/admin/students/[id]/archive` — arxivlash/qayta tiklash toggle
 - `POST /api/admin/students/bulk-action` — bulk (block/unblock/delete/archive/unarchive)
-- `POST /api/admin/students/import` — import (max 500/batch, password generatsiya)
+- `POST /api/admin/students/import` — import (max 500/batch, password generatsiya, fan tekshiruvi)
 - `GET /api/admin/students/export` — export (filtrlangan)
 - `GET /api/admin/students/check-phone` — telefon dublikat tekshirish (excludeId)
 
@@ -78,6 +113,11 @@ Oriental Universiteti "Fan Olimpiadasi" platformasi.
 ### Rollar
 - `admin`, `superadmin` — to'liq CRUD
 - `moderator` — faqat ko'rish (read-only)
+
+## Client-side xato boshqaruvi
+- Dashboard `fetchTests`: avtomatik retry (1 marta, 1s kutish), aniq xato xabarlari
+- Profil sahifa: API larni alohida try/catch, settings fail da default (maxSubjects=1)
+- Barcha fetch callarda `if (!res.ok)` tekshirilishi KERAK
 
 ## Loyiha strukturasi (asosiy)
 ```
@@ -97,8 +137,9 @@ src/
 │   └── api/admin/students/       — barcha API endpointlar
 ├── components/ui/                — Button, Card, Modal, Input, Select, Badge, Icon3D
 ├── lib/
-│   ├── auth.ts                   — NextAuth (student-login, admin-login, blockedUntil check)
-│   ├── db.ts                     — Prisma client
+│   ├── auth.ts                   — NextAuth (JWT only, DB query YO'Q session callback da)
+│   ├── db.ts                     — Prisma client (global cache)
+│   ├── scoring.ts                — calculateScoreDistribution, getQuestionScore
 │   ├── validators.ts             — Zod schemalar
 │   ├── student-utils.ts          — generatePassword, formatPhone, validateStudentRow
 │   └── utils.ts                  — cn(), formatDate, formatTimer
