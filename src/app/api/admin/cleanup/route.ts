@@ -37,6 +37,8 @@ export async function POST() {
       let wrongCount = 0;
       let unansweredCount = 0;
 
+      const answerUpdates: { id: string; isCorrect: boolean; score: number }[] = [];
+
       for (const ans of attempt.attemptAnswers) {
         const aq = attempt.attemptQuestions.find(
           (q) => q.questionId === ans.questionId
@@ -45,10 +47,7 @@ export async function POST() {
 
         if (!ans.selectedAnswer) {
           unansweredCount++;
-          await db.attemptAnswer.update({
-            where: { id: ans.id },
-            data: { isCorrect: false, score: 0 },
-          });
+          answerUpdates.push({ id: ans.id, isCorrect: false, score: 0 });
           continue;
         }
 
@@ -68,24 +67,29 @@ export async function POST() {
           wrongCount++;
         }
 
-        await db.attemptAnswer.update({
-          where: { id: ans.id },
-          data: { isCorrect, score },
-        });
+        answerUpdates.push({ id: ans.id, isCorrect, score });
       }
 
-      // Attempt ni submit sifatida belgilash
-      await db.testAttempt.update({
-        where: { id: attempt.id },
-        data: {
-          isSubmitted: true,
-          finishedAt: new Date(),
-          totalScore: Math.round(totalScore * 10) / 10,
-          correctCount,
-          wrongCount,
-          unansweredCount,
-        },
-      });
+      // Batch transaction: barcha yangilanishlarni bir vaqtda bajarish
+      await db.$transaction([
+        ...answerUpdates.map((upd) =>
+          db.attemptAnswer.update({
+            where: { id: upd.id },
+            data: { isCorrect: upd.isCorrect, score: upd.score },
+          })
+        ),
+        db.testAttempt.update({
+          where: { id: attempt.id },
+          data: {
+            isSubmitted: true,
+            finishedAt: new Date(),
+            totalScore: Math.round(totalScore * 10) / 10,
+            correctCount,
+            wrongCount,
+            unansweredCount,
+          },
+        }),
+      ]);
 
       processedCount++;
     }

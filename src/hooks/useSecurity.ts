@@ -14,7 +14,8 @@ type SecurityEventType =
   | "RIGHT_CLICK"
   | "KEYBOARD_SHORTCUT"
   | "WINDOW_BLUR"
-  | "DEVTOOLS_OPEN";
+  | "DEVTOOLS_OPEN"
+  | "MULTIPLE_DEVICE";
 
 export function useSecurity({ attemptId, enabled }: UseSecurityProps) {
   const logQueue = useRef<{ type: SecurityEventType; details?: Record<string, unknown> }[]>([]);
@@ -110,6 +111,21 @@ export function useSecurity({ attemptId, enabled }: UseSecurityProps) {
     document.body.style.userSelect = "none";
     document.body.style.webkitUserSelect = "none";
 
+    // 9. Multi-tab prevention (BroadcastChannel)
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel(`test-session-${attemptId}`);
+      bc.postMessage({ type: "new-tab" });
+      bc.onmessage = (e) => {
+        if (e.data?.type === "new-tab") {
+          // Boshqa tab ochilgan — ogohlantirish
+          logEvent("MULTIPLE_DEVICE", { reason: "duplicate_tab" });
+        }
+      };
+    } catch {
+      // BroadcastChannel qo'llab-quvvatlanmasa — skip
+    }
+
     // Event listener'larni qo'shish
     document.addEventListener("fullscreenchange", onFullscreenChange);
     document.addEventListener("visibilitychange", onVisibilityChange);
@@ -131,6 +147,7 @@ export function useSecurity({ attemptId, enabled }: UseSecurityProps) {
       document.removeEventListener("contextmenu", onContextMenu);
       document.removeEventListener("keydown", onKeyDown);
       clearInterval(devtoolsInterval);
+      if (bc) bc.close();
       document.body.style.userSelect = "";
       document.body.style.webkitUserSelect = "";
       if (flushTimer.current) clearTimeout(flushTimer.current);

@@ -20,6 +20,7 @@ import {
   Send,
   ShieldCheck,
   UserRound,
+  WifiOff,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -99,6 +100,7 @@ export default function TestPage() {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [studentName, setStudentName] = useState("");
   const [subjectName, setSubjectName] = useState("");
+  const [isOffline, setIsOffline] = useState(false);
 
   const fetchingRef = useRef(false);
   const submittingRef = useRef(false);
@@ -278,6 +280,32 @@ export default function TestPage() {
     }
   }, [fetchQuestion, requestFullscreen, router, testId]);
 
+  // beforeunload — browser yopilganda yoki orqaga bosilganda ogohlantirish
+  useEffect(() => {
+    if (!attemptId) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [attemptId]);
+
+  // Offline/online detection
+  useEffect(() => {
+    const goOffline = () => setIsOffline(true);
+    const goOnline = () => setIsOffline(false);
+
+    window.addEventListener("offline", goOffline);
+    window.addEventListener("online", goOnline);
+    return () => {
+      window.removeEventListener("offline", goOffline);
+      window.removeEventListener("online", goOnline);
+    };
+  }, []);
+
   useEffect(() => {
     startTest();
   }, [startTest]);
@@ -398,6 +426,12 @@ export default function TestPage() {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col test-content select-none bg-gradient-to-br from-slate-100 via-slate-50 to-primary-50/60">
+      {isOffline && (
+        <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-center gap-2 bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-lg">
+          <WifiOff className="h-4 w-4" />
+          Internet aloqasi uzildi! Javoblar saqlanmasligi mumkin.
+        </div>
+      )}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-20 -left-10 h-48 w-48 rounded-full bg-primary-100/60 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-cyan-50 blur-3xl" />
