@@ -52,7 +52,8 @@ export default function LoginPage() {
         toast.error("Telefon raqam yoki parol noto'g'ri");
       } else {
         toast.success("Muvaffaqiyatli kirdingiz!");
-        router.push("/dashboard");
+        await new Promise(resolve => setTimeout(resolve, 500));
+        router.replace("/dashboard");
       }
     } catch {
       toast.error("Tarmoq xatosi");
