@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
-import { PageHeader } from "@/components/admin/PageHeader";
 import { Save, Loader2 } from "lucide-react";
+import { GearIcon } from "@/components/ui/Icon3D";
 import toast from "react-hot-toast";
 
 const MAX_SUBJECT_OPTIONS = [
@@ -64,16 +64,27 @@ export default function AdminSettingsPage() {
   }
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <PageHeader title="Sozlamalar" subtitle="Platformaning asosiy sozlamalarini boshqarish" />
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
+            <GearIcon className="w-5 h-5" />
+          </div>
+          Sozlamalar
+        </h1>
+        <p className="text-slate-500 mt-1">
+          Platformaning asosiy sozlamalarini boshqarish
+        </p>
+      </div>
 
       {/* Ro'yxatdan o'tish sozlamalari */}
-      <Card variant="light" className="rounded-xl p-6">
-        <h2 className="text-base font-semibold text-slate-800 mb-5">
+      <Card variant="light" className="p-6">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">
           Ro&apos;yxatdan o&apos;tish sozlamalari
         </h2>
 
-        <div className="space-y-4 max-w-sm">
+        <div className="space-y-4 max-w-md">
           <div>
             <Select
               label="Maksimal fan soni"
@@ -81,7 +92,7 @@ export default function AdminSettingsPage() {
               onChange={(e) => setMaxSubjects(e.target.value)}
               options={MAX_SUBJECT_OPTIONS}
             />
-            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+            <p className="text-xs text-slate-400 mt-2">
               Har bir o&apos;quvchi ro&apos;yxatdan o&apos;tishda va profilida nechta fan tanlashi mumkinligini belgilaydi.
               &quot;Cheksiz&quot; tanlansa — o&apos;quvchi istalgancha fan tanlashi mumkin.
             </p>
@@ -91,7 +102,6 @@ export default function AdminSettingsPage() {
             onClick={handleSave}
             loading={saving}
             variant="blue"
-            size="sm"
             icon={<Save className="w-4 h-4" />}
           >
             Saqlash

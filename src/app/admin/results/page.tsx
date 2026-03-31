@@ -2,11 +2,11 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { PageHeader } from "@/components/admin/PageHeader";
-import { Loader2, Search, Download, Eye } from "lucide-react";
+import { Loader2, Search, Download, Users, Eye } from "lucide-react";
 import { TrophyIcon, MedalIcon } from "@/components/ui/Icon3D";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -59,6 +59,7 @@ export default function ResultsPage() {
   }, [subjectId, testId, search]);
 
   useEffect(() => {
+    // Fanlarni olish
     fetch("/api/subjects")
       .then((r) => r.json())
       .then((d) => {
@@ -68,6 +69,7 @@ export default function ResultsPage() {
         }));
         setSubjects(subs);
       });
+    // Testlarni olish
     fetch("/api/admin/tests")
       .then((r) => r.json())
       .then((d) => {
@@ -112,14 +114,15 @@ export default function ResultsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Natijalar" subtitle={!loading ? `${results.length} ta natija` : undefined}>
-        <Button variant="secondary" size="sm" onClick={exportXLSX} disabled={results.length === 0 || exporting} loading={exporting} icon={<Download className="w-4 h-4" />}>
-          XLSX export
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <h1 className="font-display text-2xl font-bold text-slate-800">Natijalar</h1>
+        <Button variant="ghost" size="sm" onClick={exportXLSX} disabled={results.length === 0 || exporting} loading={exporting}>
+          <Download className="w-4 h-4 mr-2" /> XLSX export
         </Button>
-      </PageHeader>
+      </div>
 
       {/* Filtrlar */}
-      <Card variant="light" className="rounded-xl p-4">
+      <Card variant="light" className="p-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Select
             label="Fan"
@@ -147,75 +150,78 @@ export default function ResultsPage() {
         </div>
       </Card>
 
+      {/* Natijalar soni */}
+      {!loading && (
+        <div className="flex items-center gap-2 text-sm text-slate-400">
+          <Users className="w-4 h-4" />
+          <span>{results.length} ta natija</span>
+        </div>
+      )}
+
       {loading ? (
-        <div className="flex justify-center py-16">
+        <div className="flex justify-center py-12">
           <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
         </div>
       ) : results.length === 0 ? (
-        <Card variant="light" className="rounded-xl text-center py-16">
-          <TrophyIcon className="w-12 h-12 mx-auto mb-4 opacity-20" />
-          <p className="text-slate-400 text-sm">Natijalar topilmadi</p>
-          <p className="text-slate-300 text-xs mt-1">Filtrlarni o&apos;zgartirib ko&apos;ring</p>
+        <Card variant="light" className="text-center py-12">
+          <TrophyIcon className="w-12 h-12 mx-auto mb-4 opacity-30" />
+          <p className="text-slate-500">Natijalar topilmadi</p>
         </Card>
       ) : (
-        <Card variant="light" className="rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200">
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 w-12">#</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">O&apos;quvchi</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Fan</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden md:table-cell">Test</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden lg:table-cell">Viloyat</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden xl:table-cell">Maktab</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Ball</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden sm:table-cell">To&apos;g&apos;ri</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden sm:table-cell">Noto&apos;g&apos;ri</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 w-12"></th>
+        <Card variant="light" className="overflow-x-auto p-0">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200">
+                <th className="text-left py-3 px-4 text-slate-500">#</th>
+                <th className="text-left py-3 px-4 text-slate-500">O&apos;quvchi</th>
+                <th className="text-left py-3 px-4 text-slate-500">Fan</th>
+                <th className="text-left py-3 px-4 text-slate-500">Test</th>
+                <th className="text-left py-3 px-4 text-slate-500">Viloyat</th>
+                <th className="text-left py-3 px-4 text-slate-500">Maktab</th>
+                <th className="text-center py-3 px-4 text-slate-500">Ball</th>
+                <th className="text-center py-3 px-4 text-slate-500">To&apos;g&apos;ri</th>
+                <th className="text-center py-3 px-4 text-slate-500">Noto&apos;g&apos;ri</th>
+                <th className="text-center py-3 px-4 text-slate-500"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((r) => (
+                <tr key={`${r.studentId}-${r.testName}`} className="border-b border-slate-100 hover:bg-slate-50">
+                  <td className="py-3 px-4">
+                    {r.rank <= 3 ? (
+                      <MedalIcon className="w-5 h-5" />
+                    ) : (
+                      <span className="text-slate-400 font-mono">{r.rank}</span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    <Link href={`/admin/students/${r.studentId}`} className="font-medium text-slate-800 hover:text-primary-600">
+                      {r.studentName}
+                    </Link>
+                    <p className="text-xs text-slate-400">{r.phone}</p>
+                  </td>
+                  <td className="py-3 px-4 text-slate-600">{r.subjectEmoji} {r.subjectName}</td>
+                  <td className="py-3 px-4 text-slate-500 text-xs">{r.testName}</td>
+                  <td className="py-3 px-4 text-slate-500">{r.region}</td>
+                  <td className="py-3 px-4 text-slate-500">{r.school}</td>
+                  <td className="py-3 px-4 text-center">
+                    <span className="font-mono font-bold text-primary-600">{r.totalScore.toFixed(1)}</span>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <Badge variant="success">{r.correctCount}</Badge>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <Badge variant="error">{r.wrongCount}</Badge>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <Link href={`/admin/results/${r.attemptId}`}>
+                      <Button variant="ghost" size="sm"><Eye className="w-4 h-4" /></Button>
+                    </Link>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {results.map((r, i) => (
-                  <tr key={`${r.studentId}-${r.testName}`} className={`border-b border-slate-100 transition-colors hover:bg-slate-50/60 ${i % 2 === 1 ? "bg-slate-50/30" : ""}`}>
-                    <td className="py-3 px-4">
-                      {r.rank <= 3 ? (
-                        <MedalIcon className="w-5 h-5" />
-                      ) : (
-                        <span className="text-slate-400 font-mono text-xs">{r.rank}</span>
-                      )}
-                    </td>
-                    <td className="py-3 px-4">
-                      <Link href={`/admin/students/${r.studentId}`} className="font-medium text-slate-800 hover:text-primary-600 transition-colors">
-                        {r.studentName}
-                      </Link>
-                      <p className="text-xs text-slate-400 font-mono">{r.phone}</p>
-                    </td>
-                    <td className="py-3 px-4 text-slate-600 text-xs">{r.subjectEmoji} {r.subjectName}</td>
-                    <td className="py-3 px-4 text-slate-500 text-xs hidden md:table-cell">{r.testName}</td>
-                    <td className="py-3 px-4 text-slate-500 text-xs hidden lg:table-cell">{r.region}</td>
-                    <td className="py-3 px-4 text-slate-500 text-xs hidden xl:table-cell max-w-[140px] truncate">{r.school}</td>
-                    <td className="py-3 px-4 text-center">
-                      <span className="inline-flex items-center justify-center font-mono font-bold text-sm text-primary-700 bg-primary-50 rounded-md px-2 py-0.5">
-                        {r.totalScore.toFixed(1)}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-center hidden sm:table-cell">
-                      <span className="font-mono text-xs text-emerald-600">{r.correctCount}</span>
-                    </td>
-                    <td className="py-3 px-4 text-center hidden sm:table-cell">
-                      <span className="font-mono text-xs text-red-500">{r.wrongCount}</span>
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <Link href={`/admin/results/${r.attemptId}`}>
-                        <Button variant="ghost" size="sm"><Eye className="w-3.5 h-3.5" /></Button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </Card>
       )}
     </div>

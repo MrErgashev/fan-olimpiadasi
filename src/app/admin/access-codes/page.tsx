@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/Badge";
-import { PageHeader } from "@/components/admin/PageHeader";
 import { Plus, Loader2, Copy } from "lucide-react";
 import { KeyIcon } from "@/components/ui/Icon3D";
 import toast from "react-hot-toast";
@@ -62,65 +61,42 @@ export default function AccessCodesPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Access kodlar" subtitle={`Jami: ${codes.length} ta kod`} />
+      <h1 className="font-display text-2xl font-bold text-slate-800">Access kodlar</h1>
 
       {/* Generate */}
-      <Card variant="light" className="rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-slate-700 mb-4">Yangi kod generatsiya qilish</h3>
-        <div className="flex flex-col sm:flex-row gap-3 items-end">
+      <Card variant="light" className="p-5">
+        <div className="flex flex-col sm:flex-row gap-4 items-end">
           <Input label="Nechta kod" type="number" value={count} onChange={(e) => setCount(e.target.value)} className="w-32" />
           <Input label="Max ishlatish" type="number" value={maxUses} onChange={(e) => setMaxUses(e.target.value)} className="w-32" />
-          <Button onClick={handleGenerate} disabled={generating} size="sm">
+          <Button onClick={handleGenerate} disabled={generating}>
             {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Plus className="w-4 h-4 mr-2" /> Generatsiya</>}
           </Button>
         </div>
       </Card>
 
-      {/* Codes table */}
+      {/* Codes list */}
       {loading ? (
-        <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-primary-600" /></div>
-      ) : codes.length === 0 ? (
-        <Card variant="light" className="rounded-xl text-center py-16">
-          <KeyIcon className="w-12 h-12 mx-auto mb-4 opacity-20" />
-          <p className="text-slate-400 text-sm">Kodlar topilmadi</p>
-        </Card>
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-primary-600" /></div>
       ) : (
-        <Card variant="light" className="rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200">
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Kod</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Holat</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Ishlatilgan</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 w-12"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {codes.map((c, i) => (
-                  <tr key={c.id} className={`border-b border-slate-100 transition-colors hover:bg-slate-50/60 ${i % 2 === 1 ? "bg-slate-50/30" : ""}`}>
-                    <td className="py-3 px-4">
-                      <span className="font-mono text-sm text-primary-600">{c.code}</span>
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <Badge variant={c.isActive ? "success" : "error"} size="sm">
-                        {c.isActive ? "Faol" : "O'chiq"}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <span className="font-mono text-xs text-slate-600">{c.currentUses}/{c.maxUses}</span>
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      <button onClick={() => copyCode(c.code)} className="p-1.5 hover:bg-slate-100 rounded-md transition-colors">
-                        <Copy className="w-3.5 h-3.5 text-slate-400" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {codes.map((c) => (
+            <Card key={c.id} variant="light" className="flex items-center gap-3 p-4">
+              <KeyIcon className="w-4 h-4 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="font-mono text-sm text-primary-600 truncate">{c.code}</p>
+                <p className="text-xs text-slate-400">{c.currentUses}/{c.maxUses} ishlatilgan</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Badge variant={c.isActive ? "success" : "error"}>
+                  {c.isActive ? "Faol" : "O'chiq"}
+                </Badge>
+                <button onClick={() => copyCode(c.code)} className="p-1 hover:bg-slate-100 rounded">
+                  <Copy className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+              </div>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );
