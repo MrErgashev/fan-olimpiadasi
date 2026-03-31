@@ -5,7 +5,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { Save, RefreshCw, Copy, Eye, EyeOff, KeyRound, X } from "lucide-react";
+import { Save, RefreshCw, Copy, Eye, EyeOff, KeyRound, X, Check } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface Region {
@@ -306,13 +306,13 @@ export function EditStudentModal({ isOpen, onClose, onDone, student }: EditStude
                     onClick={() => toggleSubject(sub.id)}
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all border ${
                       isSelected
-                        ? "bg-primary-50 border-primary-300 text-primary-700"
+                        ? "bg-primary-600 border-primary-600 text-white shadow-sm"
                         : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
                     }`}
                   >
                     <span>{sub.emoji}</span>
                     <span>{sub.name}</span>
-                    {isSelected && <X className="w-3.5 h-3.5" />}
+                    {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                   </button>
                 );
               })}

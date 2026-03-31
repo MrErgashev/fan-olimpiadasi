@@ -98,7 +98,12 @@ export async function POST(req: Request) {
       batchPhones.add(phone);
       const plainPassword = generatePassword();
       const regionId = row.regionName ? regionMap.get(row.regionName.toLowerCase()) : undefined;
-      const subjectId = row.subjectName ? subjectMap.get(row.subjectName.toLowerCase()) : undefined;
+      const subjectId = row.subjectName ? subjectMap.get(row.subjectName.trim().toLowerCase()) : undefined;
+
+      if (row.subjectName && !subjectId) {
+        errors.push({ row: i + 1, phone, reason: `"${row.subjectName.trim()}" fan topilmadi` });
+        continue;
+      }
 
       toCreate.push({
         rowIndex: i + 1,
