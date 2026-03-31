@@ -177,6 +177,7 @@ model Question {
   attemptAnswers   AttemptAnswer[]
   testQuestions    TestQuestion[]
 
+  @@index([subjectId])
   @@map("questions")
 }
 
@@ -254,6 +255,8 @@ model TestAttempt {
   securityLogs     SecurityLog[]
 
   @@unique([studentId, testId])
+  @@index([studentId])
+  @@index([testId])
   @@map("test_attempts")
 }
 
@@ -276,6 +279,7 @@ model AttemptAnswer {
   question Question    @relation(fields: [questionId], references: [id])
 
   @@unique([attemptId, questionId])
+  @@index([attemptId])
   @@map("attempt_answers")
 }
 
@@ -293,6 +297,8 @@ model SecurityLog {
   attempt TestAttempt? @relation(fields: [attemptId], references: [id], onDelete: Cascade)
   student Student?     @relation(fields: [studentId], references: [id])
 
+  @@index([attemptId])
+  @@index([studentId])
   @@map("security_logs")
 }
 
@@ -365,6 +371,7 @@ model AttemptQuestion {
   question Question    @relation(fields: [questionId], references: [id])
 
   @@unique([attemptId, questionId])
+  @@index([attemptId])
   @@map("attempt_questions")
 }
 

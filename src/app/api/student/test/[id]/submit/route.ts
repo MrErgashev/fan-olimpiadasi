@@ -106,16 +106,15 @@ export async function POST(
       answerUpdates.push({ id: ans.id, isCorrect, score });
     }
 
-    // Barcha yangilanishlarni bitta transaction ichida bajarish
-    await db.$transaction(async (tx) => {
-      for (const upd of answerUpdates) {
-        await tx.attemptAnswer.update({
+    // Barcha yangilanishlarni bitta transaction ichida batch bajarish
+    await db.$transaction([
+      ...answerUpdates.map((upd) =>
+        db.attemptAnswer.update({
           where: { id: upd.id },
           data: { isCorrect: upd.isCorrect, score: upd.score },
-        });
-      }
-
-      await tx.testAttempt.update({
+        })
+      ),
+      db.testAttempt.update({
         where: { id: attempt.id },
         data: {
           isSubmitted: true,
@@ -125,8 +124,8 @@ export async function POST(
           wrongCount,
           unansweredCount,
         },
-      });
-    });
+      }),
+    ]);
 
     return NextResponse.json({
       submitted: true,
