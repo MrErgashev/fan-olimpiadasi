@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { PageHeader } from "@/components/admin/PageHeader";
 import {
   Plus,
   Loader2,
@@ -88,7 +89,6 @@ export default function TestsPage() {
       setSelectedIds(new Set());
       return;
     }
-
     setSelectedIds(new Set(tests.map((test) => test.id)));
   };
 
@@ -147,24 +147,23 @@ export default function TestsPage() {
 
   const statusBadge = (s: string) => {
     switch (s) {
-      case "active": return <Badge variant="success">Faol</Badge>;
-      case "closed": return <Badge variant="error">Yopilgan</Badge>;
-      default: return <Badge variant="warning">Qoralama</Badge>;
+      case "active": return <Badge variant="success" size="sm">Faol</Badge>;
+      case "closed": return <Badge variant="error" size="sm">Yopilgan</Badge>;
+      default: return <Badge variant="warning" size="sm">Qoralama</Badge>;
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold text-slate-800">Testlar</h1>
+      <PageHeader title="Testlar" subtitle={`Jami: ${tests.length} ta`}>
         <Link href="/admin/tests/new">
-          <Button><Plus className="w-4 h-4 mr-2" /> Yangi test</Button>
+          <Button size="sm"><Plus className="w-4 h-4 mr-2" /> Yangi test</Button>
         </Link>
-      </div>
+      </PageHeader>
 
       {canManage && selectedIds.size > 0 && (
-        <Card variant="light" className="flex flex-wrap items-center gap-3 p-3">
-          <Badge variant="info">{selectedIds.size} ta test tanlandi</Badge>
+        <Card variant="light" className="rounded-xl flex flex-wrap items-center gap-3 p-3 border-primary-200 bg-primary-50/30">
+          <Badge variant="info" size="sm">{selectedIds.size} ta test tanlandi</Badge>
           <Button
             variant="danger"
             size="sm"
@@ -177,120 +176,140 @@ export default function TestsPage() {
       )}
 
       {loading ? (
-        <div className="flex justify-center py-12">
+        <div className="flex justify-center py-16">
           <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
         </div>
       ) : tests.length === 0 ? (
-        <Card variant="light" className="text-center py-12">
-          <p className="text-slate-500">Testlar yo&apos;q</p>
+        <Card variant="light" className="rounded-xl text-center py-16">
+          <p className="text-slate-400 text-sm">Testlar yo&apos;q</p>
+          <p className="text-slate-300 text-xs mt-1">Yangi test yarating</p>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {canManage && (
-            <div className="flex items-center gap-2 px-1">
-              <button
-                onClick={toggleSelectAll}
-                className="text-slate-400 transition-colors hover:text-primary-600"
-                aria-label="Barchasini tanlash"
-              >
-                {selectedIds.size === tests.length ? (
-                  <CheckSquare className="h-5 w-5 text-primary-600" />
-                ) : (
-                  <Square className="h-5 w-5" />
-                )}
-              </button>
-              <span className="text-sm text-slate-400">Barchasini tanlash</span>
-            </div>
-          )}
-
-          {tests.map((t) => (
-            <Card key={t.id} variant="light" className="p-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-                {canManage && (
-                  <button
-                    onClick={() => toggleSelect(t.id)}
-                    className="mt-1 text-slate-400 transition-colors hover:text-primary-600"
-                    aria-label={`${t.name} ni tanlash`}
-                  >
-                    {selectedIds.has(t.id) ? (
-                      <CheckSquare className="h-5 w-5 text-primary-600" />
-                    ) : (
-                      <Square className="h-5 w-5" />
-                    )}
-                  </button>
-                )}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span>{t.subject.emoji}</span>
-                    <span className="font-semibold text-slate-800">{t.name}</span>
-                    {statusBadge(t.status)}
-                    {t.accessPin && (
-                      <span className="flex items-center gap-1 text-xs text-slate-400">
-                        <Lock className="w-3 h-3" /> PIN
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-slate-400 mt-1 flex-wrap">
-                    <span>{t.totalQuestions} savol</span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {t.durationMinutes} daqiqa
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Users className="w-3.5 h-3.5" />
-                      {t._count.testAttempts} ishtirokchi
-                    </span>
-                  </div>
-                  {/* Vaqt oynasi */}
-                  {(t.startsAt || t.endsAt) && (
-                    <div className="flex items-center gap-2 text-xs text-slate-400 mt-2">
-                      <Clock className="w-3 h-3" />
-                      <span>
-                        {t.startsAt ? formatDateTime(t.startsAt) : "—"} → {t.endsAt ? formatDateTime(t.endsAt) : "—"}
-                      </span>
-                    </div>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleStatus(t)}
-                    disabled={togglingId === t.id}
-                    className={t.status === "active" ? "text-red-500 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}
-                  >
-                    {togglingId === t.id ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : t.status === "active" ? "Yopish" : "Faollashtirish"}
-                  </Button>
-                  <Link href={`/admin/tests/${t.id}/edit`}>
-                    <Button variant="ghost" size="sm">
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => duplicateTest(t)}
-                    title="Nusxalash"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
+        <Card variant="light" className="rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50/80 border-b border-slate-200">
                   {canManage && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setDeleteTest(t)}
-                      title="O'chirish"
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </Button>
+                    <th className="text-left py-3 px-4 w-10">
+                      <button
+                        onClick={toggleSelectAll}
+                        className="text-slate-400 transition-colors hover:text-primary-600"
+                        aria-label="Barchasini tanlash"
+                      >
+                        {selectedIds.size === tests.length ? (
+                          <CheckSquare className="h-4 w-4 text-primary-600" />
+                        ) : (
+                          <Square className="h-4 w-4" />
+                        )}
+                      </button>
+                    </th>
                   )}
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Test nomi</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Holat</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden sm:table-cell">Savollar</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden sm:table-cell">Davomiylik</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden md:table-cell">Ishtirokchilar</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden lg:table-cell">Vaqt oynasi</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Amallar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tests.map((t, i) => (
+                  <tr key={t.id} className={`border-b border-slate-100 transition-colors hover:bg-slate-50/60 ${i % 2 === 1 ? "bg-slate-50/30" : ""}`}>
+                    {canManage && (
+                      <td className="py-3 px-4">
+                        <button
+                          onClick={() => toggleSelect(t.id)}
+                          className="text-slate-400 transition-colors hover:text-primary-600"
+                          aria-label={`${t.name} ni tanlash`}
+                        >
+                          {selectedIds.has(t.id) ? (
+                            <CheckSquare className="h-4 w-4 text-primary-600" />
+                          ) : (
+                            <Square className="h-4 w-4" />
+                          )}
+                        </button>
+                      </td>
+                    )}
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{t.subject.emoji}</span>
+                        <div>
+                          <span className="font-medium text-slate-800">{t.name}</span>
+                          {t.accessPin && (
+                            <span className="ml-2 inline-flex items-center gap-0.5 text-[11px] text-slate-400">
+                              <Lock className="w-3 h-3" /> PIN
+                            </span>
+                          )}
+                          <p className="text-xs text-slate-400">{t.subject.name}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-center">{statusBadge(t.status)}</td>
+                    <td className="py-3 px-4 text-center font-mono text-slate-600 hidden sm:table-cell">{t.totalQuestions}</td>
+                    <td className="py-3 px-4 text-center text-slate-500 hidden sm:table-cell">
+                      <span className="inline-flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {t.durationMinutes} daq
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-center hidden md:table-cell">
+                      <span className="inline-flex items-center gap-1 text-slate-500">
+                        <Users className="w-3 h-3" />
+                        {t._count.testAttempts}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-center text-xs text-slate-400 hidden lg:table-cell">
+                      {(t.startsAt || t.endsAt)
+                        ? `${formatDateTime(t.startsAt)} → ${formatDateTime(t.endsAt)}`
+                        : "—"
+                      }
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center justify-end gap-0.5">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleStatus(t)}
+                          disabled={togglingId === t.id}
+                          className={t.status === "active" ? "text-red-500 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}
+                        >
+                          {togglingId === t.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : t.status === "active" ? "Yopish" : "Faol"}
+                        </Button>
+                        <Link href={`/admin/tests/${t.id}/edit`}>
+                          <Button variant="ghost" size="sm">
+                            <Pencil className="w-3.5 h-3.5" />
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => duplicateTest(t)}
+                          title="Nusxalash"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </Button>
+                        {canManage && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setDeleteTest(t)}
+                            title="O'chirish"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                          </Button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
 
       <DeleteTestModal

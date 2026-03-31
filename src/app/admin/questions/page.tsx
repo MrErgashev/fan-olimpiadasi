@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
+import { PageHeader } from "@/components/admin/PageHeader";
 import {
   Plus, Search, Loader2, Trash2, Upload, Pencil,
   ChevronDown, ChevronRight, ChevronLeft,
@@ -35,7 +36,6 @@ interface SubjectCount {
   count: number;
 }
 
-// Fan ichidagi savollar + pagination
 interface SubjectData {
   questions: Question[];
   total: number;
@@ -50,20 +50,17 @@ export default function QuestionsPage() {
   const [search, setSearch] = useState("");
   const [totalQuestions, setTotalQuestions] = useState(0);
 
-  // Accordion rejimi — "Barcha fanlar"
   const [subjectCounts, setSubjectCounts] = useState<SubjectCount[]>([]);
   const [openSubjectId, setOpenSubjectId] = useState<string | null>(null);
   const [subjectDataMap, setSubjectDataMap] = useState<Record<string, SubjectData>>({});
   const [loadingCounts, setLoadingCounts] = useState(true);
 
-  // Oddiy ro'yxat rejimi — bitta fan tanlanganda
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Fan bo'yicha savol sonlarini olish (accordion rejim)
   const fetchSubjectCounts = useCallback(async (searchVal?: string) => {
     setLoadingCounts(true);
     try {
@@ -75,7 +72,6 @@ export default function QuestionsPage() {
       setSubjectCounts(data.subjectCounts || []);
       setTotalQuestions(data.totalQuestions || 0);
 
-      // Birinchi savollar bor fanni avtomatik ochish
       if (!openSubjectId) {
         const first = (data.subjectCounts || []).find((sc: SubjectCount) => sc.count > 0);
         if (first) setOpenSubjectId(first.subjectId);
@@ -87,7 +83,6 @@ export default function QuestionsPage() {
     }
   }, [search, openSubjectId]);
 
-  // Bitta fan ichidagi savollarni olish (accordion uchun)
   const fetchSubjectQuestions = useCallback(async (subjectId: string, pageNum: number = 1) => {
     setSubjectDataMap((prev) => ({
       ...prev,
@@ -117,7 +112,6 @@ export default function QuestionsPage() {
     }
   }, [search]);
 
-  // Bitta fan tanlanganda — oddiy ro'yxat
   const fetchQuestions = useCallback(async (s?: string, subjectId?: string, p?: number) => {
     setLoading(true);
     try {
@@ -141,7 +135,6 @@ export default function QuestionsPage() {
     }
   }, [search, selectedSubjectId, page]);
 
-  // Boshlang'ich yuklash
   useEffect(() => {
     fetch("/api/subjects")
       .then((r) => r.json())
@@ -150,7 +143,6 @@ export default function QuestionsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Accordion ochilganda savollarni yuklash
   useEffect(() => {
     if (openSubjectId && !selectedSubjectId) {
       const existing = subjectDataMap[openSubjectId];
@@ -169,7 +161,6 @@ export default function QuestionsPage() {
     if (subjectId) {
       fetchQuestions(search, subjectId, 1);
     } else {
-      // "Barcha fanlar" ga qaytish — accordion
       setSubjectDataMap({});
       fetchSubjectCounts(search);
     }
@@ -251,9 +242,9 @@ export default function QuestionsPage() {
 
   const diffBadge = (d: string) => {
     switch (d) {
-      case "easy": return <Badge variant="success">Oson</Badge>;
-      case "hard": return <Badge variant="error">Qiyin</Badge>;
-      default: return <Badge variant="warning">O&apos;rta</Badge>;
+      case "easy": return <Badge variant="success" size="sm">Oson</Badge>;
+      case "hard": return <Badge variant="error" size="sm">Qiyin</Badge>;
+      default: return <Badge variant="warning" size="sm">O&apos;rta</Badge>;
     }
   };
 
@@ -262,34 +253,36 @@ export default function QuestionsPage() {
     label: `${s.emoji || ""} ${s.name}`.trim(),
   }));
 
-  // Savol qatori
   const QuestionRow = ({ q }: { q: Question }) => (
-    <Card key={q.id} variant="light" className="flex flex-col sm:flex-row sm:items-center gap-3 p-4">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
+    <tr key={q.id} className="border-b border-slate-100 hover:bg-slate-50/60 transition-colors">
+      <td className="py-2.5 px-4">
+        <div className="flex items-center gap-2">
           <span>{q.subject.emoji}</span>
           <span className="text-xs text-slate-400">{q.subject.name}</span>
-          {diffBadge(q.difficulty)}
         </div>
-        <p className="text-sm text-slate-700 truncate">{q.questionText}</p>
-      </div>
-      <div className="flex items-center gap-2 shrink-0">
-        <span className="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-1 rounded">
+      </td>
+      <td className="py-2.5 px-4">{diffBadge(q.difficulty)}</td>
+      <td className="py-2.5 px-4 text-sm text-slate-700 max-w-sm truncate">{q.questionText}</td>
+      <td className="py-2.5 px-4">
+        <span className="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded">
           {q.correctAnswer}
         </span>
-        <Link href={`/admin/questions/${q.id}/edit`}>
-          <Button variant="ghost" size="sm">
-            <Pencil className="w-4 h-4 text-slate-500" />
+      </td>
+      <td className="py-2.5 px-4">
+        <div className="flex items-center justify-end gap-0.5">
+          <Link href={`/admin/questions/${q.id}/edit`}>
+            <Button variant="ghost" size="sm">
+              <Pencil className="w-3.5 h-3.5 text-slate-400" />
+            </Button>
+          </Link>
+          <Button variant="ghost" size="sm" onClick={() => handleDelete(q.id)}>
+            <Trash2 className="w-3.5 h-3.5 text-red-500" />
           </Button>
-        </Link>
-        <Button variant="ghost" size="sm" onClick={() => handleDelete(q.id)}>
-          <Trash2 className="w-4 h-4 text-red-500" />
-        </Button>
-      </div>
-    </Card>
+        </div>
+      </td>
+    </tr>
   );
 
-  // Pagination component
   const Pagination = ({ currentPage, total: totalItems, totalPages: tp, onPageChange }: {
     currentPage: number;
     total: number;
@@ -300,18 +293,18 @@ export default function QuestionsPage() {
     const from = (currentPage - 1) * 20 + 1;
     const to = Math.min(currentPage * 20, totalItems);
     return (
-      <div className="flex items-center justify-center gap-4 pt-4">
+      <div className="flex items-center justify-between pt-3 px-4">
         <span className="text-xs text-slate-400">
-          {totalItems} ta savoldan {from}-{to}
+          {totalItems} ta dan {from}-{to}
         </span>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>
+          <Button variant="outline" size="sm" onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>
             <ChevronLeft className="w-4 h-4" />
           </Button>
           <span className="text-sm text-slate-600 font-mono">
             {currentPage} / {tp}
           </span>
-          <Button variant="ghost" size="sm" onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= tp}>
+          <Button variant="outline" size="sm" onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= tp}>
             <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
@@ -321,80 +314,74 @@ export default function QuestionsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl font-bold text-slate-800">Savollar bazasi</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Jami: {isAccordionMode ? totalQuestions : total} ta savol
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/admin/questions/import">
-            <Button variant="secondary"><Upload className="w-4 h-4 mr-2" /> Import</Button>
-          </Link>
-          <Link href="/admin/questions/new">
-            <Button><Plus className="w-4 h-4 mr-2" /> Yangi savol</Button>
-          </Link>
-        </div>
-      </div>
+      <PageHeader title="Savollar bazasi" subtitle={`Jami: ${isAccordionMode ? totalQuestions : total} ta savol`}>
+        <Link href="/admin/questions/import">
+          <Button variant="secondary" size="sm"><Upload className="w-4 h-4 mr-2" /> Import</Button>
+        </Link>
+        <Link href="/admin/questions/new">
+          <Button size="sm"><Plus className="w-4 h-4 mr-2" /> Yangi savol</Button>
+        </Link>
+      </PageHeader>
 
       {/* Filter & Search */}
-      <div className="flex flex-col sm:flex-row gap-2">
-        <div className="w-full sm:w-64">
-          <Select
-            options={subjectOptions}
-            placeholder="Barcha fanlar"
-            value={selectedSubjectId}
-            onChange={(e) => handleSubjectFilter(e.target.value)}
-          />
+      <Card variant="light" className="rounded-xl p-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="w-full sm:w-56">
+            <Select
+              options={subjectOptions}
+              placeholder="Barcha fanlar"
+              value={selectedSubjectId}
+              onChange={(e) => handleSubjectFilter(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-2 flex-1">
+            <Input
+              placeholder="Savol qidirish..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              className="flex-1"
+            />
+            <Button variant="secondary" onClick={handleSearch}>
+              <Search className="w-4 h-4" />
+            </Button>
+          </div>
+          {selectedSubjectId && (
+            <Button variant="danger" size="sm" onClick={() => handleDeleteBySubject()}>
+              <Trash2 className="w-4 h-4 mr-1" />
+              Hammasini o&apos;chirish
+            </Button>
+          )}
         </div>
-        <div className="flex gap-2 flex-1">
-          <Input
-            placeholder="Savol qidirish..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            className="flex-1"
-          />
-          <Button variant="secondary" onClick={handleSearch}>
-            <Search className="w-4 h-4" />
-          </Button>
-        </div>
-        {selectedSubjectId && (
-          <Button variant="danger" onClick={() => handleDeleteBySubject()}>
-            <Trash2 className="w-4 h-4 mr-2" />
-            Fan savollarini o&apos;chirish
-          </Button>
-        )}
-      </div>
+      </Card>
 
-      {/* ========= ACCORDION REJIMI ========= */}
+      {/* ACCORDION REJIMI */}
       {isAccordionMode && (
         loadingCounts ? (
-          <div className="flex justify-center py-12">
+          <div className="flex justify-center py-16">
             <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
           </div>
         ) : subjectCounts.length === 0 ? (
-          <Card variant="light" className="text-center py-12">
-            <p className="text-slate-500">Fanlar topilmadi</p>
+          <Card variant="light" className="rounded-xl text-center py-16">
+            <p className="text-slate-400 text-sm">Fanlar topilmadi</p>
           </Card>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {subjectCounts.map((sc) => {
               const isOpen = openSubjectId === sc.subjectId;
               const data = subjectDataMap[sc.subjectId];
 
               return (
-                <div key={sc.subjectId}>
+                <Card key={sc.subjectId} variant="light" className="rounded-xl overflow-hidden">
                   {/* Accordion header */}
                   <button
                     onClick={() => sc.count > 0 && toggleAccordion(sc.subjectId)}
-                    className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${
+                    className={`w-full flex items-center justify-between p-4 transition-all ${
                       isOpen
-                        ? "bg-primary-50 border-primary-200 shadow-sm"
+                        ? "bg-primary-50/50 border-b border-primary-100"
                         : sc.count > 0
-                        ? "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                        : "bg-slate-50 border-slate-100 opacity-60 cursor-default"
+                        ? "hover:bg-slate-50"
+                        : "opacity-50 cursor-default"
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -407,13 +394,13 @@ export default function QuestionsPage() {
                       ) : (
                         <ChevronRight className="w-4 h-4 text-slate-300" />
                       )}
-                      <span className="text-xl">{sc.emoji}</span>
+                      <span className="text-lg">{sc.emoji}</span>
                       <span className={`text-sm font-semibold ${isOpen ? "text-primary-700" : "text-slate-700"}`}>
                         {sc.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Badge variant={sc.count > 0 ? "info" : "warning"} size="sm">
+                      <Badge variant={sc.count > 0 ? "info" : "default"} size="sm">
                         {sc.count} ta savol
                       </Badge>
                       {sc.count > 0 && (
@@ -434,19 +421,32 @@ export default function QuestionsPage() {
 
                   {/* Accordion body */}
                   {isOpen && sc.count > 0 && (
-                    <div className="ml-4 mt-2 space-y-2 border-l-2 border-primary-100 pl-4">
+                    <div className="pb-3">
                       {data?.loading ? (
                         <div className="flex justify-center py-8">
                           <Loader2 className="w-5 h-5 animate-spin text-primary-500" />
                         </div>
                       ) : data?.questions.length === 0 ? (
-                        <p className="text-sm text-slate-400 py-4 text-center">Savollar topilmadi</p>
+                        <p className="text-sm text-slate-400 py-6 text-center">Savollar topilmadi</p>
                       ) : (
                         <>
-                          <div className="space-y-2">
-                            {data?.questions.map((q) => (
-                              <QuestionRow key={q.id} q={q} />
-                            ))}
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-slate-100">
+                                  <th className="text-left py-2 px-4 text-xs font-medium uppercase tracking-wide text-slate-400">Fan</th>
+                                  <th className="text-left py-2 px-4 text-xs font-medium uppercase tracking-wide text-slate-400">Qiyinlik</th>
+                                  <th className="text-left py-2 px-4 text-xs font-medium uppercase tracking-wide text-slate-400">Savol matni</th>
+                                  <th className="text-left py-2 px-4 text-xs font-medium uppercase tracking-wide text-slate-400">Javob</th>
+                                  <th className="text-right py-2 px-4 text-xs font-medium uppercase tracking-wide text-slate-400">Amallar</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {data?.questions.map((q) => (
+                                  <QuestionRow key={q.id} q={q} />
+                                ))}
+                              </tbody>
+                            </table>
                           </div>
                           {data && (
                             <Pagination
@@ -460,30 +460,45 @@ export default function QuestionsPage() {
                       )}
                     </div>
                   )}
-                </div>
+                </Card>
               );
             })}
           </div>
         )
       )}
 
-      {/* ========= ODDIY RO'YXAT REJIMI (bitta fan tanlanganda) ========= */}
+      {/* ODDIY RO'YXAT REJIMI */}
       {!isAccordionMode && (
         loading ? (
-          <div className="flex justify-center py-12">
+          <div className="flex justify-center py-16">
             <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
           </div>
         ) : questions.length === 0 ? (
-          <Card variant="light" className="text-center py-12">
-            <p className="text-slate-500">Savollar topilmadi</p>
+          <Card variant="light" className="rounded-xl text-center py-16">
+            <p className="text-slate-400 text-sm">Savollar topilmadi</p>
           </Card>
         ) : (
           <>
-            <div className="space-y-3">
-              {questions.map((q) => (
-                <QuestionRow key={q.id} q={q} />
-              ))}
-            </div>
+            <Card variant="light" className="rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50/80 border-b border-slate-200">
+                      <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Fan</th>
+                      <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Qiyinlik</th>
+                      <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Savol matni</th>
+                      <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Javob</th>
+                      <th className="text-right py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Amallar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {questions.map((q) => (
+                      <QuestionRow key={q.id} q={q} />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
             <Pagination
               currentPage={page}
               total={total}
