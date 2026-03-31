@@ -26,6 +26,7 @@ interface Result {
   unansweredCount: number;
   totalQuestions: number;
   finishedAt: string;
+  showResultToStudent: boolean;
 }
 
 export default function ResultsPage() {
@@ -115,11 +116,13 @@ export default function ResultsPage() {
                     </Badge>
                   </div>
 
-                  <Link href={`/dashboard/results/${r.attemptId}`}>
-                    <Button variant="ghost" size="sm">
-                      <Eye className="w-4 h-4 mr-1" /> Batafsil
-                    </Button>
-                  </Link>
+                  {r.showResultToStudent && (
+                    <Link href={`/dashboard/results/${r.attemptId}`}>
+                      <Button variant="ghost" size="sm">
+                        <Eye className="w-4 h-4 mr-1" /> Batafsil
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </Card>

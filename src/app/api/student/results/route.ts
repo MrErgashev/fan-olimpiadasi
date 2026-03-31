@@ -36,6 +36,7 @@ export async function GET() {
       unansweredCount: a.unansweredCount,
       totalQuestions: a.test.totalQuestions,
       finishedAt: a.finishedAt?.toISOString() || "",
+      showResultToStudent: a.test.showResultToStudent,
     }));
 
     return NextResponse.json({ results });

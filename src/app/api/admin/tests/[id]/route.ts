@@ -72,6 +72,7 @@ export async function PUT(
       status,
       isRandomOrder,
       isShuffleOptions,
+      showResultToStudent,
       scoringMode: rawScoringMode,
       testQuestions,
       selectedQuestionIds,
@@ -119,6 +120,10 @@ export async function PUT(
 
     if (isShuffleOptions !== undefined) {
       updateData.isShuffleOptions = isShuffleOptions;
+    }
+
+    if (showResultToStudent !== undefined) {
+      updateData.showResultToStudent = showResultToStudent;
     }
 
     if (nextScoringMode === "banded_fixed_variant") {

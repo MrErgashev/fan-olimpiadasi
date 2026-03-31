@@ -201,6 +201,7 @@ model Test {
   extraScoreQuestions Int?       @map("extra_score_questions")
   isRandomOrder       Boolean    @default(true) @map("is_random_order")
   isShuffleOptions    Boolean    @default(true) @map("is_shuffle_options")
+  showResultToStudent Boolean    @default(true) @map("show_result_to_student")
   startsAt            DateTime?  @map("starts_at")
   endsAt              DateTime?  @map("ends_at")
   accessPin           String?    @map("access_pin")
