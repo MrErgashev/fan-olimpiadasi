@@ -39,6 +39,7 @@ export default function NewTestPage() {
     scoringMode: "distributed" as TestScoringMode,
     isRandomOrder: true,
     isShuffleOptions: true,
+    showResultToStudent: true,
     startsAt: "",
     endsAt: "",
     accessPin: "",
@@ -207,15 +208,26 @@ export default function NewTestPage() {
           />
 
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="flex items-center gap-3 rounded-button border border-slate-200 bg-white p-3">
-              <input
-                type="checkbox"
-                checked={form.isShuffleOptions}
-                onChange={(e) => setField("isShuffleOptions", e.target.checked)}
-                className="h-4 w-4 rounded"
-              />
-              <span className="text-sm text-slate-600">Variantlar shuffle</span>
-            </label>
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 rounded-button border border-slate-200 bg-white p-3">
+                <input
+                  type="checkbox"
+                  checked={form.isShuffleOptions}
+                  onChange={(e) => setField("isShuffleOptions", e.target.checked)}
+                  className="h-4 w-4 rounded"
+                />
+                <span className="text-sm text-slate-600">Variantlar shuffle</span>
+              </label>
+              <label className="flex items-center gap-3 rounded-button border border-slate-200 bg-white p-3">
+                <input
+                  type="checkbox"
+                  checked={form.showResultToStudent}
+                  onChange={(e) => setField("showResultToStudent", e.target.checked)}
+                  className="h-4 w-4 rounded"
+                />
+                <span className="text-sm text-slate-600">Natijani o&apos;quvchiga ko&apos;rsatish</span>
+              </label>
+            </div>
             <Select
               label="Holat"
               value={form.status}

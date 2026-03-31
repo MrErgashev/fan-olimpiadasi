@@ -49,8 +49,7 @@ export async function GET(req: Request) {
         },
         test: { include: { subject: { select: { name: true } } } },
       },
-      orderBy: { totalScore: "desc" },
-      take: 500,
+      orderBy: [{ totalScore: "desc" }, { finishedAt: "asc" }],
     });
 
     const data = results.map((r, i) => ({

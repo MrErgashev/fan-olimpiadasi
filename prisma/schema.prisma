@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 // ============================================
@@ -129,6 +128,7 @@ model Student {
   testAttempts  TestAttempt[]
   securityLogs  SecurityLog[]
   blockHistory  BlockHistory[]
+  activeSessions ActiveSession[]
 
   @@map("students")
 }
@@ -201,6 +201,7 @@ model Test {
   extraScoreQuestions Int?       @map("extra_score_questions")
   isRandomOrder       Boolean    @default(true) @map("is_random_order")
   isShuffleOptions    Boolean    @default(true) @map("is_shuffle_options")
+  showResultToStudent Boolean    @default(true) @map("show_result_to_student")
   startsAt            DateTime?  @map("starts_at")
   endsAt              DateTime?  @map("ends_at")
   accessPin           String?    @map("access_pin")
@@ -325,7 +326,22 @@ model BlockHistory {
 }
 
 // ============================================
-// 13. SAYT SOZLAMALARI
+// 13. AKTIV SESSIYALAR (1 o'quvchi = 1 qurilma)
+// ============================================
+model ActiveSession {
+  id           String   @id @default(cuid())
+  studentId    String   @map("student_id")
+  sessionToken String   @unique @map("session_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  expiresAt    DateTime @map("expires_at")
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("active_sessions")
+}
+
+// ============================================
+// 14. SAYT SOZLAMALARI
 // ============================================
 model SiteSetting {
   key       String   @id

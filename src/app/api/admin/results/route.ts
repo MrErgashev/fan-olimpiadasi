@@ -49,8 +49,7 @@ export async function GET(req: Request) {
         },
         test: { include: { subject: { select: { name: true, emoji: true } } } },
       },
-      orderBy: { totalScore: "desc" },
-      take: 200,
+      orderBy: [{ totalScore: "desc" }, { finishedAt: "asc" }],
     });
 
     return NextResponse.json({

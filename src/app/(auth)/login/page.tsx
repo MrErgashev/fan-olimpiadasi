@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Logo } from "@/components/shared/Logo";
@@ -13,10 +13,18 @@ import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { data: existingSession } = useSession();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ phone: "+998", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Eski sessiyani tozalash — boshqa o'quvchining cookie'si qolgan bo'lsa
+  useEffect(() => {
+    if (existingSession) {
+      signOut({ redirect: false });
+    }
+  }, [existingSession]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

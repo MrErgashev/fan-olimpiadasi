@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -40,20 +40,25 @@ interface AttemptDetail {
 
 export default function StudentAttemptDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const attemptId = params.attemptId as string;
   const [attempt, setAttempt] = useState<AttemptDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`/api/student/results/${attemptId}`)
-      .then((r) => r.json())
-      .then((d) => {
+      .then(async (r) => {
+        if (r.status === 403) {
+          router.replace("/dashboard/results");
+          return;
+        }
+        const d = await r.json();
         if (d.attempt) setAttempt(d.attempt);
         else toast.error(d.error || "Natija topilmadi");
       })
       .catch(() => toast.error("Xatolik"))
       .finally(() => setLoading(false));
-  }, [attemptId]);
+  }, [attemptId, router]);
 
   if (loading) {
     return (
