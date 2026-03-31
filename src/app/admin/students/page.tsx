@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
-import { PageHeader } from "@/components/admin/PageHeader";
 import {
   Search, Loader2, UserPlus, Upload, ShieldBan, ShieldCheck, Trash2,
   ChevronLeft, ChevronRight, CheckSquare, Square, Edit3, Download,
@@ -57,20 +56,24 @@ export default function StudentsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  // Filters
   const [regionId, setRegionId] = useState("");
   const [grade, setGrade] = useState("");
   const [sort, setSort] = useState("date");
   const [regions, setRegions] = useState<Region[]>([]);
   const [exporting, setExporting] = useState(false);
 
+  // Selection
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
+  // Modals
   const [showAddModal, setShowAddModal] = useState(false);
   const [editStudent, setEditStudent] = useState<Student | null>(null);
   const [blockStudent, setBlockStudent] = useState<Student | null>(null);
   const [deleteStudent, setDeleteStudent] = useState<Student | null>(null);
   const [bulkAction, setBulkAction] = useState<BulkActionType | null>(null);
 
+  // Load regions
   useEffect(() => {
     fetch("/api/admin/regions")
       .then((r) => r.json())
@@ -186,20 +189,26 @@ export default function StudentsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <PageHeader title="O'quvchilar" subtitle={`Jami: ${total} ta`}>
-        <Button variant="secondary" size="sm" onClick={handleExport} loading={exporting} icon={<Download className="w-4 h-4" />}>
-          Export
-        </Button>
-        <Button variant="secondary" size="sm" onClick={() => router.push("/admin/students/import")} icon={<Upload className="w-4 h-4" />}>
-          Import
-        </Button>
-        <Button variant="blue" size="sm" onClick={() => setShowAddModal(true)} icon={<UserPlus className="w-4 h-4" />}>
-          Qo&apos;shish
-        </Button>
-      </PageHeader>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-slate-800">O&apos;quvchilar</h1>
+          <p className="text-sm text-slate-400 mt-1">Jami: {total} ta</p>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <Button variant="secondary" onClick={handleExport} loading={exporting} icon={<Download className="w-4 h-4" />}>
+            Export
+          </Button>
+          <Button variant="secondary" onClick={() => router.push("/admin/students/import")} icon={<Upload className="w-4 h-4" />}>
+            Import
+          </Button>
+          <Button variant="blue" onClick={() => setShowAddModal(true)} icon={<UserPlus className="w-4 h-4" />}>
+            Qo&apos;shish
+          </Button>
+        </div>
+      </div>
 
-      {/* Search + Filters toolbar */}
-      <Card variant="light" className="rounded-xl p-4">
+      {/* Search + Filters */}
+      <div className="space-y-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex gap-2 flex-1">
             <Input
@@ -238,29 +247,29 @@ export default function StudentsPage() {
             </Button>
           </div>
         </div>
-      </Card>
 
-      {/* Status Tabs */}
-      <div className="flex gap-1 bg-slate-100 rounded-lg p-1 w-fit">
-        {statusTabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => handleStatusChange(tab.key)}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
-              status === tab.key
-                ? "bg-white text-primary-700 shadow-sm"
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+        {/* Status Tabs */}
+        <div className="flex gap-1 bg-slate-100 rounded-xl p-1 w-fit">
+          {statusTabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => handleStatusChange(tab.key)}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                status === tab.key
+                  ? "bg-white text-primary-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Bulk Actions Toolbar */}
       {selectedIds.size > 0 && (
-        <Card variant="light" className="rounded-xl p-3 flex flex-wrap items-center gap-3 border-primary-200 bg-primary-50/30">
-          <Badge variant="info" size="sm">{selectedIds.size} ta tanlandi</Badge>
+        <Card variant="light" className="p-3 flex flex-wrap items-center gap-3">
+          <Badge variant="info">{selectedIds.size} ta tanlandi</Badge>
           <div className="flex gap-2 flex-wrap">
             <Button variant="outline" size="sm" onClick={() => setBulkAction("block")} icon={<ShieldBan className="w-3.5 h-3.5" />}>
               Bloklash
@@ -283,168 +292,118 @@ export default function StudentsPage() {
         </Card>
       )}
 
-      {/* Students Table */}
+      {/* Students List */}
       {loading ? (
-        <div className="flex justify-center py-16">
+        <div className="flex justify-center py-12">
           <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
         </div>
       ) : students.length === 0 ? (
-        <Card variant="light" className="rounded-xl p-16 text-center">
-          <p className="text-slate-400 text-sm">O&apos;quvchilar topilmadi</p>
-          <p className="text-slate-300 text-xs mt-1">Qidiruv yoki filtrlarni o&apos;zgartirib ko&apos;ring</p>
+        <Card variant="light" className="p-12 text-center">
+          <p className="text-slate-400">O&apos;quvchilar topilmadi</p>
         </Card>
       ) : (
-        <Card variant="light" className="rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200">
-                  <th className="text-left py-3 px-4 w-10">
-                    <button onClick={toggleSelectAll} className="text-slate-400 hover:text-primary-600 transition-colors">
-                      {selectedIds.size === students.length ? (
-                        <CheckSquare className="w-4 h-4 text-primary-600" />
-                      ) : (
-                        <Square className="w-4 h-4" />
-                      )}
-                    </button>
-                  </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Ism</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden md:table-cell">Viloyat</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden lg:table-cell">Maktab</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden sm:table-cell">Sinf</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden xl:table-cell">Fanlar</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden sm:table-cell">Holat</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500 hidden md:table-cell">Testlar</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Amallar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {students.map((s, i) => (
-                  <tr
-                    key={s.id}
-                    className={`border-b border-slate-100 transition-colors hover:bg-slate-50/60 ${s.isArchived ? "opacity-50" : ""} ${i % 2 === 1 ? "bg-slate-50/30" : ""}`}
-                  >
-                    {/* Checkbox */}
-                    <td className="py-3 px-4">
-                      <button onClick={() => toggleSelect(s.id)} className="text-slate-400 hover:text-primary-600 transition-colors">
-                        {selectedIds.has(s.id) ? (
-                          <CheckSquare className="w-4 h-4 text-primary-600" />
-                        ) : (
-                          <Square className="w-4 h-4" />
-                        )}
-                      </button>
-                    </td>
-
-                    {/* Name + Phone */}
-                    <td className="py-3 px-4">
-                      <button
-                        onClick={() => router.push(`/admin/students/${s.id}`)}
-                        className="font-medium text-slate-800 hover:text-primary-600 transition-colors text-left block"
-                      >
-                        {s.firstName} {s.lastName}
-                      </button>
-                      <span className="text-xs text-slate-400 font-mono">{s.phone}</span>
-                    </td>
-
-                    {/* Region */}
-                    <td className="py-3 px-4 text-slate-500 text-xs hidden md:table-cell">
-                      {s.region?.name || "—"}
-                    </td>
-
-                    {/* School */}
-                    <td className="py-3 px-4 text-slate-500 text-xs hidden lg:table-cell max-w-[160px] truncate">
-                      {s.schoolName}
-                    </td>
-
-                    {/* Grade */}
-                    <td className="py-3 px-4 text-center text-slate-600 font-mono text-xs hidden sm:table-cell">
-                      {s.grade}
-                    </td>
-
-                    {/* Subjects */}
-                    <td className="py-3 px-4 hidden xl:table-cell">
-                      <div className="flex gap-1 flex-wrap">
-                        {s.subjects.slice(0, 3).map((sub) => (
-                          <span key={sub.subject.name} className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] bg-slate-100 text-slate-600">
-                            {sub.subject.emoji}
-                          </span>
-                        ))}
-                        {s.subjects.length > 3 && (
-                          <span className="text-[11px] text-slate-400">+{s.subjects.length - 3}</span>
-                        )}
-                      </div>
-                    </td>
-
-                    {/* Status */}
-                    <td className="py-3 px-4 text-center hidden sm:table-cell">
-                      {s.isBlocked ? (
-                        <Badge variant="error" size="sm">Bloklangan</Badge>
-                      ) : s.isArchived ? (
-                        <Badge variant="warning" size="sm">Arxiv</Badge>
-                      ) : (
-                        <Badge variant="success" size="sm">Faol</Badge>
-                      )}
-                    </td>
-
-                    {/* Test count */}
-                    <td className="py-3 px-4 text-center text-slate-500 font-mono text-xs hidden md:table-cell">
-                      {s._count.testAttempts}
-                    </td>
-
-                    {/* Actions */}
-                    <td className="py-3 px-4">
-                      <div className="flex items-center justify-end gap-0.5">
-                        <Button variant="ghost" size="sm" onClick={() => setEditStudent(s)} title="Tahrirlash">
-                          <Edit3 className="w-3.5 h-3.5 text-slate-400" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setBlockStudent(s)}
-                          title={s.isBlocked ? "Blokdan chiqarish" : "Bloklash"}
-                        >
-                          {s.isBlocked ? <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> : <ShieldBan className="w-3.5 h-3.5 text-slate-400" />}
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => setDeleteStudent(s)} title="O'chirish">
-                          <Trash2 className="w-3.5 h-3.5 text-red-400" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="space-y-3">
+          {/* Select All */}
+          <div className="flex items-center gap-2 px-1">
+            <button onClick={toggleSelectAll} className="text-slate-400 hover:text-primary-600 transition-colors">
+              {selectedIds.size === students.length ? (
+                <CheckSquare className="w-5 h-5 text-primary-600" />
+              ) : (
+                <Square className="w-5 h-5" />
+              )}
+            </button>
+            <span className="text-sm text-slate-400">Barchasini tanlash</span>
           </div>
-        </Card>
+
+          {students.map((s) => (
+            <Card key={s.id} variant="light" className={`p-4 ${s.isArchived ? "opacity-60" : ""}`}>
+              <div className="flex items-start gap-3">
+                {/* Checkbox */}
+                <button onClick={() => toggleSelect(s.id)} className="mt-1 text-slate-400 hover:text-primary-600 transition-colors shrink-0">
+                  {selectedIds.has(s.id) ? (
+                    <CheckSquare className="w-5 h-5 text-primary-600" />
+                  ) : (
+                    <Square className="w-5 h-5" />
+                  )}
+                </button>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <button
+                      onClick={() => router.push(`/admin/students/${s.id}`)}
+                      className="font-semibold text-slate-800 hover:text-primary-600 transition-colors text-left"
+                    >
+                      {s.firstName} {s.lastName}
+                    </button>
+                    {s.isBlocked && (
+                      <Badge variant="error" title={s.blockedReason || undefined}>
+                        Bloklangan
+                      </Badge>
+                    )}
+                    {s.isArchived && <Badge variant="warning">Arxivlangan</Badge>}
+                  </div>
+                  <p className="text-sm text-slate-400">
+                    <span className="font-mono">{s.phone}</span> &middot; {s.region?.name || "—"} &middot; {s.schoolName} &middot; {s.grade}-sinf
+                  </p>
+                  <div className="flex gap-1 mt-2 flex-wrap">
+                    {s.subjects.map((sub) => (
+                      <Badge key={sub.subject.name} variant="default">
+                        {sub.subject.emoji} {sub.subject.name}
+                      </Badge>
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-300 mt-1">
+                    {new Date(s.createdAt).toLocaleDateString("uz-UZ")}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="text-sm text-slate-400 hidden sm:block">{s._count.testAttempts} test</span>
+                  <Button variant="ghost" size="sm" onClick={() => setEditStudent(s)} title="Tahrirlash">
+                    <Edit3 className="w-4 h-4 text-slate-400" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setBlockStudent(s)}
+                    title={s.isBlocked ? "Blokdan chiqarish" : "Bloklash"}
+                  >
+                    {s.isBlocked ? <ShieldCheck className="w-4 h-4 text-emerald-500" /> : <ShieldBan className="w-4 h-4 text-slate-400" />}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => setDeleteStudent(s)} title="O'chirish">
+                    <Trash2 className="w-4 h-4 text-red-400" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       )}
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-slate-400">
-            {total} ta dan {(page - 1) * 20 + 1}-{Math.min(page * 20, total)} ko&apos;rsatilmoqda
-          </p>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page <= 1}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <span className="text-sm text-slate-600 font-mono px-2">
-              {page} / {totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(page + 1)}
-              disabled={page >= totalPages}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
+        <div className="flex items-center justify-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page <= 1}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <span className="text-sm text-slate-600">
+            {page} / {totalPages}
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page >= totalPages}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
         </div>
       )}
 

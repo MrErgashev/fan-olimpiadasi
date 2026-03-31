@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { PageHeader } from "@/components/admin/PageHeader";
-import { Loader2, Plus, RefreshCw, Trash2, Users } from "lucide-react";
+import { Loader2, Plus, RefreshCw, Trash2, Clock, Users } from "lucide-react";
 import {
   UsersIcon, QuestionIcon, ClipboardIcon, TrophyIcon,
   ChartIcon, KeyIcon, TrendingIcon,
@@ -50,6 +49,7 @@ interface ActiveAttempt {
   durationMinutes: number;
 }
 
+// Subject accent colors for table
 const SUBJECT_BAR_COLORS: Record<string, string> = {
   Matematika: "bg-blue-500",
   Informatika: "bg-cyan-500",
@@ -62,11 +62,11 @@ const SUBJECT_BAR_COLORS: Record<string, string> = {
 
 const container = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
 };
 
@@ -110,6 +110,7 @@ export default function AdminDashboard() {
       if (res.ok) {
         toast.success(data.message);
         fetchActiveAttempts();
+        // Statistikani yangilash
         fetch("/api/admin/stats").then((r) => r.json()).then(setStats);
       } else {
         toast.error(data.error || "Xatolik");
@@ -138,40 +139,39 @@ export default function AdminDashboard() {
       label: "Jami o'quvchilar",
       value: stats.totalStudents,
       icon: UsersIcon,
-      accent: "border-l-blue-500",
-      iconBg: "bg-blue-50",
+      bgColor: "bg-blue-50",
     },
     {
       label: "Savollar bazasi",
       value: stats.totalQuestions,
       icon: QuestionIcon,
-      accent: "border-l-emerald-500",
-      iconBg: "bg-emerald-50",
+      bgColor: "bg-green-50",
     },
     {
       label: "Faol testlar",
       value: stats.activeTests,
       icon: ClipboardIcon,
-      accent: "border-l-amber-500",
-      iconBg: "bg-amber-50",
+      bgColor: "bg-yellow-50",
     },
     {
       label: "Topshirilgan testlar",
       value: stats.submittedAttempts,
       icon: TrophyIcon,
-      accent: "border-l-cyan-500",
-      iconBg: "bg-cyan-50",
+      bgColor: "bg-cyan-50",
     },
   ];
 
   return (
     <div className="space-y-8">
-      <PageHeader title="Dashboard" subtitle="Platformaning umumiy ko'rinishi">
-        <div className="flex items-center gap-2 text-sm text-slate-400">
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-slate-800">
+          Admin Dashboard
+        </h1>
+        <div className="flex items-center gap-2">
           <TrendingIcon className="w-4 h-4" />
-          <span>Bugun</span>
+          <span className="text-sm text-slate-400">Bugun</span>
         </div>
-      </PageHeader>
+      </div>
 
       {/* Stats cards */}
       <motion.div
@@ -182,18 +182,18 @@ export default function AdminDashboard() {
       >
         {cards.map((card) => (
           <motion.div key={card.label} variants={item}>
-            <Card variant="light" className={`rounded-xl border-l-4 ${card.accent}`}>
+            <Card variant="light" className="rounded-2xl">
               <div className="flex items-center justify-between p-5">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{card.label}</p>
-                  <p className="mt-2 text-4xl font-mono font-bold text-slate-900">
-                    {card.value.toLocaleString()}
+                  <p className="text-sm text-slate-500">{card.label}</p>
+                  <p className="mt-2 text-3xl sm:text-4xl font-mono font-bold text-slate-800">
+                    {card.value}
                   </p>
                 </div>
                 <div
-                  className={`w-11 h-11 rounded-lg ${card.iconBg} flex items-center justify-center`}
+                  className={`w-12 h-12 rounded-2xl ${card.bgColor} flex items-center justify-center`}
                 >
-                  <card.icon className="w-5 h-5" />
+                  <card.icon className="w-6 h-6" />
                 </div>
               </div>
             </Card>
@@ -207,14 +207,14 @@ export default function AdminDashboard() {
           <Card
             variant="light"
             hover
-            className="flex items-center gap-4 rounded-xl p-4"
+            className="flex items-center gap-4 rounded-2xl p-5"
           >
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cyan flex items-center justify-center">
               <Plus className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-slate-800 text-sm">Yangi test yaratish</p>
-              <p className="text-xs text-slate-400">
+              <p className="font-semibold text-slate-800">Yangi test yaratish</p>
+              <p className="text-sm text-slate-400">
                 Test konfiguratsiyasi va sozlamalari
               </p>
             </div>
@@ -224,14 +224,14 @@ export default function AdminDashboard() {
           <Card
             variant="light"
             hover
-            className="flex items-center gap-4 rounded-xl p-4"
+            className="flex items-center gap-4 rounded-2xl p-5"
           >
-            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
               <KeyIcon className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-semibold text-slate-800 text-sm">Kod generatsiya qilish</p>
-              <p className="text-xs text-slate-400">
+              <p className="font-semibold text-slate-800">Kod generatsiya qilish</p>
+              <p className="text-sm text-slate-400">
                 Access kodlarni boshqarish
               </p>
             </div>
@@ -239,19 +239,19 @@ export default function AdminDashboard() {
         </Link>
       </div>
 
-      {/* Active attempts */}
-      <Card variant="light" className="rounded-xl">
-        <div className="flex items-center justify-between p-5 pb-0">
+      {/* Active attempts - hozir test ishlayotganlar */}
+      <Card variant="light" className="rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-amber-500" />
-            <h2 className="text-base font-semibold text-slate-800">
+            <h2 className="text-lg font-semibold text-slate-800">
               Hozir test ishlayotganlar
             </h2>
             {activeAttempts.length > 0 && (
-              <Badge variant="warning" size="sm">{activeAttempts.length}</Badge>
+              <Badge variant="warning">{activeAttempts.length}</Badge>
             )}
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={fetchActiveAttempts}>
               <RefreshCw className="w-4 h-4" />
             </Button>
@@ -267,60 +267,48 @@ export default function AdminDashboard() {
             </Button>
           </div>
         </div>
-        <div className="p-5 pt-4">
-          {activeAttempts.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-6">
-              Hozir hech kim test ishlamayapti
-            </p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-100">
-                    <th className="text-left py-2 px-3 text-xs font-medium uppercase tracking-wide text-slate-400">O&apos;quvchi</th>
-                    <th className="text-left py-2 px-3 text-xs font-medium uppercase tracking-wide text-slate-400">Test</th>
-                    <th className="text-right py-2 px-3 text-xs font-medium uppercase tracking-wide text-slate-400">Qolgan vaqt</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activeAttempts.map((a, i) => (
-                    <tr key={i} className={i % 2 === 1 ? "bg-slate-50/50" : ""}>
-                      <td className="py-2.5 px-3 font-medium text-slate-800">{a.studentName}</td>
-                      <td className="py-2.5 px-3 text-slate-500">
-                        <span className="mr-1">{a.subjectEmoji}</span>
-                        {a.testName}
-                      </td>
-                      <td className="py-2.5 px-3 text-right">
-                        <span className={`font-mono font-bold text-sm ${a.remainingMinutes <= 5 ? "text-red-500" : "text-amber-600"}`}>
-                          {a.remainingMinutes} daq
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+        {activeAttempts.length === 0 ? (
+          <p className="text-sm text-slate-400 text-center py-4">
+            Hozir hech kim test ishlamayapti
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {activeAttempts.map((a, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <span className="text-xl">{a.subjectEmoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-slate-800 truncate">{a.studentName}</p>
+                  <p className="text-xs text-slate-400">{a.testName}</p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <Clock className="w-3.5 h-3.5 text-amber-500" />
+                  <span className={`text-sm font-mono font-bold ${a.remainingMinutes <= 5 ? "text-red-500" : "text-amber-600"}`}>
+                    {a.remainingMinutes} daq
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </Card>
 
       {/* Analytics Charts */}
       {analytics && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Ball taqsimoti */}
-          <Card variant="light" className="rounded-xl p-5">
-            <h3 className="text-base font-semibold text-slate-800 mb-5">Ball taqsimoti</h3>
-            <ResponsiveContainer width="100%" height={260}>
+          <Card variant="light" className="rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Ball taqsimoti</h3>
+            <ResponsiveContainer width="100%" height={220}>
               <BarChart data={analytics.scoreDistribution}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="range" fontSize={12} tick={{ fill: "#64748b" }} />
                 <YAxis fontSize={12} tick={{ fill: "#64748b" }} />
                 <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13 }}
+                  contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   formatter={(value: any) => [`${value} ta`, "Soni"]}
                 />
-                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                   {analytics.scoreDistribution.map((_, i) => (
                     <Cell key={i} fill={["#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6"][i]} />
                   ))}
@@ -330,15 +318,15 @@ export default function AdminDashboard() {
           </Card>
 
           {/* Oylik faollik */}
-          <Card variant="light" className="rounded-xl p-5">
-            <h3 className="text-base font-semibold text-slate-800 mb-5">Oylik test urinishlari</h3>
-            <ResponsiveContainer width="100%" height={260}>
+          <Card variant="light" className="rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Oylik test urinishlari</h3>
+            <ResponsiveContainer width="100%" height={220}>
               <LineChart data={analytics.monthlyAttempts}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="month" fontSize={12} tick={{ fill: "#64748b" }} />
                 <YAxis fontSize={12} tick={{ fill: "#64748b" }} />
                 <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13 }}
+                  contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   formatter={(value: any) => [`${value} ta`, "Urinishlar"]}
                 />
@@ -355,37 +343,37 @@ export default function AdminDashboard() {
           </Card>
 
           {/* Fanlar bo'yicha o'rtacha ball */}
-          <Card variant="light" className="rounded-xl p-5">
-            <h3 className="text-base font-semibold text-slate-800 mb-5">Fanlar bo&apos;yicha o&apos;rtacha ball</h3>
-            <ResponsiveContainer width="100%" height={260}>
+          <Card variant="light" className="rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Fanlar bo&apos;yicha o&apos;rtacha ball</h3>
+            <ResponsiveContainer width="100%" height={220}>
               <BarChart data={analytics.subjectStats} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis type="number" domain={[0, 100]} fontSize={12} tick={{ fill: "#64748b" }} />
                 <YAxis type="category" dataKey="subject" width={120} fontSize={11} tick={{ fill: "#64748b" }} />
                 <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13 }}
+                  contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   formatter={(value: any) => [`${value} ball`, "O'rtacha"]}
                 />
-                <Bar dataKey="avgScore" fill="#22c55e" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="avgScore" fill="#22c55e" radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Card>
 
           {/* Top 10 o'quvchi */}
-          <Card variant="light" className="rounded-xl p-5">
-            <h3 className="text-base font-semibold text-slate-800 mb-5">Top 10 o&apos;quvchi</h3>
-            <ResponsiveContainer width="100%" height={260}>
+          <Card variant="light" className="rounded-2xl p-6">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Top 10 o&apos;quvchi</h3>
+            <ResponsiveContainer width="100%" height={220}>
               <BarChart data={analytics.topStudents}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="name" fontSize={10} tick={{ fill: "#64748b" }} angle={-20} textAnchor="end" height={50} />
                 <YAxis domain={[0, 100]} fontSize={12} tick={{ fill: "#64748b" }} />
                 <Tooltip
-                  contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13 }}
+                  contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   formatter={(value: any) => [`${value} ball`, "O'rtacha"]}
                 />
-                <Bar dataKey="avgScore" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="avgScore" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Card>
@@ -393,15 +381,15 @@ export default function AdminDashboard() {
       )}
 
       {/* Subject statistics */}
-      <Card variant="light" className="rounded-xl">
-        <div className="flex items-center gap-2 p-5 pb-0">
+      <Card variant="light" className="rounded-2xl p-6">
+        <div className="flex items-center gap-2 mb-6">
           <ChartIcon className="w-5 h-5" />
-          <h2 className="text-base font-semibold text-slate-800">
+          <h2 className="text-lg font-semibold text-slate-800">
             Fan bo&apos;yicha statistika
           </h2>
         </div>
 
-        <div className="p-5 pt-4 space-y-4">
+        <div className="space-y-4">
           {stats.subjectStats.map((s) => {
             const barColor =
               SUBJECT_BAR_COLORS[s.name] || "bg-green-500";
@@ -416,19 +404,19 @@ export default function AdminDashboard() {
                       {s.name}
                     </span>
                   </div>
-                  <div className="flex items-center gap-5 text-xs text-slate-500">
+                  <div className="flex items-center gap-4 text-xs text-slate-400">
                     <span>
-                      <span className="font-mono font-semibold text-primary-600 text-sm">
+                      <span className="font-mono text-primary-600 text-sm">
                         {s.questions}
                       </span>{" "}
                       savol
                     </span>
                     <span>
-                      <span className="font-mono font-semibold text-sm text-slate-700">{s.tests}</span>{" "}
+                      <span className="font-mono text-sm text-slate-600">{s.tests}</span>{" "}
                       test
                     </span>
                     <span>
-                      <span className="font-mono font-semibold text-sm text-slate-700">{s.students}</span>{" "}
+                      <span className="font-mono text-sm text-slate-600">{s.students}</span>{" "}
                       ishtirokchi
                     </span>
                   </div>
