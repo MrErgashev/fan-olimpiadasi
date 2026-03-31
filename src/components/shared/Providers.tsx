@@ -6,7 +6,7 @@ import { ScrollToTop } from "./ScrollToTop";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
+    <SessionProvider refetchOnWindowFocus={true} refetchInterval={5 * 60}>
       {children}
       <ScrollToTop />
       <Toaster

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Logo } from "@/components/shared/Logo";
@@ -19,12 +19,12 @@ export default function LoginPage() {
   const [form, setForm] = useState({ phone: "+998", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Eski sessiyani tozalash — boshqa o'quvchining cookie'si qolgan bo'lsa
+  // Agar sessiya mavjud bo'lsa, dashboardga yo'naltirish
   useEffect(() => {
-    if (existingSession) {
-      signOut({ redirect: false });
+    if (existingSession?.user?.role === "student") {
+      router.replace("/dashboard");
     }
-  }, [existingSession]);
+  }, [existingSession, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
