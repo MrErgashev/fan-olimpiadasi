@@ -66,13 +66,14 @@ export async function POST(
       );
     }
 
-    // Ball hisoblash
+    // Ball hisoblash (avval hisoblash, keyin transaction da yozish)
     let totalScore = 0;
     let correctCount = 0;
     let wrongCount = 0;
     let unansweredCount = 0;
 
-    // Har bir javobni tekshirish
+    const answerUpdates: { id: string; isCorrect: boolean; score: number }[] = [];
+
     for (const ans of attempt.attemptAnswers) {
       const aq = attempt.attemptQuestions.find(
         (q) => q.questionId === ans.questionId
@@ -81,10 +82,7 @@ export async function POST(
 
       if (!ans.selectedAnswer) {
         unansweredCount++;
-        await db.attemptAnswer.update({
-          where: { id: ans.id },
-          data: { isCorrect: false, score: 0 },
-        });
+        answerUpdates.push({ id: ans.id, isCorrect: false, score: 0 });
         continue;
       }
 
@@ -105,23 +103,29 @@ export async function POST(
         wrongCount++;
       }
 
-      await db.attemptAnswer.update({
-        where: { id: ans.id },
-        data: { isCorrect, score },
-      });
+      answerUpdates.push({ id: ans.id, isCorrect, score });
     }
 
-    // Attempt ni yangilash
-    await db.testAttempt.update({
-      where: { id: attempt.id },
-      data: {
-        isSubmitted: true,
-        finishedAt: new Date(),
-        totalScore: Math.round(totalScore * 10) / 10,
-        correctCount,
-        wrongCount,
-        unansweredCount,
-      },
+    // Barcha yangilanishlarni bitta transaction ichida bajarish
+    await db.$transaction(async (tx) => {
+      for (const upd of answerUpdates) {
+        await tx.attemptAnswer.update({
+          where: { id: upd.id },
+          data: { isCorrect: upd.isCorrect, score: upd.score },
+        });
+      }
+
+      await tx.testAttempt.update({
+        where: { id: attempt.id },
+        data: {
+          isSubmitted: true,
+          finishedAt: new Date(),
+          totalScore: Math.round(totalScore * 10) / 10,
+          correctCount,
+          wrongCount,
+          unansweredCount,
+        },
+      });
     });
 
     return NextResponse.json({

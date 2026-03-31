@@ -128,6 +128,14 @@ export default function TestPage() {
     }
   }, []);
 
+  const waitForPendingSave = useCallback(async (maxWaitMs = 4000) => {
+    if (!saveInFlightRef.current) return;
+    const start = Date.now();
+    while (saveInFlightRef.current && Date.now() - start < maxWaitMs) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  }, []);
+
   useEffect(() => {
     return () => {
       if (saveStatusTimerRef.current) {
@@ -146,6 +154,9 @@ export default function TestPage() {
       if (nextSubmissionMode === "auto_timeout") {
         setShowTimeWarning(false);
       }
+
+      // Joriy javob saqlanishini kutish (maks. 4 soniya)
+      await waitForPendingSave(4000);
 
       try {
         const res = await fetch(`/api/student/test/${testId}/submit`, {
@@ -178,10 +189,13 @@ export default function TestPage() {
         setShowSubmitModal(false);
       }
     },
-    [router, syncProgress, testId]
+    [router, syncProgress, testId, waitForPendingSave]
   );
 
   const handleTimeExpire = useCallback(async () => {
+    if (saveInFlightRef.current) {
+      toast.loading("Oxirgi javob saqlanmoqda...", { duration: 3000 });
+    }
     toast.error("Vaqt tugadi! Test avtomatik topshirilmoqda...");
     await submitTest("auto_timeout");
   }, [submitTest]);
@@ -277,6 +291,9 @@ export default function TestPage() {
     setTransientSaveStatus("saving");
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const res = await fetch(`/api/student/test/${testId}/answer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -284,7 +301,9 @@ export default function TestPage() {
           questionId: questionData.question.id,
           answer,
         }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
       const data = (await res.json()) as AnswerResponse & { error?: string };
 
       if (!res.ok) {
@@ -321,7 +340,7 @@ export default function TestPage() {
   };
 
   const handleOpenSubmitModal = () => {
-    if (saveStatus === "saving") {
+    if (saveInFlightRef.current) {
       toast.error("Javob saqlanishini kuting");
       return;
     }
