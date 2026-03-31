@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { ArrowLeft, Loader2, CheckCircle, XCircle, MinusCircle } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle, XCircle, MinusCircle, User } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -181,8 +181,15 @@ export default function AttemptDetailPage() {
                         <span className={`${isCorrect ? "text-emerald-700" : isSelected && !isCorrect ? "text-red-700" : "text-slate-600"}`}>
                           {getOptionText(a, key)}
                         </span>
-                        {isCorrect && <CheckCircle className="w-4 h-4 text-emerald-500 ml-auto shrink-0" />}
-                        {isSelected && !isCorrect && <XCircle className="w-4 h-4 text-red-500 ml-auto shrink-0" />}
+                        <div className="flex items-center gap-1.5 ml-auto shrink-0">
+                          {isSelected && (
+                            <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full ${isCorrect ? "bg-emerald-200" : "bg-red-200"}`}>
+                              <User className={`w-3 h-3 ${isCorrect ? "text-emerald-700" : "text-red-700"}`} />
+                            </span>
+                          )}
+                          {isCorrect && <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />}
+                          {isSelected && !isCorrect && <XCircle className="w-4 h-4 text-red-500 shrink-0" />}
+                        </div>
                       </div>
                     );
                   })}
