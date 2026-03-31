@@ -58,7 +58,10 @@ export const authOptions: NextAuthOptions = {
 
         // Muddati o'tgan sessiyalarni tozalash (fire-and-forget)
         db.activeSession.deleteMany({
-          where: { expiresAt: { lt: new Date() } },
+          where: {
+            expiresAt: { lt: new Date() },
+            createdAt: { lt: new Date(Date.now() - 60 * 60 * 1000) },
+          },
         }).catch(() => {});
 
         return {
@@ -112,23 +115,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      // Student sessiyalarini bazadan validatsiya qilish
-      if (token.role === "student" && token.sessionToken) {
-        try {
-          const activeSession = await db.activeSession.findUnique({
-            where: { sessionToken: token.sessionToken },
-          });
-          if (!activeSession) {
-            // Sessiya bekor qilingan (boshqa qurilmada login qilingan)
-            session.user.id = "";
-            session.user.role = undefined;
-            return session;
-          }
-        } catch {
-          // DB xatolik (Neon cold start, timeout) — JWT ga ishonish
-        }
-      }
-
       session.user.id = token.id;
       session.user.phone = token.phone;
       session.user.firstName = token.firstName;

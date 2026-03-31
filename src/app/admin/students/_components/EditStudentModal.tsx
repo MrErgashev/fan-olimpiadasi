@@ -5,7 +5,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { Save, RefreshCw, Copy, Eye, EyeOff, KeyRound, X, Check } from "lucide-react";
+import { Save, RefreshCw, Copy, Eye, EyeOff, KeyRound, Check } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface Region {
