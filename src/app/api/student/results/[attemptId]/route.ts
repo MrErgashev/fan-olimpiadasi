@@ -53,6 +53,10 @@ export async function GET(
       return NextResponse.json({ error: "Test hali yakunlanmagan" }, { status: 400 });
     }
 
+    if (!attempt.test.showResultToStudent) {
+      return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 403 });
+    }
+
     const answers = attempt.attemptAnswers.map((a, i) => ({
       order: i + 1,
       questionText: a.question.questionText,
