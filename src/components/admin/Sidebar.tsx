@@ -59,24 +59,26 @@ export function Sidebar() {
   const navContent = (
     <>
       {/* Logo area */}
-      <div className="p-5 pb-4">
+      <div className="px-5 pt-6 pb-4">
         <Logo size="sm" variant="light" />
-        <div className="mt-4 border-b border-slate-200" />
       </div>
 
       {/* Admin badge + notifications */}
-      <div className="px-5 mb-3 flex items-center justify-between">
+      <div className="px-5 mb-5 flex items-center justify-between">
         <Badge variant="info" size="sm">
           ADMIN
         </Badge>
         <NotificationBell />
       </div>
 
+      {/* Divider */}
+      <div className="mx-4 border-b border-slate-200/80 mb-4" />
+
       {/* Nav groups */}
-      <nav className="flex-1 px-3 space-y-4 overflow-y-auto">
+      <nav className="flex-1 px-3 space-y-5 overflow-y-auto">
         {NAV_GROUPS.map((group) => (
           <div key={group.label}>
-            <p className="px-3 mb-1.5 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-semibold">
+            <p className="px-3 mb-2 text-[11px] uppercase tracking-[0.15em] text-slate-400 font-semibold select-none">
               {group.label}
             </p>
             <div className="space-y-0.5">
@@ -88,17 +90,13 @@ export function Sidebar() {
                     href={item.href}
                     onClick={() => setOpen(false)}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 relative",
+                      "flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 relative",
                       isActive
-                        ? "bg-primary-50 text-primary-600 font-medium"
-                        : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+                        ? "bg-primary-50 text-primary-700 font-semibold border-l-2 border-primary-500 ml-0 pl-[10px]"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
                     )}
                   >
-                    {/* Active left accent bar */}
-                    {isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full bg-gradient-to-b from-primary-500 to-accent-cyan" />
-                    )}
-                    <item.icon className="w-4 h-4 shrink-0" />
+                    <item.icon className="w-[18px] h-[18px] shrink-0" />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -109,10 +107,10 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom */}
-      <div className="p-3 border-t border-slate-200">
+      <div className="p-3 border-t border-slate-200/80 mt-auto">
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200 w-full"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all duration-150 w-full"
         >
           <LogoutIcon className="w-4 h-4" />
           <span>Chiqish</span>
@@ -125,7 +123,7 @@ export function Sidebar() {
     <>
       {/* Mobile toggle */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 shadow-sm"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white border border-slate-200 text-slate-700 shadow-sm active:scale-95 transition-transform"
         onClick={() => setOpen(!open)}
       >
         {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -134,7 +132,7 @@ export function Sidebar() {
       {/* Mobile overlay */}
       {open && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+          className="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity"
           onClick={() => setOpen(false)}
         />
       )}
@@ -142,8 +140,8 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-full w-60 bg-white border-r border-slate-200 shadow-sm flex flex-col z-40 transition-transform duration-300 ease-out",
-          open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          "fixed top-0 left-0 h-full w-60 bg-white border-r border-slate-200 flex flex-col z-40 transition-transform duration-300 ease-out",
+          open ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:translate-x-0"
         )}
       >
         {navContent}

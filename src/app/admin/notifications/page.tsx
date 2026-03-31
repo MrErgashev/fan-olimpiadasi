@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { PageHeader } from "@/components/admin/PageHeader";
 import { Loader2, Send, Bell, Users, User, BookOpen } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -71,16 +72,13 @@ export default function NotificationsPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-bold text-slate-800">Bildirishnomalar</h1>
-        <p className="text-sm text-slate-400 mt-1">O&apos;quvchilarga xabar yuborish</p>
-      </div>
+      <PageHeader title="Bildirishnomalar" subtitle="O'quvchilarga xabar yuborish" />
 
-      <Card variant="light" className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <Card variant="light" className="rounded-xl p-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Target tanlash */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Kimga yuborish</label>
+            <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">Kimga yuborish</label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {[
                 { value: "all", label: "Barcha o'quvchilar", icon: Users },
@@ -91,7 +89,7 @@ export default function NotificationsPage() {
                   key={opt.value}
                   type="button"
                   onClick={() => set("target", opt.value)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm transition-all ${
                     form.target === opt.value
                       ? "border-primary-500 bg-primary-50 text-primary-700 font-medium"
                       : "border-slate-200 text-slate-500 hover:border-slate-300"
@@ -104,7 +102,7 @@ export default function NotificationsPage() {
             </div>
           </div>
 
-          {/* Fan tanlash (subject target) */}
+          {/* Fan tanlash */}
           {form.target === "subject" && (
             <Select
               label="Fan"
@@ -118,7 +116,7 @@ export default function NotificationsPage() {
             />
           )}
 
-          {/* Student ID (student target) */}
+          {/* Student ID */}
           {form.target === "student" && (
             <Input
               label="O'quvchi ID"
@@ -136,17 +134,17 @@ export default function NotificationsPage() {
           />
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-700">Xabar matni</label>
+            <label className="block text-xs font-semibold uppercase tracking-wide text-slate-500">Xabar matni</label>
             <textarea
               value={form.message}
               onChange={(e) => set("message", e.target.value)}
               rows={4}
-              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-button text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50 hover:border-slate-300 resize-y"
+              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500/50 hover:border-slate-300 resize-y transition-colors"
               placeholder="Xabar matnini yozing..."
             />
           </div>
 
-          <Button type="submit" disabled={sending} className="w-full" size="lg">
+          <Button type="submit" disabled={sending} className="w-full" variant="blue">
             {sending ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
@@ -159,8 +157,8 @@ export default function NotificationsPage() {
       </Card>
 
       {/* Tayyor shablonlar */}
-      <Card variant="light" className="p-6">
-        <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+      <Card variant="light" className="rounded-xl p-5">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3 flex items-center gap-2">
           <Bell className="w-4 h-4" /> Tayyor shablonlar
         </h3>
         <div className="space-y-2">
@@ -173,7 +171,7 @@ export default function NotificationsPage() {
               key={i}
               type="button"
               onClick={() => setForm((p) => ({ ...p, title: tpl.title, message: tpl.message }))}
-              className="w-full text-left px-4 py-3 rounded-xl border border-slate-100 hover:border-primary-200 hover:bg-primary-50/50 transition-all"
+              className="w-full text-left px-4 py-3 rounded-lg border border-slate-100 hover:border-primary-200 hover:bg-primary-50/30 transition-all"
             >
               <p className="text-sm font-medium text-slate-700">{tpl.title}</p>
               <p className="text-xs text-slate-400 mt-0.5 truncate">{tpl.message}</p>
