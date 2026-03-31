@@ -62,24 +62,49 @@ export default function ProfilePage() {
   const [maxSubjects, setMaxSubjects] = useState(1);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/student/profile").then((r) => r.json()),
-      fetch("/api/settings/max-subjects").then((r) => r.json()),
-    ])
-      .then(([profileData, settingsData]) => {
-        if (profileData.student) {
-          setProfile(profileData.student);
-          setSelectedSlugs(profileData.student.subjects.map((s: { slug: string }) => s.slug));
+    const loadProfile = async (retry = true) => {
+      try {
+        const profileRes = await fetch("/api/student/profile");
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          if (profileData.student) {
+            setProfile(profileData.student);
+            setSelectedSlugs(profileData.student.subjects.map((s: { slug: string }) => s.slug));
+          }
+          if (profileData.recentResults) {
+            setRecentResults(profileData.recentResults);
+          }
+        } else if (retry) {
+          await new Promise(r => setTimeout(r, 1000));
+          return loadProfile(false);
+        } else {
+          toast.error("Profil ma'lumotlarini yuklashda xatolik");
         }
-        if (profileData.recentResults) {
-          setRecentResults(profileData.recentResults);
+      } catch {
+        if (retry) {
+          await new Promise(r => setTimeout(r, 1000));
+          return loadProfile(false);
         }
-        if (settingsData.maxSubjects !== undefined) {
-          setMaxSubjects(settingsData.maxSubjects);
+        toast.error("Tarmoq xatosi — internet aloqasini tekshiring");
+      }
+
+      // Settings — alohida, xatolikda default
+      try {
+        const settingsRes = await fetch("/api/settings/max-subjects");
+        if (settingsRes.ok) {
+          const settingsData = await settingsRes.json();
+          if (settingsData.maxSubjects !== undefined) {
+            setMaxSubjects(settingsData.maxSubjects);
+          }
         }
-      })
-      .catch(() => toast.error("Ma'lumotlarni yuklashda xatolik"))
-      .finally(() => setLoading(false));
+      } catch {
+        // default maxSubjects = 1 qoladi
+      }
+
+      setLoading(false);
+    };
+
+    loadProfile();
   }, []);
 
   const handleSubjectToggle = (slug: string) => {

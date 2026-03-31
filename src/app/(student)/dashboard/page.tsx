@@ -52,15 +52,25 @@ export default function DashboardPage() {
     fetchTests();
   }, []);
 
-  const fetchTests = async () => {
+  const fetchTests = async (retry = true) => {
     try {
       const res = await fetch("/api/student/tests");
       if (res.ok) {
         const data = await res.json();
         setTests(data.tests || []);
+      } else if (retry) {
+        // Birinchi urinish muvaffaqiyatsiz — 1 soniya kutib qayta urinish
+        await new Promise(r => setTimeout(r, 1000));
+        return fetchTests(false);
+      } else {
+        toast.error("Testlarni yuklashda xatolik yuz berdi");
       }
     } catch {
-      toast.error("Testlarni yuklashda xatolik");
+      if (retry) {
+        await new Promise(r => setTimeout(r, 1000));
+        return fetchTests(false);
+      }
+      toast.error("Tarmoq xatosi — internet aloqasini tekshiring");
     } finally {
       setLoading(false);
     }

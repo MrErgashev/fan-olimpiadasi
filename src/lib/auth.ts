@@ -1,7 +1,6 @@
 import { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
-import { randomUUID } from "crypto";
 import { db } from "./db";
 
 export const authOptions: NextAuthOptions = {
@@ -43,34 +42,12 @@ export const authOptions: NextAuthOptions = {
         const isValid = await compare(credentials.password, student.password);
         if (!isValid) return null;
 
-        // Yangi sessiya yaratish — eski sessiyalarni o'chirish (1 qurilma = 1 sessiya)
-        const sessionToken = randomUUID();
-        await db.$transaction([
-          db.activeSession.deleteMany({ where: { studentId: student.id } }),
-          db.activeSession.create({
-            data: {
-              studentId: student.id,
-              sessionToken,
-              expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-            },
-          }),
-        ]);
-
-        // Muddati o'tgan sessiyalarni tozalash (fire-and-forget)
-        db.activeSession.deleteMany({
-          where: {
-            expiresAt: { lt: new Date() },
-            createdAt: { lt: new Date(Date.now() - 60 * 60 * 1000) },
-          },
-        }).catch(() => {});
-
         return {
           id: student.id,
           phone: student.phone,
           firstName: student.firstName,
           lastName: student.lastName,
           role: "student" as const,
-          sessionToken,
         };
       },
     }),
@@ -110,7 +87,7 @@ export const authOptions: NextAuthOptions = {
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.role = user.role;
-        token.sessionToken = user.sessionToken;
+        token.sessionToken = user.sessionToken || "";
       }
       return token;
     },
@@ -124,14 +101,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  events: {
-    async signOut({ token }) {
-      // Student chiqishda bazadan sessiyani o'chirish
-      if (token?.role === "student" && token?.sessionToken) {
-        await db.activeSession.deleteMany({
-          where: { sessionToken: token.sessionToken as string },
-        }).catch(() => {});
-      }
-    },
-  },
+  events: {},
 };
