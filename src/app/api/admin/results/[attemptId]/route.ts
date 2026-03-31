@@ -47,20 +47,29 @@ export async function GET(
       return NextResponse.json({ error: "Natija topilmadi" }, { status: 404 });
     }
 
-    const answers = attempt.attemptAnswers.map((a, i) => ({
-      order: i + 1,
-      questionText: a.question.questionText,
-      questionImageUrl: a.question.questionImageUrl,
-      optionA: a.question.optionA,
-      optionB: a.question.optionB,
-      optionC: a.question.optionC,
-      optionD: a.question.optionD,
-      correctAnswer: a.question.correctAnswer,
-      selectedAnswer: a.selectedAnswer,
-      isCorrect: a.isCorrect,
-      score: a.score,
-      explanation: a.question.explanation,
-    }));
+    const answers = attempt.attemptAnswers.map((a, i) => {
+      // Shuffle mapping ni hisobga olish — selectedAnswer ni asl pozitsiyaga o'girish
+      const shuffleMap = a.shuffledOptions as Record<string, string> | null;
+      let displaySelectedAnswer = a.selectedAnswer;
+      if (shuffleMap && a.selectedAnswer && shuffleMap[a.selectedAnswer]) {
+        displaySelectedAnswer = shuffleMap[a.selectedAnswer];
+      }
+
+      return {
+        order: i + 1,
+        questionText: a.question.questionText,
+        questionImageUrl: a.question.questionImageUrl,
+        optionA: a.question.optionA,
+        optionB: a.question.optionB,
+        optionC: a.question.optionC,
+        optionD: a.question.optionD,
+        correctAnswer: a.question.correctAnswer,
+        selectedAnswer: displaySelectedAnswer,
+        isCorrect: a.isCorrect,
+        score: a.score,
+        explanation: a.question.explanation,
+      };
+    });
 
     return NextResponse.json({
       attempt: {
