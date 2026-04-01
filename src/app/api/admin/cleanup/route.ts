@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { roundScore } from "@/lib/scoring";
 
 // Vaqti tugagan lekin submit bo'lmagan testlarni avtomatik baholash
 export async function POST() {
@@ -70,6 +71,15 @@ export async function POST() {
         answerUpdates.push({ id: ans.id, isCorrect, score });
       }
 
+      // "distributed" rejimda adolatli ball hisoblash
+      if (attempt.test.scoringMode === "distributed") {
+        totalScore = roundScore(
+          (correctCount / attempt.test.totalQuestions) * attempt.test.totalScore
+        );
+      } else {
+        totalScore = roundScore(totalScore);
+      }
+
       // Batch transaction: barcha yangilanishlarni bir vaqtda bajarish
       await db.$transaction([
         ...answerUpdates.map((upd) =>
@@ -83,7 +93,7 @@ export async function POST() {
           data: {
             isSubmitted: true,
             finishedAt: new Date(),
-            totalScore: Math.round(totalScore * 10) / 10,
+            totalScore,
             correctCount,
             wrongCount,
             unansweredCount,

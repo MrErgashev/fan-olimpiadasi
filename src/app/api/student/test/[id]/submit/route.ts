@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { buildAttemptProgressMeta } from "@/lib/test-attempt-progress";
+import { roundScore } from "@/lib/scoring";
 
 type SubmissionMode = "manual" | "auto_timeout";
 
@@ -106,6 +107,18 @@ export async function POST(
       answerUpdates.push({ id: ans.id, isCorrect, score });
     }
 
+    // "distributed" rejimda adolatli ball: correctCount asosida hisoblash
+    // Sabab: assignedScore savollar pozitsiyasiga qarab farq qiladi (3.3 va 3.4),
+    // shuning uchun bir xil correct count bo'lsa ham turli ball chiqishi mumkin.
+    // Bu formulada barcha talabalar bir xil to'g'ri javoblar soni uchun bir xil ball oladi.
+    if (attempt.test.scoringMode === "distributed") {
+      totalScore = roundScore(
+        (correctCount / attempt.test.totalQuestions) * attempt.test.totalScore
+      );
+    } else {
+      totalScore = roundScore(totalScore);
+    }
+
     // Barcha yangilanishlarni bitta transaction ichida batch bajarish
     await db.$transaction([
       ...answerUpdates.map((upd) =>
@@ -119,7 +132,7 @@ export async function POST(
         data: {
           isSubmitted: true,
           finishedAt: new Date(),
-          totalScore: Math.round(totalScore * 10) / 10,
+          totalScore,
           correctCount,
           wrongCount,
           unansweredCount,
@@ -129,7 +142,7 @@ export async function POST(
 
     return NextResponse.json({
       submitted: true,
-      totalScore: Math.round(totalScore * 10) / 10,
+      totalScore,
       correctCount,
       wrongCount,
       unansweredCount,
