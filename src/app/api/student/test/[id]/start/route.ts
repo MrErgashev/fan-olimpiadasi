@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { calculateScoreDistribution, getQuestionScore } from "@/lib/scoring";
 import { headers } from "next/headers";
 
 function buildStartPayload(
@@ -166,14 +165,13 @@ export async function POST(
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
 
-      const scoreDist = calculateScoreDistribution({
-        totalQuestions: test.totalQuestions,
-        totalScore: test.totalScore,
-      });
+      // Har bir savolga teng ball berish: totalScore / totalQuestions
+      // Yakuniy ball submit paytida (correctCount / totalQuestions) * totalScore formulasida hisoblanadi
+      const scorePerQuestion = test.totalScore / test.totalQuestions;
 
-      randomizedQuestions = shuffled.slice(0, test.totalQuestions).map((question, index) => ({
+      randomizedQuestions = shuffled.slice(0, test.totalQuestions).map((question) => ({
         id: question.id,
-        assignedScore: getQuestionScore(index, scoreDist),
+        assignedScore: scorePerQuestion,
       }));
     }
 
